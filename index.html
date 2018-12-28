@@ -16,15 +16,19 @@
     .graph-svg-component {
         background-color: black;
     }
+    .graph-svg-componentr {
+        background-color: red;
+    }
       
     </style>
     <head>
         <meta charset="utf-8">
-        <title>Hello World</title>
+        <title>Deadly Jobs</title>
         <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
     </head>
     <body>
-         <input type="button" value="f_trans_rate" onclick="sortStackedBar(+0);">
+        <input type="button" value="f_total_rate" onclick="sortStackedBar(+-1);"> 
+        <input type="button" value="f_trans_rate" onclick="sortStackedBar(+0);">
         <input type="button" value="f_violence_rate" onclick="sortStackedBar(+1);">
         <input type="button" value="f_fireExp_rate" onclick="sortStackedBar(+2);">
         <input type="button" value="f_fallSlipTrip_rate" onclick="sortStackedBar(+3);">
@@ -33,7 +37,13 @@
         <input type="button" value="f_allOther_rate" onclick="sortStackedBar(+6);">
 
 
-        <script type="text/javascript" src="main.js"></script>
+               
+        <svg width="200" height="200" id="svgStacked"></svg>
+
+        <script type="text/javascript" src="constants.js"></script>
+
+        <script type="text/javascript" src="stacked.js"></script>
+
 
     </body>
 
