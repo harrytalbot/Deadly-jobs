@@ -1,23 +1,32 @@
 <!DOCTYPE html>
 <html>
     <style> /* set the CSS */
-    .axisY line{
+    .axis line{
       stroke: white;
     }
     
-    .axisY path{
+    .axis path{
       stroke: white;
     }
     
-    .axisY text{
+    .axis text{
+      fill: white;
+    }  
+
+    .axisStackedY line{
+      stroke: white;
+    }
+    
+    .axisStackedY path{
+      stroke: white;
+    }
+    
+    .axisStackedY text{
       fill: white;
     }  
 
     .graph-svg-component {
         background-color: black;
-    }
-    .graph-svg-componentr {
-        background-color: red;
     }
       
     </style>
@@ -27,6 +36,8 @@
         <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
     </head>
     <body>
+
+
         <input type="button" value="f_total_rate" onclick="sortStackedBar(+-1);"> 
         <input type="button" value="f_trans_rate" onclick="sortStackedBar(+0);">
         <input type="button" value="f_violence_rate" onclick="sortStackedBar(+1);">
@@ -36,9 +47,9 @@
         <input type="button" value="f_contact_rate" onclick="sortStackedBar(+5);">
         <input type="button" value="f_allOther_rate" onclick="sortStackedBar(+6);">
 
+        <svg id="svgStacked"></svg>
 
-               
-        <svg width="200" height="200" id="svgStacked"></svg>
+        <svg id="svgScatter"></svg>
 
         <script type="text/javascript" src="constants.js"></script>
 

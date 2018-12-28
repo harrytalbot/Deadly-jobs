@@ -1,29 +1,47 @@
 /////////////////////////////////////////////////////////////////////////////////////////
+
 var dataset;
-var firstCause = 0;
+var scatterFirstCause = 0;
 
-const margin = { top: 20, right: 20, bottom: 30, left: 300 };
-const stacked_width = 1000;
-const stacked_height = 4000;
+const margin = { top: 40, right: 40, bottom: 30, left: 300 };
+var stacked = { width: +1500 - margin.left - margin.right, height: 700 - margin.top - margin.bottom };
+var scatter = { width: +1500 - margin.left - margin.right, height: 500 - margin.top - margin.bottom  };
 
-/////////////////////////////////////////////////////////////////////////////////////////
+//d3.select('body').attr("class", "graph-svg-component"); // PAGE BACKGROUND COLOUR
+
+// STACKED SETUP ////////////////////////////////////////////////////////////////////////
 
 var svg_stacked = d3.select('body')
     .select('#svgStacked')
-    .attr('width', stacked_width + margin.left + margin.right)
-    .attr('height', stacked_height + margin.top + margin.bottom)
-    .attr("class", "graph-svg-component"); // BACKGROUND COLOUR
+    .attr('width', stacked.width + margin.left + margin.right)
+    .attr('height', stacked.height + margin.top + margin.bottom)
+    .attr("class", "graph-svg-component"); // SVG BACKGROUND COLOUR
 
 stacked_g = svg_stacked.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-// set y scale
-var stacked_y = d3.scaleBand().range([0, stacked_height])
-// set x scale
-var stacked_x = d3.scaleLinear().range([0, stacked_width]);
-// set the colors                   
+// set stacked y scale
+var stacked_y = d3.scaleBand().range([0, stacked.height])
+// set stacked x scale
+var stacked_x = d3.scaleLinear().range([0, stacked.width]);
+// set the stacked colors                   
 var stacked_z = d3.scaleOrdinal().range([C1, C2, C3, C4, C5, C6, C7]);
 
+/// SCATTER SETUP ///////////////////////////////////////////////////////////////////////
 
+var svg_scatter = d3.select('body')
+    .select('#svgScatter')
+    .attr('width', scatter.width + margin.left + margin.right)
+    .attr('height', scatter.height + margin.top + margin.bottom)
+    .attr("class", "graph-svg-component"); // SVG BACKGROUND COLOUR
+
+scatter_g = svg_scatter.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// set scatter y scale
+var scatter_y = d3.scaleLinear().range([scatter.height, 0])
+// set scatter x scale
+var scatter_x = d3.scaleLinear().range([0, scatter.width])
+// set the scatter_x colors                   
+var scatter_z = d3.scaleOrdinal(d3.schemeCategory20);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -63,38 +81,52 @@ d3.csv("data/data.csv", function (data, i) {
     dataset = data;
 
     initData();
+
     drawStackedChart();
     drawStackedAxis();
     drawStackedLegend();
+
+    drawScatterPlot();
+    drawScatterAxis();
 });
 
 // setup data, scales and filter
 function initData() {
-    dataset = dataset.filter(function (d) { return (d.end_0 == 'TRUE' && d.end_00 == 'FALSE') })
+    dataset = dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
+    //dataset = dataset.filter(function (d) { return (d.end_0 == 'TRUE' && d.end_00 == 'FALSE') })
+
     // initially sort the data by total descending
     dataset.sort((a, b) => d3.descending(a.f_total_rate, b.f_total_rate));
     
     stacked_y.domain(dataset.map(function (d) { return d.occupation; }));
     stacked_x.domain([0, d3.max(dataset, function (d) { return d.f_total_rate; })]).nice();
+    
     stacked_z.domain(causes);
+
+    scatter_y.domain([0, d3.max([0, d3.max(dataset, function (d) { return d.f_total_rate })]) + 1])
+    scatter_x.domain([0, d3.max([0, d3.max(dataset, function (d) { return d.nf_total_rate })]) + 1]).nice();
+
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////
 
 // return a stack order, using the currently selected firstCause
 function getStackedOrder(data) {
     var orderNew = [+0, +1, +2, +3, +4, +5, +6];
-    if (firstCause == -1) { return orderNew }
-    orderNew.splice(firstCause, 1);
-    orderNew.unshift(firstCause);
+    if (scatterFirstCause == -1) { return orderNew }
+    orderNew.splice(scatterFirstCause, 1);
+    orderNew.unshift(scatterFirstCause);
     return orderNew;
 }
 
 // update the stacked bar, sorting by a specific cause and running transitions
 function sortStackedBar(fCause) {
-    firstCause = fCause;
+    scatterFirstCause = fCause;
+    
     var sortFn;
     // define the sort function
-    if (firstCause !== -1) {
-        sortFn = (a, b) => d3.descending(a[causes[firstCause]], b[causes[firstCause]]);
+    if (scatterFirstCause !== -1) {
+        sortFn = (a, b) => d3.descending(a[causes[scatterFirstCause]], b[causes[scatterFirstCause]]);
     } else {
         sortFn = (a, b) => d3.descending(a.f_total_rate, b.f_total_rate);
     }
@@ -116,7 +148,7 @@ function sortStackedBar(fCause) {
     t0.selectAll("g.bar-group")
         .duration(1000)
         .attr("opacity", function (d) {
-            return (d.key !== causes[firstCause] && firstCause !== -1) ? 0.5 : 1;
+            return (d.key !== causes[scatterFirstCause] && scatterFirstCause !== -1) ? 0.5 : 1;
         })
 
     var t1 = t0.transition();
@@ -134,7 +166,7 @@ function sortStackedBar(fCause) {
         .attr("y", function (d) { return yCopy(d.data.occupation) })
 
     // sort label y axis
-    t2.select(".axisY")
+    t2.selectAll(".axisStackedY")
         .call(d3.axisLeft(stacked_y))
         .selectAll("g")
 }
@@ -145,46 +177,36 @@ function drawStackedChart() {
         .selectAll("g")
         .data(d3.stack().keys(causes).order(d3.stackOrderAscending)(dataset))
         .enter().append("g")
-        .classed("bar-group", true)
-        .attr("fill", function (d) { return stacked_z(d.key); })
-        .attr("opacity", 1) // so first fade animation is smooth
+            .classed("bar-group", true)
+            .attr("fill", function (d) { return stacked_z(d.key); })
+            .attr("opacity", 1) // so first fade animation is smooth
         .selectAll("rect")
         .data(function (d) { return d; })
         .enter().append("rect")
-        .classed("bar", true)
-        .attr("y", function (d) {
-            return stacked_y(d.data.occupation);
-        })
-        .attr("x", function (d) {
-            return stacked_x(d[0]);
-        })
-        .attr("width", function (d) {
-            return stacked_x(d[1]) - stacked_x(d[0]);
-        })
-        .attr("height", stacked_y.bandwidth())
-    /*.on("mouseover", function () { tooltip.style("display", null); })
-    .on("mouseout", function () { tooltip.style("display", "none"); })
-    .on("mousemove", function (d) {
-        var xPosition = d3.mouse(this)[0] - 5;
-        var yPosition = d3.mouse(this)[1] - 5;
-        tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-        tooltip.select("text").text(d[1] - d[0]);
-    });*/
-
+            .classed("bar", true)
+            .attr("y", function (d) {
+                return stacked_y(d.data.occupation);
+            })
+            .attr("x", function (d) {
+                return stacked_x(d[0]);
+            })
+            .attr("width", function (d) {
+                return stacked_x(d[1]) - stacked_x(d[0]);
+            })
+            .attr("height", stacked_y.bandwidth())
 }
 
 // add the axis
 function drawStackedAxis() {
 
     stacked_g.append("g")
-        .attr("class", "axisY")
-        .call(d3.axisLeft(stacked_y));
+        .attr("class", "axis")
+        .call(d3.axisBottom(stacked_x))
+        .attr("transform", "translate(0," + stacked.height + ")")
 
     stacked_g.append("g")
-        .attr("class", "axisY")
-        .call(d3.axisBottom(stacked_x))
-        .attr("transform", "translate(0," + stacked_height + ")")
-
+        .attr("class", "axisStackedY")
+        .call(d3.axisLeft(stacked_y));
 }
 
 // add the legend
@@ -199,16 +221,83 @@ function drawStackedLegend() {
         .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
 
     legend.append("rect")
-        .attr("x", stacked_width - 19)
+        .attr("x", stacked.width - 19)
         .attr("width", 19)
         .attr("height", 19)
         .attr("fill", stacked_z);
 
     legend.append("text")
-        .attr("x", stacked_width - 24)
+        .attr("x", stacked.width - 24)
         .attr("y", 9.5)
         .attr("dy", "0.32em")
         .attr("fill", 'white')
         .text(function (d) { return d; });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+function drawScatterAxis() {
+    // X-axis
+    svg_scatter.append('g')
+        .attr("class", "axis")
+        .call(d3.axisBottom(scatter_x))
+        .attr('transform', 'translate(0,' + scatter.height + ')')
+
+        /*.append('text') // X-axis Label
+            .attr('class', 'label')
+            .attr('y', -10)
+            .attr('x', scatter.width)
+            .attr('dy', '.71em')
+            .style('text-anchor', 'end')
+            .text('Fatality per 100k')*/
+    // Y-axis
+    svg_scatter.append('g')
+        .attr("class", "axis")
+        .call(d3.axisLeft(scatter_y))
+
+        /*.append('text') // y-axis Label
+            .attr('class', 'label')
+            .attr('transform', 'rotate(-90)')
+            .attr('x', 10)
+           // .attr('y', scatter.height)
+            .attr('dy', '.71em')
+            .style('text-anchor', 'end')
+            .text('Injury per 100k')*/
+}
+
+function drawScatterPlot() {
+
+    // Circles
+    var circles = svg_scatter.selectAll('circle')
+        .data(dataset)
+        .enter()
+        .append('circle')
+            .attr('cx', function (d) { return scatter_x(d.nf_total_rate) })
+            .attr('cy', function (d) { return scatter_y(d.f_total_rate) })
+            .attr('r', '10')
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('fill', function (d, i) { return scatter_z(i) })
+            .on('mouseover', function () {
+                d3.select(this)
+                    .transition()
+                    .duration(500)
+                    .attr('r', 20)
+                    .attr('stroke-width', 3)
+            })
+            .on('mouseout', function () {
+                d3.select(this)
+                    .transition()
+                    .duration(500)
+                    .attr('r', 10)
+                    .attr('stroke-width', 1)
+            })
+            .append('title') // Tooltip
+            .text(function (d) {
+                return d.occupation +
+                    '\nReturn: ' + d.nf_total_rate +
+                    '\nStd. Dev.: ' + d.f_total_rate
+            })
 }
 
