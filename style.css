@@ -1,15 +1,70 @@
-div.calorieBar {
-    display: inline-block;
-    width: 50px;
-    height: 75px;   /* We'll override this later */
-    background-color: teal;
-    margin : 2px; /* This adds spaces between our bars so we can tell them apart */
-}
+.article-title {
+    font-size: 100px;
+    color: white;
+    font-family: 'Lora', serif; 
+    font-weight: 900;
+    line-height: 105px;
+    padding-top: 30px;
+    padding-left: 30px;
+    /*text-align: right;
+    float: right;*/
+    margin-bottom: 30px;
+    width: 700px;
+  }
 
-div.costBar {
-	  display: inline-block;
-    width: 50px;
-    height: 75px;   /* We'll override this later */
-    background-color: red;
-    margin : 2px; /* This adds spaces between our bars so we can tell them apart */
-}
+  .article-text {
+    font-size: 35px;
+    color: white;
+    font-family: 'Lora', serif; 
+    font-weight: 900;
+    line-height: 40px;
+    padding-top: 30px;
+    padding-left: 2.5%;
+    padding-right: 1%;
+    text-align: right;
+    float: right;
+    margin-bottom: 30px;
+    width: 95%;
+  }
+ 
+  .background {
+    background-color: black;
+  }   
+
+
+  /* AXIS BITS /////////////////////////////////////////////////////////////////*/
+
+  .axis line{ /* used on axis ticks */
+    stroke: white;
+    stroke-width: 5;  
+
+  }
+  .axis path{ /* used on axis */
+    stroke: white;
+    stroke-width: 5;  
+  }
+  
+  .axis text{ /* used on axis text */
+    fill: white;
+    font-family: 'Lora', serif; 
+    font-size: medium
+  }  
+
+  .axisStackedY line{ /* used on axis ticks */
+    stroke: white;
+    stroke-width: 5;  
+  }
+  
+  .axisStackedY path{ /* used on axis */
+    stroke: white;
+    stroke-width: 5;  
+  }
+  
+  .axisStackedY text{ /* used on axis text */
+    fill: white;
+    font-family: 'Lora', serif; 
+    font-size: medium
+  }  
+
+  
+    

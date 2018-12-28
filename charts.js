@@ -3,26 +3,52 @@
 var dataset;
 var scatterFirstCause = 0;
 
-const margin = { top: 40, right: 40, bottom: 30, left: 300 };
-var stacked = { width: +1500 - margin.left - margin.right, height: 700 - margin.top - margin.bottom };
-var scatter = { width: +1500 - margin.left - margin.right, height: 500 - margin.top - margin.bottom  };
+var stacked = { width: STACKED_WIDTH - STACKED_LEFT - STACKED_RIGHT, height: STACKED_HEIGHT - STACKED_TOP - STACKED_BOTTOM };
+var scatter = { width: SCATTER_WIDTH - SCATTER_LEFT - SCATTER_RIGHT, height: SCATTER_HEIGHT - STACKED_TOP - STACKED_BOTTOM};
 
-//d3.select('body').attr("class", "graph-svg-component"); // PAGE BACKGROUND COLOUR
+d3.select('body').attr("class", "background"); // PAGE BACKGROUND COLOUR
+
+// BUTTON SETUP ////////////////////////////////////////////////////////////////////////
+
+var button = d3.select('body')
+    .select('#svgSortButton')
+    .attr('width', STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT)
+    .attr('height', 350)
+    .attr("class", "background") // SVG BACKGROUND COLOUR
+    .on("click", function() {
+        sortStackedBar(3)
+    })
+    .on('mouseover', function () {
+        d3.select('#cir1')
+            .transition()
+            .duration(100)
+            .attr('opacity', 1)          
+    })
+    .on('mouseout', function () {
+        d3.select('#cir1')
+            .transition()
+            .duration(100)
+            .attr('opacity', function(){ 
+                return (scatterFirstCause === 3) ? 1 : 0.5;
+            })
+    })
+
+
 
 // STACKED SETUP ////////////////////////////////////////////////////////////////////////
 
 var svg_stacked = d3.select('body')
     .select('#svgStacked')
-    .attr('width', stacked.width + margin.left + margin.right)
-    .attr('height', stacked.height + margin.top + margin.bottom)
-    .attr("class", "graph-svg-component"); // SVG BACKGROUND COLOUR
+    .attr('width', STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT)
+    .attr('height', STACKED_HEIGHT + STACKED_TOP + STACKED_BOTTOM)
+    .attr("class", "background"); // SVG BACKGROUND COLOUR
 
-stacked_g = svg_stacked.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+stacked_g = svg_stacked.append("g").attr("transform", "translate(" + STACKED_LEFT + "," + STACKED_TOP + ")");
 
 // set stacked y scale
-var stacked_y = d3.scaleBand().range([0, stacked.height])
+var stacked_y = d3.scaleBand().range([0, STACKED_HEIGHT])
 // set stacked x scale
-var stacked_x = d3.scaleLinear().range([0, stacked.width]);
+var stacked_x = d3.scaleLinear().range([0, STACKED_WIDTH]);
 // set the stacked colors                   
 var stacked_z = d3.scaleOrdinal().range([C1, C2, C3, C4, C5, C6, C7]);
 
@@ -30,18 +56,20 @@ var stacked_z = d3.scaleOrdinal().range([C1, C2, C3, C4, C5, C6, C7]);
 
 var svg_scatter = d3.select('body')
     .select('#svgScatter')
-    .attr('width', scatter.width + margin.left + margin.right)
-    .attr('height', scatter.height + margin.top + margin.bottom)
-    .attr("class", "graph-svg-component"); // SVG BACKGROUND COLOUR
+    .attr('width', SCATTER_WIDTH + SCATTER_LEFT + SCATTER_RIGHT)
+    .attr('height', SCATTER_HEIGHT + SCATTER_TOP + SCATTER_BOTTOM)
+    .attr("class", "background"); // SVG BACKGROUND COLOUR
 
-scatter_g = svg_scatter.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+scatter_g = svg_scatter.append("g").attr("transform", "translate(" + SCATTER_LEFT + "," + SCATTER_TOP + ")");
 
 // set scatter y scale
-var scatter_y = d3.scaleLinear().range([scatter.height, 0])
+var scatter_y = d3.scaleLinear().range([SCATTER_HEIGHT, 0])
 // set scatter x scale
-var scatter_x = d3.scaleLinear().range([0, scatter.width])
+var scatter_x = d3.scaleLinear().range([0, SCATTER_WIDTH])
 // set the scatter_x colors                   
-var scatter_z = d3.scaleOrdinal(d3.schemeCategory20);
+var scatter_z = d3.scaleLinear().range(["white", "steelblue"]);
+
+var scatter_plotSize = d3.scaleLinear().range([4,8])
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +89,7 @@ d3.csv("data/data.csv", function (data, i) {
     data.f_total_rate = +data.f_violence_rate + +data.f_trans_rate + +data.f_fireExp_rate +
         +data.f_fallSlipTrip_rate + +data.f_exposure_rate + +data.f_contact_rate + +data.f_allOther_rate;
     
-        data.nf_violence_rate = +data.nf_violence / +data.totEmp * +100000
+    data.nf_violence_rate = +data.nf_violence / +data.totEmp * +100000
     data.nf_trans_rate = +data.nf_trans / +data.totEmp * +100000
     data.nf_fireExp_rate = +data.nf_fireExp / +data.totEmp * +100000
     data.nf_fallSlipTrip_rate = +data.nf_fallSlipTrip / +data.totEmp * +100000
@@ -69,8 +97,10 @@ d3.csv("data/data.csv", function (data, i) {
     data.nf_contact_rate = +data.nf_contact / +data.totEmp * +100000
     data.nf_allOther_rate = +data.nf_allOther / +data.totEmp * +100000
 
-    data.nf_total_rate = +data.nf_violence_rate + +data.nf_trans_rate + +data.nf_fireExp_rate +
-        +data.nf_fallSlipTrip_rate + +data.nf_exposure_rate + +data.nf_contact_rate + +data.nf_allOther_rate;
+    data.nf_total_rate = +data.nf_total / +data.totEmp * +100000
+    
+   // data.nf_total_rate = +data.nf_violence_rate + +data.nf_trans_rate + +data.nf_fireExp_rate +
+     //   +data.nf_fallSlipTrip_rate + +data.nf_exposure_rate + +data.nf_contact_rate + +data.nf_allOther_rate;
 
 
     return data;
@@ -103,8 +133,10 @@ function initData() {
     
     stacked_z.domain(causes);
 
-    scatter_y.domain([0, d3.max([0, d3.max(dataset, function (d) { return d.f_total_rate })]) + 1])
+    scatter_y.domain([0, d3.max([0, d3.max(dataset, function (d) { return d.f_total_rate })]) + 1]).nice();
     scatter_x.domain([0, d3.max([0, d3.max(dataset, function (d) { return d.nf_total_rate })]) + 1]).nice();
+    scatter_z.domain([0, d3.max([0, d3.max(dataset, function (d) {return d.salaryMed})])])
+    scatter_plotSize.domain([0, d3.max([0, d3.max(dataset, function (d) {return d.totEmp})])])
 
 }
 
@@ -202,11 +234,13 @@ function drawStackedAxis() {
     stacked_g.append("g")
         .attr("class", "axis")
         .call(d3.axisBottom(stacked_x))
-        .attr("transform", "translate(0," + stacked.height + ")")
+        .attr("transform", "translate(0," + STACKED_HEIGHT + ")")
+        
 
     stacked_g.append("g")
         .attr("class", "axisStackedY")
-        .call(d3.axisLeft(stacked_y));
+        .call(d3.axisLeft(stacked_y))
+
 }
 
 // add the legend
@@ -221,13 +255,13 @@ function drawStackedLegend() {
         .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
 
     legend.append("rect")
-        .attr("x", stacked.width - 19)
+        .attr("x", STACKED_WIDTH - 19)
         .attr("width", 19)
         .attr("height", 19)
         .attr("fill", stacked_z);
 
     legend.append("text")
-        .attr("x", stacked.width - 24)
+        .attr("x", STACKED_WIDTH - 24)
         .attr("y", 9.5)
         .attr("dy", "0.32em")
         .attr("fill", 'white')
@@ -239,58 +273,58 @@ function drawStackedLegend() {
 
 function drawScatterAxis() {
     // X-axis
-    svg_scatter.append('g')
+    scatter_g.append('g')
         .attr("class", "axis")
         .call(d3.axisBottom(scatter_x))
-        .attr('transform', 'translate(0,' + scatter.height + ')')
+        .attr('transform', 'translate(0,' + SCATTER_HEIGHT + ')')
 
-        /*.append('text') // X-axis Label
+        .append('text') // X-axis Label
             .attr('class', 'label')
-            .attr('y', -10)
-            .attr('x', scatter.width)
+            .attr('y', 40)
+            .attr('x', SCATTER_WIDTH / 2)
             .attr('dy', '.71em')
             .style('text-anchor', 'end')
-            .text('Fatality per 100k')*/
+            .text('Fatality per 100k')
+
     // Y-axis
-    svg_scatter.append('g')
+    scatter_g.append('g')
         .attr("class", "axis")
         .call(d3.axisLeft(scatter_y))
 
-        /*.append('text') // y-axis Label
+        .append('text') // y-axis Label
             .attr('class', 'label')
+            .attr('x', -(SCATTER_HEIGHT / 2))
             .attr('transform', 'rotate(-90)')
-            .attr('x', 10)
-           // .attr('y', scatter.height)
+            .attr('y', -40)
             .attr('dy', '.71em')
             .style('text-anchor', 'end')
-            .text('Injury per 100k')*/
+            .text('Injury per 100k')
 }
 
 function drawScatterPlot() {
 
-    // Circles
-    var circles = svg_scatter.selectAll('circle')
+    var circles = scatter_g.selectAll('circle')
         .data(dataset)
         .enter()
         .append('circle')
             .attr('cx', function (d) { return scatter_x(d.nf_total_rate) })
             .attr('cy', function (d) { return scatter_y(d.f_total_rate) })
-            .attr('r', '10')
+            .attr('r', function (d) { return scatter_plotSize(d.totEmp)})
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
-            .attr('fill', function (d, i) { return scatter_z(i) })
+            .attr('fill', function (d, i) { return scatter_z(d.salaryMed) })
             .on('mouseover', function () {
                 d3.select(this)
                     .transition()
-                    .duration(500)
+                    .duration(200)
                     .attr('r', 20)
                     .attr('stroke-width', 3)
             })
             .on('mouseout', function () {
                 d3.select(this)
                     .transition()
-                    .duration(500)
-                    .attr('r', 10)
+                    .duration(200)
+                    .attr('r', function (d) { return scatter_plotSize(d.totEmp)})
                     .attr('stroke-width', 1)
             })
             .append('title') // Tooltip

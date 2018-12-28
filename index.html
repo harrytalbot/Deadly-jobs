@@ -1,42 +1,22 @@
 <!DOCTYPE html>
 <html>
-    <style> /* set the CSS */
-    .axis line{
-      stroke: white;
-    }
-    
-    .axis path{
-      stroke: white;
-    }
-    
-    .axis text{
-      fill: white;
-    }  
-
-    .axisStackedY line{
-      stroke: white;
-    }
-    
-    .axisStackedY path{
-      stroke: white;
-    }
-    
-    .axisStackedY text{
-      fill: white;
-    }  
-
-    .graph-svg-component {
-        background-color: black;
-    }
-      
-    </style>
     <head>
         <meta charset="utf-8">
         <title>Deadly Jobs</title>
         <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
+        <!--link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"-->
+        <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
     </head>
-    <body>
+    <body class="main">
 
+        <div class="article-title">Have you had an accident at work?</div>
+        <div class="article-text">This is just some filler text to see how the data visualisation will look. This will be a short introduction. I'm not sure how long it will be but this looks about right. It will be changed before the final article.</div>
+
+        <svg transform="translate(0,0)" id="svgSortButton">
+                <circle id="cir1" cx="400" cy="150" r="150" stroke="red" stroke-width="3" fill="red" opacity="0.5"/>
+        </svg>
 
         <input type="button" value="f_total_rate" onclick="sortStackedBar(+-1);"> 
         <input type="button" value="f_trans_rate" onclick="sortStackedBar(+0);">
@@ -47,13 +27,15 @@
         <input type="button" value="f_contact_rate" onclick="sortStackedBar(+5);">
         <input type="button" value="f_allOther_rate" onclick="sortStackedBar(+6);">
 
-        <svg id="svgStacked"></svg>
+        <svg transform="translate(0,0)" id="svgStacked"></svg>
 
-        <svg id="svgScatter"></svg>
+        <svg transform="translate(0,0)" id="svgScatter"></svg>
 
         <script type="text/javascript" src="constants.js"></script>
 
-        <script type="text/javascript" src="stacked.js"></script>
+        <script type="text/javascript" src="charts.js"></script>
+
+        <script type="text/javascript" src="scatter.js"></script>
 
 
     </body>
