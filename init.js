@@ -1,4 +1,20 @@
 var dataset;
+
+var versus_y;
+var versus_x;
+var versus_x_fatal;
+var versus_x_nonfatal;
+var versus_z;
+
+var stacked_y;
+var stacked_x;
+var stacked_z;
+
+var scatter_y;
+var scatter_x;
+var scatter_z;
+
+
 d3.select('body').attr("class", "background"); // PAGE BACKGROUND COLOUR
 
 
@@ -29,10 +45,6 @@ d3.csv("data/data.csv", function (data, i) {
     data.nf_allOther_rate = +data.nf_allOther / +data.totEmp * +100000
 
     data.nf_total_rate = +data.nf_total / +data.totEmp * +100000
-    
-   // data.nf_total_rate = +data.nf_violence_rate + +data.nf_trans_rate + +data.nf_fireExp_rate +
-     //   +data.nf_fallSlipTrip_rate + +data.nf_exposure_rate + +data.nf_contact_rate + +data.nf_allOther_rate;
-
 
     return data;
 }, function (error, data) {
@@ -43,9 +55,13 @@ d3.csv("data/data.csv", function (data, i) {
 
     initData();
 
+    drawVersusChart();
+    drawVersusAxis();
+
     drawStackedChart();
     drawStackedAxis();
     //drawStackedLegend();
+    drawButtons();
 
     drawScatterPlot();
     drawScatterAxis();
@@ -59,9 +75,21 @@ function initData() {
     // initially sort the data by total descending
     dataset.sort((a, b) => d3.descending(a.f_total_rate, b.f_total_rate));
     
-    stacked_y.domain(dataset.map(function (d) { return d.occupation; }));
-    stacked_x.domain([0, d3.max(dataset, function (d) { return d.f_total_rate; })]).nice();
+
+versus_x.domain([
+        d3.min(dataset, function (d) { return +-1 * d.nf_total_rate; }),
+        d3.max(dataset, function (d) { return d.f_total_rate; })
+    ]).nice();
     
+
+    versus_y.domain(dataset.map(function (d) { return d.occupation; }))    .padding(0.2);
+    versus_x_fatal.domain([0, d3.max(dataset, function (d) { return d.f_total_rate; })]).nice();
+    versus_x_nonfatal.domain([d3.min(dataset, function (d) { return +-1 * d.nf_total_rate; }), 0]).nice();
+
+
+
+    stacked_y.domain(dataset.map(function (d) { return d.occupation; })) .padding(0.2);
+    stacked_x.domain([0, d3.max(dataset, function (d) { return d.f_total_rate; })]).nice();
     stacked_z.domain(causes);
 
     scatter_y.domain([0, d3.max([0, d3.max(dataset, function (d) { return d.f_total_rate })]) + 1]).nice();

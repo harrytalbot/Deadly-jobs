@@ -13,13 +13,13 @@ var svg_scatter = d3.select('body')
 scatter_g = svg_scatter.append("g").attr("transform", "translate(" + SCATTER_LEFT + "," + SCATTER_TOP + ")");
 
 // set scatter y scale
-var scatter_y = d3.scaleLinear().range([SCATTER_HEIGHT, 0])
+scatter_y = d3.scaleLinear().range([SCATTER_HEIGHT, 0])
 // set scatter x scale
-var scatter_x = d3.scaleLinear().range([0, SCATTER_WIDTH])
+scatter_x = d3.scaleLinear().range([0, SCATTER_WIDTH])
 // set the scatter_x colors                   
-var scatter_z = d3.scaleLinear().range(["white", "steelblue"]);
+scatter_z = d3.scaleLinear().range(["LightBlue ", "SteelBlue "]);
 
-var scatter_plotSize = d3.scaleLinear().range([4,8])
+var scatter_plotSize = d3.scaleLinear().range([5,12])
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,9 +81,9 @@ function drawScatterPlot() {
             })
             .append('title') // Tooltip
             .text(function (d) {
-                return d.occupation +
-                    '\nReturn: ' + d.nf_total_rate +
-                    '\nStd. Dev.: ' + d.f_total_rate
+                return d.occupation.trim() +
+                    '\nNon-Fatal: ' + d.nf_total_rate +
+                    '\nFatal.: ' + d.f_total_rate
             })
 }
 
