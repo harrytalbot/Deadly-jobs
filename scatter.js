@@ -1,4 +1,7 @@
 
+
+var scatter = { width: SCATTER_WIDTH - SCATTER_LEFT - SCATTER_RIGHT, height: SCATTER_HEIGHT - STACKED_TOP - STACKED_BOTTOM};
+
 /// SCATTER SETUP ///////////////////////////////////////////////////////////////////////
 
 var svg_scatter = d3.select('body')

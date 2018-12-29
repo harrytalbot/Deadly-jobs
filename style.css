@@ -12,7 +12,22 @@
     width: 700px;
   }
 
-  .article-text {
+  .article-text-left {
+    font-size: 35px;
+    color: white;
+    font-family: 'Lora', serif; 
+    font-weight: 900;
+    line-height: 40px;
+    padding-top: 30px;
+    padding-left: 1%;
+    padding-right: 2.5%;
+    text-align: left;
+    float: left;
+    margin-bottom: 30px;
+    width: 95%;
+  }
+
+  .article-text-right {
     font-size: 35px;
     color: white;
     font-family: 'Lora', serif; 

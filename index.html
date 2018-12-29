@@ -12,20 +12,10 @@
     <body class="main">
 
         <div class="article-title">Have you had an accident at work?</div>
-        <div class="article-text">This is just some filler text to see how the data visualisation will look. This will be a short introduction. I'm not sure how long it will be but this looks about right. It will be changed before the final article.</div>
+        <div class="article-text-right">This is just some filler text to see how the data visualisation will look. This will be a short introduction. I'm not sure how long it will be but this looks about right. It will be changed before the final article.</div>
 
-        <svg transform="translate(0,0)" id="svgSortButton">
-                <circle id="cir1" cx="400" cy="150" r="150" stroke="red" stroke-width="3" fill="red" opacity="0.5"/>
-        </svg>
+        <svg transform="translate(0,0)" id="svgSortButton" height="300"></svg>
 
-        <input type="button" value="f_total_rate" onclick="sortStackedBar(+-1);"> 
-        <input type="button" value="f_trans_rate" onclick="sortStackedBar(+0);">
-        <input type="button" value="f_violence_rate" onclick="sortStackedBar(+1);">
-        <input type="button" value="f_fireExp_rate" onclick="sortStackedBar(+2);">
-        <input type="button" value="f_fallSlipTrip_rate" onclick="sortStackedBar(+3);">
-        <input type="button" value="f_exposure_rate" onclick="sortStackedBar(+4);">
-        <input type="button" value="f_contact_rate" onclick="sortStackedBar(+5);">
-        <input type="button" value="f_allOther_rate" onclick="sortStackedBar(+6);">
 
         <svg transform="translate(0,0)" id="svgStacked"></svg>
 
@@ -33,7 +23,11 @@
 
         <script type="text/javascript" src="constants.js"></script>
 
-        <script type="text/javascript" src="charts.js"></script>
+        <script type="text/javascript" src="init.js"></script>
+
+        <script type="text/javascript" src="stacked.js"></script>
+
+        <div class="article-text-left">This is just some filler text to see how the data visualisation will look. This will be a short introduction. I'm not sure how long it will be but this looks about right. It will be changed before the final article.</div>
 
         <script type="text/javascript" src="scatter.js"></script>
 
