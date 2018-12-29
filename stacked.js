@@ -26,7 +26,7 @@ stacked_z = d3.scaleOrdinal().range(STACK_COLOURS);
 // return a stack order, using the currently selected firstCause
 function getStackedOrder(data) {
     var orderNew = [+0, +1, +2, +3, +4, +5, +6];
-    if (stackedFirstCause == -1) { return orderNew }
+    if (stackedFirstCause === -1) { return orderNew }
     orderNew.splice(stackedFirstCause, 1);
     orderNew.unshift(stackedFirstCause);
     return orderNew;
@@ -46,9 +46,17 @@ function sortStackedBar(fCause) {
     // sort the y domain by the chosen cause using sortFn
     const yCopy = stacked_y.domain(dataset.sort(sortFn).map(d => d.occupation)).copy();
 
-    const groups = d3.selectAll("g.bar-group")
+    var groups;
+    if (stackedFirstCause !== -1) {
+        groups = d3.selectAll("g.bar-group")
         .data(d3.stack().keys(causes).order(getStackedOrder)(dataset))
         .attr("fill", function (d) { return stacked_z(d.key); });
+    } else {
+        groups = d3.selectAll("g.bar-group")
+        .data(d3.stack().keys(causes).order(d3.stackOrderAscending)(dataset))
+        .attr("fill", function (d) { return stacked_z(d.key); });
+
+    }
 
     const bars = groups.selectAll(".bar")
         .data(d => d, d => d.data.occupation)
@@ -171,7 +179,6 @@ function drawButtons() {
                 .transition()
                 .duration(100)
                 .style('opacity', 0.5)
-
         }
         // sort chart - no need to fade button, will already have been done on mouseOverButton
         sortStackedBar(num)
@@ -190,8 +197,6 @@ function drawButtons() {
             .transition()
             .duration(100)
             .style('opacity', 1)
-
-
     }
 
     function mouseOutButton(num) {
@@ -229,9 +234,9 @@ function drawButtons() {
         .attr('cy', '150')
         .attr('r', sizeOfBtn)
         .attr('opacity', '1')
-        .attr('stroke', 'grey')
+        .attr('stroke', 'white')
         .attr('stroke-width', '3')
-        .attr('fill', 'grey')
+        .attr('fill', 'white')
         .on("click", function () { clickButton(-1) })
         .on('mouseover', function () { mouseOverButton(-1) })
         .on('mouseout', function () { mouseOutButton(-1) })
