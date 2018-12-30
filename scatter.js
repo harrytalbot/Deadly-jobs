@@ -13,6 +13,8 @@ var svg_scatter = d3.select('body')
 
 scatter_g = svg_scatter.append("g").attr("transform", "translate(" + SCATTER_LEFT + "," + SCATTER_TOP + ")");
 
+scatter_info_g = svg_scatter.append("g").attr("transform", "translate(" + (SCATTER_LEFT + 100) + "," + SCATTER_TOP + ")");
+
 // set scatter y scale
 scatter_y = d3.scaleLinear().range([SCATTER_HEIGHT, 0])
 // set scatter x scale
@@ -97,5 +99,31 @@ function drawScatterPlot() {
                     '\nNon-Fatal: ' + d.nf_total_rate +
                     '\nFatal.: ' + d.f_total_rate
             })
+
+        scatter_info_g.append("rect")
+            .attr("width", SCATTER_WIDTH / 3 + 90)
+            .attr("height", SCATTER_HEIGHT / 2)
+            .attr('stroke', 'white')
+            .attr('stroke-width', '5')
+            .attr('fill', 'black')
+      
+        // text for total rate
+        scatter_info_g.append("text")
+            .attr('id', 'info-1')
+            .attr("x", 20)
+            .attr("y", 50)
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 1)
+            .text("Text text text.") 
+        // text for transportation
+        scatter_info_g.append("text")
+            .attr('id', 'info0')
+            .attr("x", 20)
+            .attr("y", 50)
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 0)
+            .text("More more more")
 }
 

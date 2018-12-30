@@ -50,10 +50,12 @@ function drawVersusChart() {
             .attr("height", versus_y.bandwidth())
             .on("mouseover", function (d) {
                 // make all bars opaque
-                fade(.2, d);
+                fadeRect(.2, d);
+                fadeText(1, d);
             })
             .on("mouseout", function (d) {
-                fade(1, d);
+                fadeRect(1, d);
+                fadeText(0, d);
             })
 
     versus_g_fatal.append("g")
@@ -63,7 +65,7 @@ function drawVersusChart() {
         .append("text")
         .text(function (d) { return d3.format(".3n")(d.f_total_rate) })
         .attr("x", function (d) {
-            return versus_x_fatal(d.f_total_rate) + VERSUS_GAP_HALF + 20;
+            return versus_x_fatal(d.f_total_rate) + VERSUS_GAP_HALF + 10;
         })
         .attr("y", function (d) {
             return versus_y(d.occupation);
@@ -71,7 +73,8 @@ function drawVersusChart() {
         .attr("dy", ".75em")
         .attr('class', 'stacked_text_info')
         .style('fill', 'white')
-        .style('opacity', 1)
+        .style('opacity', 0)
+        
 
     versus_g_nonfatal.append("g")
         .attr("fill", "orange")
@@ -91,23 +94,45 @@ function drawVersusChart() {
         .attr("height", versus_y.bandwidth())
         .on("mouseover", function (d) {
             // make all bars opaque
-            fade(.2, d);
+            fadeRect(.2, d);
+            fadeText(1, d);
         })
         .on("mouseout", function (d) {
-            fade(1, d);
+            fadeRect(1, d);
+            fadeText(0, d);
         });
+
+    versus_g_nonfatal.append("g")
+        .selectAll("g")
+        .data(versus_dataset)
+        .enter()
+        .append("text")
+        .text(function (d) { return d3.format(",.2f")(d.nf_total_rate) })
+        .attr("x", function (d) {
+            return versus_x_nonfatal(-d.nf_total_rate) - VERSUS_GAP_HALF - 10;
+        })
+        .attr("y", function (d) {
+            return versus_y(d.occupation);
+        })
+        .attr('text-anchor', 'end')
+        .attr("dy", ".75em")
+        .attr('class', 'stacked_text_info')
+        .style('fill', 'white')
+        .style('opacity', 0)
 }
 
-function fade(opacity, d) {
+function fadeRect(opacity, d) {
     d3.selectAll("rect")
         .filter(function (e) { return e !== d; })
         .transition()
         .style("opacity", opacity);
-    
-    d3.selectAll("rect")
-        .filter(function (e) { return e !== d; })
-        .transition()
-        .style("opacity", opacity);
+}
+
+function fadeText(opacity, d) {
+    d3.selectAll("text")
+    .filter(function (e) { return e === d; })
+    .transition()
+    .style("opacity", opacity);
 }
 
 // add the axis
