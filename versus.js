@@ -36,6 +36,7 @@ function drawVersusChart() {
         .selectAll("g")
         .data(versus_dataset)
         .enter().append("rect")
+            .attr('id', 'versus_rect')
             .classed("bar", true)
             .attr("class", "bar")
             .attr("y", function (d) {
@@ -63,73 +64,76 @@ function drawVersusChart() {
         .data(versus_dataset)
         .enter()
         .append("text")
-        .text(function (d) { return d3.format(".3n")(d.f_total_rate) })
-        .attr("x", function (d) {
-            return versus_x_fatal(d.f_total_rate) + VERSUS_GAP_HALF + 10;
-        })
-        .attr("y", function (d) {
-            return versus_y(d.occupation);
-        })
-        .attr("dy", ".75em")
-        .attr('class', 'stacked_text_info')
-        .style('fill', 'white')
-        .style('opacity', 0)
-        
+            .attr('id', 'versus_bar_label')
+            .text(function (d) { return d3.format(".3n")(d.f_total_rate) })
+            .attr("x", function (d) {
+                return versus_x_fatal(d.f_total_rate) + VERSUS_GAP_HALF + 10;
+            })
+            .attr("y", function (d) {
+                return versus_y(d.occupation);
+            })
+            .attr("dy", ".75em")
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 0)
+            
 
     versus_g_nonfatal.append("g")
         .attr("fill", "orange")
         .selectAll("g")
         .data(versus_dataset)
         .enter().append("rect")
-        .classed("bar", true)
-        .attr("y", function (d) {
-            return versus_y(d.occupation);
-        })
-        .attr("x", function (d) {
-            return versus_x_nonfatal(-d.nf_total_rate) - VERSUS_GAP_HALF;
-        })
-        .attr("width", function (d) {
-            return Math.abs(versus_x_nonfatal(d.nf_total_rate) - versus_x_nonfatal(0));
-        })
-        .attr("height", versus_y.bandwidth())
-        .on("mouseover", function (d) {
-            // make all bars opaque
-            fadeRect(.2, d);
-            fadeText(1, d);
-        })
-        .on("mouseout", function (d) {
-            fadeRect(1, d);
-            fadeText(0, d);
-        });
+            .attr('id', 'versus_rect')
+            .classed("bar", true)
+            .attr("y", function (d) {
+                return versus_y(d.occupation);
+            })
+            .attr("x", function (d) {
+                return versus_x_nonfatal(-d.nf_total_rate) - VERSUS_GAP_HALF;
+            })
+            .attr("width", function (d) {
+                return Math.abs(versus_x_nonfatal(d.nf_total_rate) - versus_x_nonfatal(0));
+            })
+            .attr("height", versus_y.bandwidth())
+            .on("mouseover", function (d) {
+                // make all bars opaque
+                fadeRect(.2, d);
+                fadeText(1, d);
+            })
+            .on("mouseout", function (d) {
+                fadeRect(1, d);
+                fadeText(0, d);
+            });
 
     versus_g_nonfatal.append("g")
         .selectAll("g")
         .data(versus_dataset)
         .enter()
         .append("text")
-        .text(function (d) { return d3.format(",.2f")(d.nf_total_rate) })
-        .attr("x", function (d) {
-            return versus_x_nonfatal(-d.nf_total_rate) - VERSUS_GAP_HALF - 10;
-        })
-        .attr("y", function (d) {
-            return versus_y(d.occupation);
-        })
-        .attr('text-anchor', 'end')
-        .attr("dy", ".75em")
-        .attr('class', 'stacked_text_info')
-        .style('fill', 'white')
-        .style('opacity', 0)
+            .attr('id', 'versus_bar_label')
+            .text(function (d) { return d3.format(",.2f")(d.nf_total_rate) })
+            .attr("x", function (d) {
+                return versus_x_nonfatal(-d.nf_total_rate) - VERSUS_GAP_HALF - 10;
+            })
+            .attr("y", function (d) {
+                return versus_y(d.occupation);
+            })
+            .attr('text-anchor', 'end')
+            .attr("dy", ".75em")
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 0)
 }
 
 function fadeRect(opacity, d) {
-    d3.selectAll("rect")
+    d3.selectAll('#versus_rect')
         .filter(function (e) { return e !== d; })
         .transition()
         .style("opacity", opacity);
 }
 
 function fadeText(opacity, d) {
-    d3.selectAll("text")
+    d3.selectAll("#versus_bar_label")
     .filter(function (e) { return e === d; })
     .transition()
     .style("opacity", opacity);

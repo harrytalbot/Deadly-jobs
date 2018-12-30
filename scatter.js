@@ -44,7 +44,7 @@ function drawScatterAxis() {
             .style('fill', 'white')
             .style('opacity', '1')
             .style('font-weight', '900')
-            .text("Fatal Injuries per 100k");
+            .text("Non-Fatal Injuries per 100k");
 
     // Y-axis
     scatter_g.append('g')
@@ -63,7 +63,7 @@ function drawScatterAxis() {
             .style('fill', 'white')
             .style('opacity', '1')
             .style('font-weight', '900')
-            .text("Non-Fatal Injuries per 100k");
+            .text("Fatal Injuries per 100k");
 
 }
 
