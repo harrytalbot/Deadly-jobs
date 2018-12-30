@@ -1,4 +1,6 @@
+/////////////////////////////////////////////////////////////////////////////////////////
 
+var scatter_dataset;
 
 var scatter = { width: SCATTER_WIDTH - SCATTER_LEFT - SCATTER_RIGHT, height: SCATTER_HEIGHT - STACKED_TOP - STACKED_BOTTOM};
 
@@ -8,7 +10,6 @@ var svg_scatter = d3.select('body')
     .select('#svgScatter')
     .attr('width', SCATTER_WIDTH + SCATTER_LEFT + SCATTER_RIGHT)
     .attr('height', SCATTER_HEIGHT + SCATTER_TOP + SCATTER_BOTTOM)
-    .attr("class", "background"); // SVG BACKGROUND COLOUR
 
 scatter_g = svg_scatter.append("g").attr("transform", "translate(" + SCATTER_LEFT + "," + SCATTER_TOP + ")");
 
@@ -56,7 +57,7 @@ function drawScatterAxis() {
 function drawScatterPlot() {
 
     var circles = scatter_g.selectAll('circle')
-        .data(dataset)
+        .data(scatter_dataset)
         .enter()
         .append('circle')
             .attr('cx', function (d) { return scatter_x(d.nf_total_rate) })

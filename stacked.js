@@ -1,5 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
+var stacked_dataset;
+
 var stackedFirstCause = -1;
 
 var stacked = { width: STACKED_WIDTH - STACKED_LEFT - STACKED_RIGHT, height: STACKED_HEIGHT - STACKED_TOP - STACKED_BOTTOM };
@@ -10,9 +12,10 @@ var svg_stacked = d3.select('body')
     .select('#svgStacked')
     .attr('width', STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT)
     .attr('height', STACKED_HEIGHT + STACKED_TOP + STACKED_BOTTOM)
-    .attr("class", "background"); // SVG BACKGROUND COLOUR
 
 stacked_g = svg_stacked.append("g").attr("transform", "translate(" + STACKED_LEFT + "," + STACKED_TOP + ")");
+
+info_g = svg_stacked.append("g").attr("transform", "translate(" + STACKED_WIDTH + "," + (STACKED_HEIGHT / 3) + ")");
 
 // set stacked y scale
 stacked_y = d3.scaleBand().range([0, STACKED_HEIGHT])
@@ -44,16 +47,16 @@ function sortStackedBar(fCause) {
         sortFn = (a, b) => d3.descending(a.f_total_rate, b.f_total_rate);
     }
     // sort the y domain by the chosen cause using sortFn
-    const yCopy = stacked_y.domain(dataset.sort(sortFn).map(d => d.occupation)).copy();
+    const yCopy = stacked_y.domain(stacked_dataset.sort(sortFn).map(d => d.occupation)).copy();
 
     var groups;
     if (stackedFirstCause !== -1) {
         groups = d3.selectAll("g.bar-group")
-        .data(d3.stack().keys(causes).order(getStackedOrder)(dataset))
+        .data(d3.stack().keys(causes).order(getStackedOrder)(stacked_dataset))
         .attr("fill", function (d) { return stacked_z(d.key); });
     } else {
         groups = d3.selectAll("g.bar-group")
-        .data(d3.stack().keys(causes).order(d3.stackOrderAscending)(dataset))
+        .data(d3.stack().keys(causes).order(d3.stackOrderAscending)(stacked_dataset))
         .attr("fill", function (d) { return stacked_z(d.key); });
 
     }
@@ -96,26 +99,51 @@ function sortStackedBar(fCause) {
 function drawStackedChart() {
     stacked_g.append("g")
         .selectAll("g")
-        .data(d3.stack().keys(causes).order(d3.stackOrderAscending)(dataset))
+        .data(d3.stack().keys(causes).order(d3.stackOrderAscending)(stacked_dataset))
         .enter().append("g")
-        .classed("bar-group", true)
-        .attr("fill", function (d) { return stacked_z(d.key); })
-        .attr("opacity", 1) // so first fade animation is smooth
+            .classed("bar-group", true)
+            .attr("fill", function (d) { return stacked_z(d.key); })
+            .attr("opacity", 1) // so first fade animation is smooth
         .selectAll("rect")
         .data(function (d) { return d; })
         .enter().append("rect")
-        .classed("bar", true)
-        .attr("y", function (d) {
-            return stacked_y(d.data.occupation);
-        })
-        .attr("x", function (d) {
-            return stacked_x(d[0]);
-        })
-        .attr("width", function (d) {
-            return stacked_x(d[1]) - stacked_x(d[0]);
-        })
-        .attr("height", stacked_y.bandwidth())
-}
+            .classed("bar", true)
+            .attr("y", function (d) {
+                return stacked_y(d.data.occupation);
+            })
+            .attr("x", function (d) {
+                return stacked_x(d[0]);
+            })
+            .attr("width", function (d) {
+                return stacked_x(d[1]) - stacked_x(d[0]);
+            })
+            .attr("height", stacked_y.bandwidth())
+
+        info_g.append("rect")
+            .attr("width", STACKED_WIDTH / 3 + 90)
+            .attr("height", STACKED_HEIGHT / 2)
+            .attr('stroke', 'white')
+            .attr('stroke-width', '5')
+            .attr('fill', 'black')
+      
+        // text for total rate
+        info_g.append("text")
+            .attr('id', 'info-1')
+            .attr("x", 20)
+            .attr("y", 50)
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 1)
+            .text("Text text text.") 
+        // text for transportation
+        info_g.append("text")
+            .attr('id', 'info0')
+            .attr("x", 20)
+            .attr("y", 50)
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 0)
+            .text("More more more")}
 
 // add the axis
 function drawStackedAxis() {
@@ -162,26 +190,47 @@ function drawButtons() {
     var spaceBetweenCentres = DEVICE_WIDTH / 9;
     var sizeOfBtn = spaceBetweenCentres / 3
 
-    function clickButton(num) {
+    function clickButton(justSelected) {
         //if the btn just clicked is different to the currently selected, fade currently selected
-        if (stackedFirstCause !== num) {
-            var field = (stackedFirstCause === -1) ? '#f_total_rate' : '#' + causes[stackedFirstCause];
-            // button
-            d3.select(field + '_btn') // old
-                .transition()
-                .duration(100)
-                .attr('opacity', 0.5)
-                .attr('r', sizeOfBtn)
-            d3.select(causes[num] + '_btn') // resize new
-                .attr('r', sizeOfBtn * 1.1)
-            // label
-            d3.select(field + '_lbl') // old
-                .transition()
-                .duration(100)
-                .style('opacity', 0.5)
-        }
+        var fadeLabel = (stackedFirstCause === -1) ? '#f_total_rate' : '#' + causes[stackedFirstCause];
+        var visLabel = (justSelected === stackedFirstCause) ? '#f_total_rate' : '#' + causes[justSelected];
+
+        d3.select(fadeLabel + '_btn') // old button
+            .transition()
+            .duration(100)
+            .attr('opacity', 0.5)
+            .attr('r', sizeOfBtn)
+
+        d3.select(visLabel + '_btn') // new button
+            .transition()
+            .duration(100)
+            .attr('opacity', 1)
+            .attr('r', sizeOfBtn * 1.1)
+
+        d3.selectAll(fadeLabel + '_lbl') // old label
+            .transition()
+            .duration(100)
+            .style('opacity', 0.5)
+
+        d3.selectAll(visLabel + '_lbl') // new label
+            .transition()
+            .duration(100)
+            .style('opacity', 1)
+            .attr('r', sizeOfBtn * 1.1)
+
+
+        // info 
+        var t0 = d3.transition().duration(800);
+        t0.select('#info' + stackedFirstCause)
+            .style('opacity', 0)
+            
+        var t1 = t0.transition();
+        t1.select('#info' + justSelected)
+            .style('opacity', 1)
+
         // sort chart - no need to fade button, will already have been done on mouseOverButton
-        sortStackedBar(num)
+        sortStackedBar((stackedFirstCause !== justSelected) ? justSelected : -1)
+
     }
 
     function mouseOverButton(num) {
@@ -193,7 +242,7 @@ function drawButtons() {
             .attr('opacity', 1)
             .attr('r', sizeOfBtn * 1.1)
         // label
-        d3.select(field + '_lbl')
+        d3.selectAll(field + '_lbl')
             .transition()
             .duration(100)
             .style('opacity', 1)
@@ -212,7 +261,7 @@ function drawButtons() {
                 return (stackedFirstCause == num) ? sizeOfBtn * 1.1 : sizeOfBtn
             })
         // label
-        d3.select(field + '_lbl')
+        d3.selectAll(field + '_lbl')
             .transition()
             .duration(100)
             .style('opacity', function () {
@@ -242,14 +291,27 @@ function drawButtons() {
         .on('mouseout', function () { mouseOutButton(-1) })
     buttonGroup.append('text')
         .attr('id', 'f_total_rate_lbl')
-        .style('fill', 'white')
-        .style('opacity', '1')
         .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn))
-        .attr('y', '250')
+        .attr('y', '260')
         .attr("text-anchor", "middle")
         .style("font-family", 'Lora')
         .style("font-size", "25px")
-        .text("Total Fatalities")
+        .style('fill', 'white')
+        .style('opacity', '1')
+        .style('font-weight', '900')
+        .text("Total")
+    buttonGroup.append('text')
+        .attr('id', 'f_total_rate_lbl')
+        .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn))
+        .attr('y', '290')
+        .attr("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "25px")
+        .style('fill', 'white')
+        .style('opacity', '1')
+        .style('font-weight', '900')
+        .text("Fatalities")
+
 
     // add the rest
     for (let index = 0; index < 7; index++) {
@@ -268,14 +330,30 @@ function drawButtons() {
             .on('mouseout', function () { mouseOutButton(index) })
         buttonGroup.append('text')
             .attr('id', causes[index] + '_lbl')
-            .style('fill', 'white')
-            .style('opacity', '0.5')
             .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
-            .attr('y', '250')
+            .attr('y', '260')
             .attr("text-anchor", "middle")
             .style("font-family", 'Lora')
             .style("font-size", "25px")
-            .text(READABLE_CAUSES[index])
+            .style("font-family", 'Lora')
+            .style("font-size", "25px")
+            .style('fill', 'white')
+            .style('opacity', '0.5')
+            .style('font-weight', '900')
+            .text(READABLE_CAUSES_TOP[index])
+        buttonGroup.append('text')
+            .attr('id', causes[index] + '_lbl')
+            .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
+            .attr('y', '290')
+            .attr("text-anchor", "middle")
+            .style("font-family", 'Lora')
+            .style("font-size", "25px")
+            .style("font-family", 'Lora')
+            .style("font-size", "25px")
+            .style('fill', 'white')
+            .style('opacity', '0.5')
+            .style('font-weight', '900')
+            .text(READABLE_CAUSES_BOTTOM[index])
     }
 
 }

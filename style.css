@@ -6,8 +6,6 @@
     line-height: 105px;
     padding-top: 30px;
     padding-left: 30px;
-    /*text-align: right;
-    float: right;*/
     margin-bottom: 30px;
     width: 700px;
   }
@@ -41,6 +39,24 @@
     margin-bottom: 30px;
     width: 95%;
   }
+
+  .button_text {
+    font-family: 'Lora', serif;
+    font-size: 25px;
+    color: white;
+    font-weight: 900;
+
+  }
+
+  .stacked_text_info {
+    font-family: 'Lora', serif;
+    color: white;
+    text-align: 'left';
+    font-weight: 900;
+    font-size: 30px;
+    line-height: 30px;
+    padding-left: "5%"
+  }
  
   .background {
     background-color: black;
@@ -57,10 +73,13 @@
   .axis path{ /* used on axis */
     stroke: white;
     stroke-width: 5;  
+    shape-rendering: crispEdges;
+
   }
   
   .axis text{ /* used on axis text */
     fill: white;
+    font-weight: 900;
     font-family: 'Lora', serif; 
     font-size: medium
   }  
@@ -73,6 +92,8 @@
   .axisStackedY path{ /* used on axis */
     stroke: white;
     stroke-width: 5;  
+    shape-rendering: crispEdges;
+
   }
   
   .axisStackedY text{ /* used on axis text */
