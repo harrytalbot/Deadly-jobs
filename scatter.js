@@ -69,6 +69,32 @@ function drawScatterAxis() {
 
 function drawScatterPlot() {
 
+    scatter_info_g.append("rect")
+            .attr("width", SCATTER_WIDTH / 3 + 90)
+            .attr("height", SCATTER_HEIGHT / 2)
+            .attr('stroke', 'white')
+            .attr('stroke-width', '5')
+            .attr('fill', 'black')
+      
+        // text for total rate
+        scatter_info_g.append("text")
+            .attr('id', 'scatter_info_fatal')
+            .attr("x", 20)
+            .attr("y", 50)
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 1)
+            .text("Text text text.") 
+        // text for transportation
+        scatter_info_g.append("text")
+            .attr('id', 'scatter_info_nonfatal')
+            .attr("x", 20)
+            .attr("y", 90)
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 1)
+            .text("More more more")
+            
     var circles = scatter_g.selectAll('circle')
         .data(scatter_dataset)
         .enter()
@@ -79,12 +105,21 @@ function drawScatterPlot() {
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
             .attr('fill', function (d, i) { return scatter_z(d.salaryMed) })
-            .on('mouseover', function () {
+            .on('mouseover', function (d) {
                 d3.select(this)
                     .transition()
                     .duration(200)
                     .attr('r', 20)
                     .attr('stroke-width', 3)
+
+                d3.select('#scatter_info_fatal')
+                    .text(function () { 
+                        return "Fatal Per 100k: " + d3.format(".3n")(d.f_total_rate)
+                    }) 
+                d3.select('#scatter_info_nonfatal')
+                    .text(function () { 
+                        return 'Non-Fatal Per 100k: ' + d3.format(",.2f")(d.nf_total_rate)
+                    }) 
             })
             .on('mouseout', function () {
                 d3.select(this)
@@ -98,32 +133,8 @@ function drawScatterPlot() {
                 return d.occupation.trim() +
                     '\nNon-Fatal: ' + d.nf_total_rate +
                     '\nFatal.: ' + d.f_total_rate
-            })
+            });
 
-        scatter_info_g.append("rect")
-            .attr("width", SCATTER_WIDTH / 3 + 90)
-            .attr("height", SCATTER_HEIGHT / 2)
-            .attr('stroke', 'white')
-            .attr('stroke-width', '5')
-            .attr('fill', 'black')
-      
-        // text for total rate
-        scatter_info_g.append("text")
-            .attr('id', 'info-1')
-            .attr("x", 20)
-            .attr("y", 50)
-            .attr('class', 'stacked_text_info')
-            .style('fill', 'white')
-            .style('opacity', 1)
-            .text("Text text text.") 
-        // text for transportation
-        scatter_info_g.append("text")
-            .attr('id', 'info0')
-            .attr("x", 20)
-            .attr("y", 50)
-            .attr('class', 'stacked_text_info')
-            .style('fill', 'white')
-            .style('opacity', 0)
-            .text("More more more")
+        
 }
 
