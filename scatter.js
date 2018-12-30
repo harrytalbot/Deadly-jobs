@@ -33,11 +33,16 @@ function drawScatterAxis() {
 
         .append('text') // X-axis Label
             .attr('class', 'label')
-            .attr('y', 40)
+            .attr('y', 50)
             .attr('x', SCATTER_WIDTH / 2)
             .attr('dy', '.71em')
-            .style('text-anchor', 'end')
-            .text('Fatality per 100k')
+            .style("text-anchor", "middle")
+            .style("font-family", 'Lora')
+            .style("font-size", "20px")
+            .style('fill', 'white')
+            .style('opacity', '1')
+            .style('font-weight', '900')
+            .text("Fatal Injuries per 100k");
 
     // Y-axis
     scatter_g.append('g')
@@ -48,10 +53,16 @@ function drawScatterAxis() {
             .attr('class', 'label')
             .attr('x', -(SCATTER_HEIGHT / 2))
             .attr('transform', 'rotate(-90)')
-            .attr('y', -40)
+            .attr('y', -60)
             .attr('dy', '.71em')
-            .style('text-anchor', 'end')
-            .text('Injury per 100k')
+            .style("text-anchor", "middle")
+            .style("font-family", 'Lora')
+            .style("font-size", "20px")
+            .style('fill', 'white')
+            .style('opacity', '1')
+            .style('font-weight', '900')
+            .text("Non-Fatal Injuries per 100k");
+
 }
 
 function drawScatterPlot() {

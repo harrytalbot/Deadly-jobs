@@ -13,7 +13,7 @@ var svg_stacked = d3.select('body')
     .attr('width', STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT)
     .attr('height', STACKED_HEIGHT + STACKED_TOP + STACKED_BOTTOM)
 
-stacked_g = svg_stacked.append("g").attr("transform", "translate(" + STACKED_LEFT + "," + STACKED_TOP + ")");
+stacked_g = svg_stacked.append("g").attr("transform", "translate(" + STACKED_LEFT + "," + (STACKED_TOP - 25) + ")"); //space for label
 
 info_g = svg_stacked.append("g").attr("transform", "translate(" + STACKED_WIDTH + "," + (STACKED_HEIGHT / 3) + ")");
 
@@ -143,7 +143,8 @@ function drawStackedChart() {
             .attr('class', 'stacked_text_info')
             .style('fill', 'white')
             .style('opacity', 0)
-            .text("More more more")}
+            .text("More more more")
+}
 
 // add the axis
 function drawStackedAxis() {
@@ -152,7 +153,17 @@ function drawStackedAxis() {
         .attr("class", "axis")
         .call(d3.axisBottom(stacked_x))
         .attr("transform", "translate(0," + STACKED_HEIGHT + ")")
-
+        .append('text') // X-axis Label
+            .attr('y', 40)
+            .attr('x', STACKED_WIDTH / 2)
+            .attr('dy', '.71em')
+            .style("text-anchor", "middle")
+            .style("font-family", 'Lora')
+            .style("font-size", "20px")
+            .style('fill', 'white')
+            .style('opacity', '1')
+            .style('font-weight', '900')
+            .text("Fatal Injuries per 100k");
 
     stacked_g.append("g")
         .attr("class", "axisStackedY")
@@ -187,7 +198,7 @@ function drawStackedLegend() {
 
 function drawButtons() {
 
-    var spaceBetweenCentres = DEVICE_WIDTH / 9;
+    var spaceBetweenCentres = (DEVICE_WIDTH+SCATTER_LEFT+SCATTER_RIGHT-100) / 9;
     var sizeOfBtn = spaceBetweenCentres / 3
 
     function clickButton(justSelected) {
@@ -280,8 +291,8 @@ function drawButtons() {
     buttonGroup.append('circle')
         .attr('id', 'f_total_rate_btn')
         .attr('cx', spaceBetweenCentres - (0.5 * sizeOfBtn))
-        .attr('cy', '150')
-        .attr('r', sizeOfBtn)
+        .attr('cy', 80)
+        .attr('r', sizeOfBtn * 1.1)
         .attr('opacity', '1')
         .attr('stroke', 'white')
         .attr('stroke-width', '3')
@@ -292,7 +303,7 @@ function drawButtons() {
     buttonGroup.append('text')
         .attr('id', 'f_total_rate_lbl')
         .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn))
-        .attr('y', '260')
+        .attr('y', '200')
         .attr("text-anchor", "middle")
         .style("font-family", 'Lora')
         .style("font-size", "25px")
@@ -303,7 +314,7 @@ function drawButtons() {
     buttonGroup.append('text')
         .attr('id', 'f_total_rate_lbl')
         .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn))
-        .attr('y', '290')
+        .attr('y', '230')
         .attr("text-anchor", "middle")
         .style("font-family", 'Lora')
         .style("font-size", "25px")
@@ -318,8 +329,8 @@ function drawButtons() {
         var field = '#' + causes[index] + '_btn';
         buttonGroup.append('circle')
             .attr('id', causes[index] + '_btn')
-            .attr('cx', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
-            .attr('cy', '150')
+            .attr('cx', (2 * spaceBetweenCentres) + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
+            .attr('cy', '80')
             .attr('r', sizeOfBtn)
             .attr('opacity', '0.5')
             .attr('stroke', STACK_COLOURS[index])
@@ -331,7 +342,7 @@ function drawButtons() {
         buttonGroup.append('text')
             .attr('id', causes[index] + '_lbl')
             .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
-            .attr('y', '260')
+            .attr('y', '200')
             .attr("text-anchor", "middle")
             .style("font-family", 'Lora')
             .style("font-size", "25px")
@@ -344,7 +355,7 @@ function drawButtons() {
         buttonGroup.append('text')
             .attr('id', causes[index] + '_lbl')
             .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
-            .attr('y', '290')
+            .attr('y', '230')
             .attr("text-anchor", "middle")
             .style("font-family", 'Lora')
             .style("font-size", "25px")
