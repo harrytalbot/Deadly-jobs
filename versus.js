@@ -4,6 +4,11 @@ var versus_dataset;
 
 var versus = { width: VERSUS_WIDTH - VERSUS_LEFT - VERSUS_RIGHT, height: VERSUS_HEIGHT - VERSUS_TOP - VERSUS_BOTTOM };
 
+var versus_y_labels;
+
+var versusSortField = 'f_total_rate'
+
+
 // VERSUS SETUP ////////////////////////////////////////////////////////////////////////
 
 var svg_versus = d3.select('body')
@@ -125,6 +130,189 @@ function drawVersusChart() {
             .style('opacity', 0)
 }
 
+
+function drawVersusButtons() {
+
+    var spaceBetweenCentres = (400+SCATTER_LEFT+SCATTER_RIGHT) / 3;
+    var sizeOfBtn = spaceBetweenCentres / 3
+
+    function clickVersusButton(justSelected) {
+        //if the btn just clicked is different to the currently selected, fade currently selected
+        var fadeLabel = versusSortField
+        var visLabel = justSelected;
+
+        console.log(fadeLabel);
+        console.log(visLabel);
+        if (justSelected == versusSortField) { return;}
+
+        d3.select('#' + fadeLabel + '_versus_btn') // old button
+            .transition()
+            .duration(100)
+            .attr('opacity', 0.5)
+            .attr('r', sizeOfBtn)
+
+        d3.select('#' + visLabel + '_versus_btn') // new button
+            .transition()
+            .duration(100)
+            .attr('opacity', 1)
+            .attr('r', sizeOfBtn * 1.1)
+
+        d3.selectAll('#' + fadeLabel + '_versus_lbl') // old label
+            .transition()
+            .duration(100)
+            .style('opacity', 0.5)
+
+        d3.selectAll('#' + visLabel + '_versus_lbl') // new label
+            .transition()
+            .duration(100)
+            .style('opacity', 1)
+            .attr('r', sizeOfBtn * 1.1)
+
+
+        /* info 
+        var t0 = d3.transition().duration(800);
+        t0.select('#info' + stackedFirstCause)
+            .style('opacity', 0)
+            
+        var t1 = t0.transition();
+        t1.select('#info' + justSelected)
+            .style('opacity', 1)
+        */
+        sortVersus(justSelected)
+
+        // sort chart - no need to fade button, will already have been done on mouseOverButton
+        //sortStackedBar((stackedFirstCause !== justSelected) ? justSelected : -1)
+
+    }
+
+    function mouseOverVersusButton(field) {
+        // button
+        d3.select('#' + field + '_versus_btn')
+            .transition()
+            .duration(100)
+            .attr('opacity', 1)
+            .attr('r', sizeOfBtn * 1.1)
+        // label
+        d3.selectAll('#' + field + '_versus_lbl')
+            .transition()
+            .duration(100)
+            .style('opacity', 1)
+    }
+
+    function mouseOutVersusButton(field) {
+        d3.select('#' + field + '_versus_btn')
+            .transition()
+            .duration(100)
+            .attr('opacity', function () {
+                return (versusSortField == field) ? 1 : 0.5;
+            })
+            .attr('r', function () {
+                return (versusSortField == field) ? sizeOfBtn * 1.1 : sizeOfBtn
+            })
+        // label
+        d3.selectAll('#' + field + '_versus_lbl')
+            .transition()
+            .duration(100)
+            .style('opacity', function () {
+                return (versusSortField == field) ? 1 : 0.5;
+            })
+
+    }
+
+
+    var button_x_offset = VERSUS_WIDTH / 5 * 4;
+
+    var buttonGroup = d3.select('body')
+        .select('#svgVersusSortButton')
+        .attr('width', VERSUS_WIDTH + VERSUS_LEFT + VERSUS_RIGHT)
+        //.attr("transform", "translate(" + (VERSUS_WIDTH / 5 * 4) + ",0)")
+        .attr("class", "background") // SVG BACKGROUND COLOUR
+
+    buttonGroup.append("rect")
+        .attr('x', VERSUS_LEFT)
+        .attr("width", button_x_offset - VERSUS_RIGHT)
+        .attr("height", 250)
+        .attr('stroke', 'white')
+        .attr('stroke-width', '5')
+        .attr('fill', 'black')
+
+
+    // Add first for fatal
+    buttonGroup.append('circle')
+        .attr('id', 'f_total_rate_versus_btn')
+        .attr('cx', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+        .attr('cy', 80)
+        .attr('r', sizeOfBtn * 1.1)
+        .attr('opacity', '1')
+        .attr('stroke', 'white')
+        .attr('stroke-width', '3')
+        .attr('fill', 'white')
+        .on("click", function () { clickVersusButton('f_total_rate') })
+        .on('mouseover', function () { mouseOverVersusButton('f_total_rate') })
+        .on('mouseout', function () { mouseOutVersusButton('f_total_rate') })
+    buttonGroup.append('text')
+        .attr('id', 'f_total_rate_versus_lbl')
+        .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+        .attr('y', '200')
+        .attr("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "25px")
+        .style('fill', 'white')
+        .style('opacity', '1')
+        .style('font-weight', '900')
+        .text("Sort by")
+    buttonGroup.append('text')
+        .attr('id', 'f_total_rate_versus_lbl')
+        .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+        .attr('y', '230')
+        .attr("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "25px")
+        .style('fill', 'white')
+        .style('opacity', '1')
+        .style('font-weight', '900')
+        .text("Fatal")
+
+
+        // Add first for fatal
+    buttonGroup.append('circle')
+        .attr('id', 'nf_total_rate_versus_btn')
+        .attr('cx', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+        .attr('cy', 80)
+        .attr('r', sizeOfBtn * 1.1)
+        .attr('opacity', '0.5')
+        .attr('stroke', 'white')
+        .attr('stroke-width', '3')
+        .attr('fill', 'white')
+        .on("click", function () { clickVersusButton('nf_total_rate') })
+        .on('mouseover', function () { mouseOverVersusButton('nf_total_rate') })
+        .on('mouseout', function () { mouseOutVersusButton('nf_total_rate') })
+    buttonGroup.append('text')
+        .attr('id', 'nf_total_rate_versus_lbl')
+        .attr('x', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+        .attr('y', '200')
+        .attr("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "25px")
+        .style('fill', 'white')
+        .style('opacity', '0.5')
+        .style('font-weight', '900')
+        .text("Sort by")
+    buttonGroup.append('text')
+        .attr('id', 'nf_total_rate_versus_lbl')
+        .attr('x', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+        .attr('y', '230')
+        .attr("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "25px")
+        .style('fill', 'white')
+        .style('opacity', '0.5')
+        .style('font-weight', '900')
+        .text("Non-Fatal")
+    
+
+}
+
 function fadeRect(opacity, d) {
     d3.selectAll('#versus_rect')
         .filter(function (e) { return e !== d; })
@@ -134,9 +322,9 @@ function fadeRect(opacity, d) {
 
 function fadeText(opacity, d) {
     d3.selectAll("#versus_bar_label")
-    .filter(function (e) { return e === d; })
-    .transition()
-    .style("opacity", opacity);
+        .filter(function (e) { return e === d; })
+        .transition()
+        .style("opacity", opacity);
 }
 
 // add the axis
@@ -146,43 +334,44 @@ function drawVersusAxis() {
     // X AXIS
 
     versus_g_nonfatal.append("g")
-            .attr("class", "axis")
-            .call(d3.axisBottom(versus_x_nonfatal)
-                .tickFormat(Math.abs)) // for negative values
-            .attr("transform", "translate(-" + VERSUS_GAP_HALF + "," + VERSUS_HEIGHT + ")")
+        .attr("class", "axis")
+        .call(d3.axisBottom(versus_x_nonfatal)
+            .tickFormat(Math.abs)) // for negative values
+        .attr("transform", "translate(-" + VERSUS_GAP_HALF + "," + VERSUS_HEIGHT + ")")
         .append("text")
-            .attr("transform", "translate(-" + VERSUS_GAP_HALF + " ," + 50 + ")")
-            .style("text-anchor", "middle")
-            .style("font-family", 'Lora')
-            .style("font-size", "20px")
-            .style('fill', 'white')
-            .style('opacity', '1')
-            .style('font-weight', '900')
-            .text("Non-Fatal Injuries per 100k");
+        .attr("transform", "translate(-" + VERSUS_GAP_HALF + " ," + 50 + ")")
+        .style("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "20px")
+        .style('fill', 'white')
+        .style('opacity', '1')
+        .style('font-weight', '900')
+        .text("Non-Fatal Injuries per 100k");
 
-    
+
     versus_g_fatal.append("g")
-            .attr("class", "axis")
-            .call(d3.axisBottom(versus_x_fatal))
-            .attr("transform", "translate(" + VERSUS_GAP_HALF + "," + VERSUS_HEIGHT + ")")
+        .attr("class", "axis")
+        .call(d3.axisBottom(versus_x_fatal))
+        .attr("transform", "translate(" + VERSUS_GAP_HALF + "," + VERSUS_HEIGHT + ")")
         .append("text")
-            .attr("transform", "translate(" + VERSUS_GAP_HALF + " ," + 50 + ")")
-            .style("text-anchor", "middle")
-            .style("font-family", 'Lora')
-            .style("font-size", "20px")
-            .style('fill', 'white')
-            .style('opacity', '1')
-            .style('font-weight', '900')
-            .text("Fatal Injuries per 100k");
+        .attr("transform", "translate(" + VERSUS_GAP_HALF + " ," + 50 + ")")
+        .style("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "20px")
+        .style('fill', 'white')
+        .style('opacity', '1')
+        .style('font-weight', '900')
+        .text("Fatal Injuries per 100k");
 
 
     // Y AXIS
 
     var yElements = versus_g_fatal.append("g")
         .attr("class", "axis")
+        .attr('id', 'versus_y_labels')
         .call(d3.axisLeft(versus_y))
         .attr("transform", "translate(" + VERSUS_GAP_HALF + ",0)")
-    
+
     // Align these labels
     yElements.selectAll("text")
         .attr("transform", function (d) {
@@ -200,3 +389,30 @@ function drawVersusAxis() {
 
 
 }
+
+function sortVersus(side) {
+    versus_dataset.sort(function (a, b) {
+        return d3.descending(a[side], b[side])
+    })
+
+    versus_y.domain(versus_dataset.map(function (d) { return d.occupation; })).padding(0.2);
+
+    var t0 = d3.transition('versus_transition').duration(1000);
+
+    t0.selectAll("#versus_rect")
+        .attr("y", function (d) {
+            return versus_y(d.occupation);
+        })
+    t0.selectAll("#versus_bar_label")
+        .attr("y", function (d) {
+            return versus_y(d.occupation);
+        })
+
+    t0.selectAll("#versus_y_labels")
+        .call(d3.axisLeft(versus_y))
+    
+
+    versusSortField = side;
+}
+
+

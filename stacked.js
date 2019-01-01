@@ -196,12 +196,12 @@ function drawStackedLegend() {
         .text(function (d) { return d; });
 }
 
-function drawButtons() {
+function drawStackedButtons() {
 
     var spaceBetweenCentres = (DEVICE_WIDTH+SCATTER_LEFT+SCATTER_RIGHT-100) / 9;
     var sizeOfBtn = spaceBetweenCentres / 3
 
-    function clickButton(justSelected) {
+    function clickStackedButton(justSelected) {
         //if the btn just clicked is different to the currently selected, fade currently selected
         var fadeLabel = (stackedFirstCause === -1) ? '#f_total_rate' : '#' + causes[stackedFirstCause];
         var visLabel = (justSelected === stackedFirstCause) ? '#f_total_rate' : '#' + causes[justSelected];
@@ -244,25 +244,25 @@ function drawButtons() {
 
     }
 
-    function mouseOverButton(num) {
+    function mouseOverStackedButton(num) {
         var field = (num === -1) ? '#f_total_rate' : '#' + causes[num];
         // button
-        d3.select(field + '_btn')
+        d3.select(field + '_stacked_btn')
             .transition()
             .duration(100)
             .attr('opacity', 1)
             .attr('r', sizeOfBtn * 1.1)
         // label
-        d3.selectAll(field + '_lbl')
+        d3.selectAll(field + '_stacked_lbl')
             .transition()
             .duration(100)
             .style('opacity', 1)
     }
 
-    function mouseOutButton(num) {
+    function mouseOutStackedButton(num) {
         var field = (num === -1) ? '#f_total_rate' : '#' + causes[num];
         // button
-        d3.select(field + '_btn')
+        d3.select(field + '_stacked_btn')
             .transition()
             .duration(100)
             .attr('opacity', function () {
@@ -272,7 +272,7 @@ function drawButtons() {
                 return (stackedFirstCause == num) ? sizeOfBtn * 1.1 : sizeOfBtn
             })
         // label
-        d3.selectAll(field + '_lbl')
+        d3.selectAll(field + '_stacked_lbl')
             .transition()
             .duration(100)
             .style('opacity', function () {
@@ -283,13 +283,13 @@ function drawButtons() {
 
 
     var buttonGroup = d3.select('body')
-        .select('#svgSortButton')
+        .select('#svgStackedSortButton')
         .attr('width', STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT)
         .attr("class", "background") // SVG BACKGROUND COLOUR
 
     // Add first for total
     buttonGroup.append('circle')
-        .attr('id', 'f_total_rate_btn')
+        .attr('id', 'f_total_rate_stacked_btn')
         .attr('cx', spaceBetweenCentres - (0.5 * sizeOfBtn))
         .attr('cy', 80)
         .attr('r', sizeOfBtn * 1.1)
@@ -297,11 +297,11 @@ function drawButtons() {
         .attr('stroke', 'white')
         .attr('stroke-width', '3')
         .attr('fill', 'white')
-        .on("click", function () { clickButton(-1) })
-        .on('mouseover', function () { mouseOverButton(-1) })
-        .on('mouseout', function () { mouseOutButton(-1) })
+        .on("click", function () { clickStackedButton(-1) })
+        .on('mouseover', function () { mouseOverStackedButton(-1) })
+        .on('mouseout', function () { mouseOutStackedButton(-1) })
     buttonGroup.append('text')
-        .attr('id', 'f_total_rate_lbl')
+        .attr('id', 'f_total_rate_stacked_lbl')
         .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn))
         .attr('y', '200')
         .attr("text-anchor", "middle")
@@ -312,7 +312,7 @@ function drawButtons() {
         .style('font-weight', '900')
         .text("Total")
     buttonGroup.append('text')
-        .attr('id', 'f_total_rate_lbl')
+        .attr('id', 'f_total_rate_stacked_lbl')
         .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn))
         .attr('y', '230')
         .attr("text-anchor", "middle")
@@ -328,7 +328,7 @@ function drawButtons() {
     for (let index = 0; index < 7; index++) {
         var field = '#' + causes[index] + '_btn';
         buttonGroup.append('circle')
-            .attr('id', causes[index] + '_btn')
+            .attr('id', causes[index] + '_stacked_btn')
             .attr('cx', (2 * spaceBetweenCentres) + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
             .attr('cy', '80')
             .attr('r', sizeOfBtn)
@@ -336,11 +336,11 @@ function drawButtons() {
             .attr('stroke', STACK_COLOURS[index])
             .attr('stroke-width', '3')
             .attr('fill', STACK_COLOURS[index])
-            .on("click", function () { clickButton(index) })
-            .on('mouseover', function () { mouseOverButton(index) })
-            .on('mouseout', function () { mouseOutButton(index) })
+            .on("click", function () { clickStackedButton(index) })
+            .on('mouseover', function () { mouseOverStackedButton(index) })
+            .on('mouseout', function () { mouseOutStackedButton(index) })
         buttonGroup.append('text')
-            .attr('id', causes[index] + '_lbl')
+            .attr('id', causes[index] + '_stacked_lbl')
             .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
             .attr('y', '200')
             .attr("text-anchor", "middle")
@@ -353,7 +353,7 @@ function drawButtons() {
             .style('font-weight', '900')
             .text(READABLE_CAUSES_TOP[index])
         buttonGroup.append('text')
-            .attr('id', causes[index] + '_lbl')
+            .attr('id', causes[index] + '_stacked_lbl')
             .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
             .attr('y', '230')
             .attr("text-anchor", "middle")

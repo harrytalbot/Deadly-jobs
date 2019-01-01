@@ -59,10 +59,12 @@ d3.csv("data/data.csv", function (data, i) {
     drawVersusChart();
     drawVersusAxis();
 
+    drawVersusButtons();
+
     drawStackedChart();
     drawStackedAxis();
     //drawStackedLegend();
-    drawButtons();
+    drawStackedButtons();
 
     drawScatterPlot();
     drawScatterAxis();
@@ -79,7 +81,7 @@ function initData() {
     scatter_dataset = dataset;
     versus_dataset = dataset;   
     
-    stacked_dataset = stacked_dataset.filter(function (d) { return (d.end_0000 === 'TRUE' && d.f_total_rate > 1) })
+    stacked_dataset = stacked_dataset.filter(function (d) { return (d.end_0000 === 'TRUE') })
     scatter_dataset = scatter_dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
     versus_dataset = scatter_dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
 

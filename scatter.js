@@ -13,7 +13,7 @@ var svg_scatter = d3.select('body')
 
 scatter_g = svg_scatter.append("g").attr("transform", "translate(" + SCATTER_LEFT + "," + SCATTER_TOP + ")");
 
-scatter_info_g = svg_scatter.append("g").attr("transform", "translate(" + (SCATTER_LEFT + 100) + "," + SCATTER_TOP + ")");
+scatter_g_info = svg_scatter.append("g").attr("transform", "translate(" + (SCATTER_LEFT + 100) + "," + SCATTER_TOP + ")");
 
 // set scatter y scale
 scatter_y = d3.scaleLinear().range([SCATTER_HEIGHT, 0])
@@ -69,32 +69,32 @@ function drawScatterAxis() {
 
 function drawScatterPlot() {
 
-    scatter_info_g.append("rect")
-            .attr("width", SCATTER_WIDTH / 3 + 90)
-            .attr("height", SCATTER_HEIGHT / 2)
-            .attr('stroke', 'white')
-            .attr('stroke-width', '5')
-            .attr('fill', 'black')
-      
-        // text for total rate
-        scatter_info_g.append("text")
-            .attr('id', 'scatter_info_fatal')
-            .attr("x", 20)
-            .attr("y", 50)
-            .attr('class', 'stacked_text_info')
-            .style('fill', 'white')
-            .style('opacity', 1)
-            .text("Text text text.") 
-        // text for transportation
-        scatter_info_g.append("text")
-            .attr('id', 'scatter_info_nonfatal')
-            .attr("x", 20)
-            .attr("y", 90)
-            .attr('class', 'stacked_text_info')
-            .style('fill', 'white')
-            .style('opacity', 1)
-            .text("More more more")
-            
+    scatter_g_info.append("rect")
+        .attr("width", SCATTER_WIDTH / 3 + 90)
+        .attr("height", SCATTER_HEIGHT / 2)
+        .attr('stroke', 'white')
+        .attr('stroke-width', '5')
+        .attr('fill', 'black')
+
+    // text for total rate
+    scatter_g_info.append("text")
+        .attr('id', 'scatter_info_fatal')
+        .attr("x", 20)
+        .attr("y", 50)
+        .attr('class', 'stacked_text_info')
+        .style('fill', 'white')
+        .style('opacity', 1)
+        .text("Text text text.")
+    // text for transportation
+    scatter_g_info.append("text")
+        .attr('id', 'scatter_info_nonfatal')
+        .attr("x", 20)
+        .attr("y", 90)
+        .attr('class', 'stacked_text_info')
+        .style('fill', 'white')
+        .style('opacity', 1)
+        .text("More more more")
+
     var circles = scatter_g.selectAll('circle')
         .data(scatter_dataset)
         .enter()
