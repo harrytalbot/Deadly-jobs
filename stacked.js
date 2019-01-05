@@ -51,11 +51,11 @@ function sortStackedBar(fCause) {
 
     var groups;
     if (stackedFirstCause !== -1) {
-        groups = d3.selectAll("g.bar-group")
+        groups = d3.selectAll("g.stacked-bar-group")
         .data(d3.stack().keys(causes).order(getStackedOrder)(stacked_dataset))
         .attr("fill", function (d) { return stacked_z(d.key); });
     } else {
-        groups = d3.selectAll("g.bar-group")
+        groups = d3.selectAll("g.stacked-bar-group")
         .data(d3.stack().keys(causes).order(d3.stackOrderAscending)(stacked_dataset))
         .attr("fill", function (d) { return stacked_z(d.key); });
 
@@ -69,7 +69,7 @@ function sortStackedBar(fCause) {
     var t0 = d3.transition().duration(1000);
 
     // fade out unselected
-    t0.selectAll("g.bar-group")
+    t0.selectAll("g.stacked-bar-group")
         .duration(1000)
         .attr("opacity", function (d) {
             return (d.key !== causes[stackedFirstCause] && stackedFirstCause !== -1) ? 0.25 : 1;
@@ -77,7 +77,7 @@ function sortStackedBar(fCause) {
 
     var t1 = t0.transition();
     // sort order of stack
-    t1.selectAll("g.bar-group")
+    t1.selectAll("g.stacked-bar-group")
         .selectAll(".bar")
         .attr("x", function (d) {
             return stacked_x(d[0]);
@@ -85,7 +85,7 @@ function sortStackedBar(fCause) {
 
     var t2 = t1.transition();
     // sort data y axis - needs seperate transition so stack sort happens first
-    t2.selectAll("g.bar-group")
+    t2.selectAll("g.stacked-bar-group")
         .selectAll(".bar")
         .attr("y", function (d) { return yCopy(d.data.occupation) })
 
@@ -101,7 +101,7 @@ function drawStackedChart() {
         .selectAll("g")
         .data(d3.stack().keys(causes).order(d3.stackOrderAscending)(stacked_dataset))
         .enter().append("g")
-            .classed("bar-group", true)
+            .classed("stacked-bar-group", true)
             .attr("fill", function (d) { return stacked_z(d.key); })
             .attr("opacity", 1) // so first fade animation is smooth
         .selectAll("rect")
@@ -118,6 +118,28 @@ function drawStackedChart() {
                 return stacked_x(d[1]) - stacked_x(d[0]);
             })
             .attr("height", stacked_y.bandwidth())
+            .on('mouseover', function (d) {
+                stacked_g.append("text")
+                    .attr("id", "tooltip")
+                    .attr("x", stacked_x(d[0]))
+                    .attr("y", stacked_y(d.data.occupation))
+                    .attr("text-anchor", "left")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "15px")
+                    .attr("font-weight", "bold")
+                    .attr("fill", "white")
+                    .text(function () {
+                        console.log(d.data);
+                        return (d.data.occupation.trim() +
+                            '\nCode: ' + d.data.occCode + 
+                            '\ntot emp.: ' + d.data.totEmp + 
+                            '\fat rate: ' + d.data.f_total_rate)
+                    })
+
+            })
+            .on("mouseout", function (d) {
+                d3.select("#tooltip").remove();
+            });
 
         info_g.append("rect")
             .attr("width", STACKED_WIDTH / 3 + 90)
@@ -206,7 +228,7 @@ function drawStackedButtons() {
         var fadeLabel = (stackedFirstCause === -1) ? '#f_total_rate' : '#' + causes[stackedFirstCause];
         var visLabel = (justSelected === stackedFirstCause) ? '#f_total_rate' : '#' + causes[justSelected];
 
-        d3.select(fadeLabel + '_btn') // old button
+        d3.select(fadeLabel + '_stacked_btn') // old button
             .transition()
             .duration(100)
             .attr('opacity', 0.5)
@@ -218,12 +240,12 @@ function drawStackedButtons() {
             .attr('opacity', 1)
             .attr('r', sizeOfBtn * 1.1)
 
-        d3.selectAll(fadeLabel + '_lbl') // old label
+        d3.selectAll(fadeLabel + '_stacked_lbl') // old label
             .transition()
             .duration(100)
             .style('opacity', 0.5)
 
-        d3.selectAll(visLabel + '_lbl') // new label
+        d3.selectAll(visLabel + '_stacked_lbl') // new label
             .transition()
             .duration(100)
             .style('opacity', 1)

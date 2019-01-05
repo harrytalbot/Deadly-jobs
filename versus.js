@@ -26,7 +26,6 @@ const VERSUS_GAP_HALF = 250;
 versus_y = d3.scaleBand().range([0, VERSUS_HEIGHT])
 
 // set versus x scale
-versus_x = d3.scaleLinear().range([-1 * VERSUS_WIDTH, VERSUS_WIDTH / 2 ]);
 versus_x_fatal = d3.scaleLinear().range([0, VERSUS_WIDTH / 3]);
 versus_x_nonfatal = d3.scaleLinear().range([-1 * VERSUS_WIDTH / 3, 0 ])
 // set the versus colors                   
@@ -56,13 +55,13 @@ function drawVersusChart() {
             .attr("height", versus_y.bandwidth())
             .on("mouseover", function (d) {
                 // make all bars opaque
-                fadeRect(.2, d);
-                fadeText(1, d);
+                fadeOutVersus('#versus_rect', .2, d);
+                fadeInVersus("#versus_bar_label", 1, d);
             })
             .on("mouseout", function (d) {
-                fadeRect(1, d);
-                fadeText(0, d);
-            })
+                fadeOutVersus('#versus_rect', 1, d);
+                fadeInVersus("#versus_bar_label", 0, d);
+            });
 
     versus_g_fatal.append("g")
         .selectAll("g")
@@ -70,7 +69,7 @@ function drawVersusChart() {
         .enter()
         .append("text")
             .attr('id', 'versus_bar_label')
-            .text(function (d) { return d3.format(".3n")(d.f_total_rate) })
+            .text(function (d) { return d3.format(".3n")(d.f_total_rate) + " | " + d.f_total })
             .attr("x", function (d) {
                 return versus_x_fatal(d.f_total_rate) + VERSUS_GAP_HALF + 10;
             })
@@ -102,12 +101,12 @@ function drawVersusChart() {
             .attr("height", versus_y.bandwidth())
             .on("mouseover", function (d) {
                 // make all bars opaque
-                fadeRect(.2, d);
-                fadeText(1, d);
+                fadeOutVersus('#versus_rect', .2, d);
+                fadeInVersus("#versus_bar_label", 1, d);
             })
             .on("mouseout", function (d) {
-                fadeRect(1, d);
-                fadeText(0, d);
+                fadeOutVersus('#versus_rect', 1, d);
+                fadeInVersus("#versus_bar_label", 0, d);
             });
 
     versus_g_nonfatal.append("g")
@@ -116,7 +115,7 @@ function drawVersusChart() {
         .enter()
         .append("text")
             .attr('id', 'versus_bar_label')
-            .text(function (d) { return d3.format(",.2f")(d.nf_total_rate) })
+            .text(function (d) { return d3.format(",.2f")(d.nf_total_rate) + " | " + d.nf_total})
             .attr("x", function (d) {
                 return versus_x_nonfatal(-d.nf_total_rate) - VERSUS_GAP_HALF - 10;
             })
@@ -220,22 +219,13 @@ function drawVersusButtons() {
     }
 
 
-    var button_x_offset = VERSUS_WIDTH / 5 * 4;
+    var button_x_offset = 0; //VERSUS_WIDTH / 5 * 4;
 
     var buttonGroup = d3.select('body')
         .select('#svgVersusSortButton')
         .attr('width', VERSUS_WIDTH + VERSUS_LEFT + VERSUS_RIGHT)
-        //.attr("transform", "translate(" + (VERSUS_WIDTH / 5 * 4) + ",0)")
-        .attr("class", "background") // SVG BACKGROUND COLOUR
-
-    buttonGroup.append("rect")
-        .attr('x', VERSUS_LEFT)
-        .attr("width", button_x_offset - VERSUS_RIGHT)
-        .attr("height", 250)
-        .attr('stroke', 'white')
-        .attr('stroke-width', '5')
-        .attr('fill', 'black')
-
+        .attr("transform", "translate(" + (VERSUS_WIDTH / 5 * 4 * 0 ) + ",0)")
+        //.attr("class", "background") // SVG BACKGROUND COLOUR
 
     // Add first for fatal
     buttonGroup.append('circle')
@@ -313,15 +303,15 @@ function drawVersusButtons() {
 
 }
 
-function fadeRect(opacity, d) {
-    d3.selectAll('#versus_rect')
+function fadeOutVersus(tag, opacity, d) {
+    d3.selectAll(tag)
         .filter(function (e) { return e !== d; })
         .transition()
         .style("opacity", opacity);
 }
 
-function fadeText(opacity, d) {
-    d3.selectAll("#versus_bar_label")
+function fadeInVersus(tag, opacity, d) {
+    d3.selectAll(tag)
         .filter(function (e) { return e === d; })
         .transition()
         .style("opacity", opacity);

@@ -13,37 +13,71 @@
 
 <body class="main">
 
-
     <div class="article-title">Have you had an accident at work?</div>
-    <div class="article-text-right">This is just some filler text to see how the data visualisation will look.
-        This will be a short introduction. I'm not sure how long it will be but this looks about right. It will
-        be changed before the final article.</div>
+    <div class="article-text-right">
+        In 2016 there were 2.9 million nonfatal workplace injuries and illnesses reported
+        by private industry employers, a rate of 2.9 cases per 100 full-time employees. 892,270 of those reported resulted in days off work - on average, 8 - This probably won't surpise
+        you, as it's
+        situation many people have been in.
+    </div>
+    <div class="article-text-left">
+        An unwelcome shock however is the fact that in the same year a total of 5,190 people lost their lives at work
+        in the USA. The Bereau of Labor Statistics highlighted that
+    </div>
 
-    <!-- FIRST CHART -->
-    <div class="article-text-left">This is just some filler text to see how the data visualisation will look.
-        This will be a short introduction. I'm not sure how long it will be but this looks about right. It will
-        be changed before the final article.</div>
-    <svg transform="translate(0,0)" id="svgVersusSortButton" height="275"></svg>
-    <svg transform="translate(0,0)"  id="svgVersus"></svg>
+    <!-- VERSUS CHART -->
+    <div class="wrapper">
+        <div class="versus-text-left">
+            Generally, industries with a high injury rate have a high workplace fatality rate - conversly, a high
+            fatality rate may not correspond to a high injury rate.
+        </div>
+        <div class="second">
+            <svg transform="translate(0,0)" id="svgVersusSortButton" height="275"></svg>
+        </div>
+    </div>
+    
+    <div class="article-text-tip">
+            Use the buttons above to sort the bar chart. Mouse over the bars for more information.
+    </div>
 
-    <div class="article-text-left">This is just some filler text to see how the data visualisation will look.
-        This will be a short introduction. I'm not sure how long it will be but this looks about right. It will
-        be changed before the final article.</div>
+    <svg transform="translate(0,0)" id="svgVersus"></svg>
 
-    <!-- SECOND CHART -->
+
+    <!-- SIMPLE BAR CHART -->
+    <div class="article-text-left">
+        Text here comparing the cause propotion between groups
+    </div>
+    <svg transform="translate(0,0)" id="svgSingleBar"></svg>
+
+    <!-- STACKED CHART -->
+    <div class="article-text-left">
+        This is just some filler text to see how the data visualisation will look.
+        This will be a short introduction. I'm not sure how long it will be but this looks about right. It will
+        be changed before the final article.
+    </div>
+
+    <div class="article-text-tip">
+        Use the buttons below to sort the bar chart by total fatality rate, or by a specific cause.
+    </div>
+
     <svg transform="translate(0,0)" id="svgStackedSortButton" height="275"></svg>
     <svg transform="translate(0,0)" id="svgStacked"></svg>
 
-    <div class="article-text-left">This is just some filler text to see how the data visualisation will look.
+    <!-- SCATTER CHART -->
+    <div class="article-text-left">
+        This is just some filler text to see how the data visualisation will look.
         This will be a short introduction. I'm not sure how long it will be but this looks about right. It will
-        be changed before the final article.</div>
+        be changed before the final article.
+    </div>
 
-    <!-- THIRD CHART -->
+    
     <svg transform="translate(0,0)" id="svgScatter"></svg>
 
     <script type="text/javascript" src="constants.js"></script>
 
     <script type="text/javascript" src="init.js"></script>
+
+    <script type="text/javascript" src="simpleBar.js"></script>
 
     <script type="text/javascript" src="versus.js"></script>
 

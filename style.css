@@ -40,6 +40,47 @@
     width: 95%;
   }
 
+  .article-text-tip {
+    font-size: 20px;
+    color: white;
+    font-family: 'Lora', serif; 
+    font-weight: 900;
+    line-height: 40px;
+    padding-top: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+    width: 95%;
+    float:left; /* add this */
+
+  }
+
+  .wrapper {
+    width: 100%;
+    border: 1px solid black;
+    overflow: hidden; /* will contain if #first is longer than #second */
+  }
+
+  .second {
+    border: 1px solid black;
+    overflow: hidden; /* if you don't want #second to wrap below #first */
+}
+
+  .versus-text-left {
+    display: inline-block; 
+    font-size: 35px;
+    color: white;
+    font-family: 'Lora', serif; 
+    font-weight: 900;
+    line-height: 40px;
+    padding-top: 30px;
+    padding-left: 1%;
+    padding-right: 1%;
+    text-align: left;
+    float: left;
+    margin-bottom: 30px;
+    width: 65%;
+  }
+
   .button_text {
     font-family: 'Lora', serif;
     font-size: 25px;
