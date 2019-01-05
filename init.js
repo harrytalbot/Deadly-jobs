@@ -72,7 +72,7 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
     
     stacked_y.domain(stacked_dataset.map(function (d) { return d.occupation; })) .padding(BAR_PADDING);
     stacked_x.domain([0, d3.max(stacked_dataset, function (d) { return d.f_total_rate; })]).nice();
-    stacked_z.domain(causes);
+    stacked_z.domain(FATAL_CAUSE_RATES);
 
     scatter_y.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) { return d.f_total_rate })]) + 1]).nice();
     scatter_x.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) { return d.nf_total_rate })]) + 1]).nice();

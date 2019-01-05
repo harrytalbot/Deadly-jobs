@@ -167,20 +167,7 @@ function drawVersusButtons() {
             .style('opacity', 1)
             .attr('r', sizeOfBtn * 1.1)
 
-
-        /* info 
-        var t0 = d3.transition().duration(800);
-        t0.select('#info' + stackedFirstCause)
-            .style('opacity', 0)
-            
-        var t1 = t0.transition();
-        t1.select('#info' + justSelected)
-            .style('opacity', 1)
-        */
         sortVersus(justSelected)
-
-        // sort chart - no need to fade button, will already have been done on mouseOverButton
-        //sortStackedBar((stackedFirstCause !== justSelected) ? justSelected : -1)
 
     }
 

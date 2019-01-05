@@ -6,19 +6,19 @@
     <title>Deadly Jobs</title>
     <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
     <script type="text/javascript" src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
-    <!--link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"-->
     <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="main">
 
+    <!-- INTRO -->
     <div class="article-title">Have you had an accident at work?</div>
     <div class="article-text-right">
         In 2016 there were 2.9 million nonfatal workplace injuries and illnesses reported
-        by private industry employers, a rate of 2.9 cases per 100 full-time employees. 892,270 of those reported resulted in days off work - on average, 8 - This probably won't surpise
-        you, as it's
-        situation many people have been in.
+        by private industry employers, a rate of 2.9 cases per 100 full-time employees. 892,270 of those reported
+        resulted in days off work - on average, 8 - This probably won't surpise
+        you, as it's a situation many people have been in.
     </div>
     <div class="article-text-left">
         An unwelcome shock however is the fact that in the same year a total of 5,190 people lost their lives at work
@@ -32,41 +32,27 @@
             fatality rate may not correspond to a high injury rate.
         </div>
         <div class="second">
-            <svg transform="translate(0,0)" id="svgVersusSortButton" height="275"></svg>
+            <svg id="svgVersusSortButton" height="275"></svg>
         </div>
     </div>
-    
-    <div class="article-text-tip">
-            Use the buttons above to sort the bar chart. Mouse over the bars for more information.
-    </div>
 
-    <svg transform="translate(0,0)" id="svgVersus"></svg>
+    <div class="article-text-tip">
+        Use the buttons above to sort the bar chart. Mouse over the bars to display the accident rate and case count for each industry.
+    </div>
+    <svg id="svgVersus"></svg>
 
 
     <!-- SIMPLE BAR CHART -->
     <div class="article-text-left">
-            Text here comparing the cause propotion between groups
-            Text here comparing the cause propotion between groups
-            Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        Text here comparing the cause propotion between groups
-        </div>
-    <svg transform="translate(0,0)" id="svgSingleBar"></svg>
+        The cause of injury in accidents also varies significantly depending on the overall severity of the accident.
+        <transInc>'Transportation Incidents'</transInc> accounted for well over a third of deaths at work in 2016, but were much less often the cause
+        of a non-fatal injury. Conversely, <oabr>'Overexertion and Bodily Reaction'</oabr> led the field for injuries in the workplace, but
+        in no cases led to a death at work.
+    </div>
+    <div class="article-text-tip">
+            Mouse over the bars below to view more detailed results.
+    </div>
+    <svg id="svgSingleBar"></svg>
 
     <!-- STACKED CHART -->
     <div class="article-text-left">
@@ -79,8 +65,8 @@
         Use the buttons below to sort the bar chart by total fatality rate, or by a specific cause.
     </div>
 
-    <svg transform="translate(0,0)" id="svgStackedSortButton" height="275"></svg>
-    <svg transform="translate(0,0)" id="svgStacked"></svg>
+    <svg id="svgStackedSortButton" height="275"></svg>
+    <svg id="svgStacked"></svg>
 
     <!-- SCATTER CHART -->
     <div class="article-text-left">
@@ -89,8 +75,12 @@
         be changed before the final article.
     </div>
 
-    
-    <svg transform="translate(0,0)" id="svgScatter"></svg>
+
+    <svg id="svgScatter"></svg>
+
+
+
+    <!-- SCRIPTS BELOW HERE -->
 
     <script type="text/javascript" src="constants.js"></script>
 

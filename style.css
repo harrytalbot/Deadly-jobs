@@ -94,7 +94,7 @@
     color: white;
     text-align: 'left';
     font-weight: 900;
-    font-size: 30px;
+    font-size: 25px;
     line-height: 30px;
     padding-left: "5%"
   }
@@ -105,6 +105,14 @@
   .red {
     background-color: red;
   }   
+
+  .article-text-left transInc {
+    color: #377eb8
+  }
+
+  .article-text-left oabr {
+    color: #fff8dc
+  }
 
 
   /* AXIS BITS /////////////////////////////////////////////////////////////////*/

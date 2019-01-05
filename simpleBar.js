@@ -66,7 +66,6 @@ function drawSimpleBarChart() {
         .enter().append("rect")
             .classed("bar", true)
             .attr("y", function (d) {
-                console.log(d)
                 return simpleBar_y(d.data.outcome);
             })
             .attr("x", function (d) {
@@ -79,20 +78,18 @@ function drawSimpleBarChart() {
             .on("mouseover", function () {
                 tooltip.transition()
                     .attr("opacity", 1); 
-                //tooltip.style("display", null); 
             })
             .on("mouseout", function () { 
                 tooltip.transition()
                     .attr("opacity", 0);
-                //tooltip.style("display", "none"); 
             })
             .on("mousemove", function (d) {
                 var xPosition = d3.mouse(this)[0] + SIMPLEBAR_LEFT; //simpleBar_x(d[0])+ SIMPLEBAR_LEFT + ((simpleBar_x(d[1]) - simpleBar_x(d[0])) / 2);
                 var yPosition = simpleBar_y(d.data.outcome) + ((d.data.outcome == 'Fatal') ? 0 : 175);
                 tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-                tooltip.select("text").text(d3.format(".3n")(d[1] - d[0]) + '%');
+                tooltip.select("text")
+                        .text(CAUSES_MAP.get(d3.select(this.parentNode).datum().key) + ": " + d3.format(".3n")(d[1] - d[0]) + '%');
             });
-            
     }
 
 function fadeOutSimpleBar(tag, opacity, d) {

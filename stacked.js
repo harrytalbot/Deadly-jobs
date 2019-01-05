@@ -3,6 +3,8 @@
 var stacked_dataset;
 
 var stackedFirstCause = -1;
+var stackedIndusty = '';
+var stackedYTicks;
 
 var stacked = { width: STACKED_WIDTH - STACKED_LEFT - STACKED_RIGHT, height: STACKED_HEIGHT - STACKED_TOP - STACKED_BOTTOM };
 
@@ -42,7 +44,7 @@ function sortStackedBar(fCause) {
     var sortFn;
     // define the sort function
     if (stackedFirstCause !== -1) {
-        sortFn = (a, b) => d3.descending(a[causes[stackedFirstCause]], b[causes[stackedFirstCause]]);
+        sortFn = (a, b) => d3.descending(a[FATAL_CAUSE_RATES[stackedFirstCause]], b[FATAL_CAUSE_RATES[stackedFirstCause]]);
     } else {
         sortFn = (a, b) => d3.descending(a.f_total_rate, b.f_total_rate);
     }
@@ -52,11 +54,11 @@ function sortStackedBar(fCause) {
     var groups;
     if (stackedFirstCause !== -1) {
         groups = d3.selectAll("g.stacked-bar-group")
-        .data(d3.stack().keys(causes).order(getStackedOrder)(stacked_dataset))
+        .data(d3.stack().keys(FATAL_CAUSE_RATES).order(getStackedOrder)(stacked_dataset))
         .attr("fill", function (d) { return stacked_z(d.key); });
     } else {
         groups = d3.selectAll("g.stacked-bar-group")
-        .data(d3.stack().keys(causes).order(d3.stackOrderAscending)(stacked_dataset))
+        .data(d3.stack().keys(FATAL_CAUSE_RATES).order(d3.stackOrderAscending)(stacked_dataset))
         .attr("fill", function (d) { return stacked_z(d.key); });
 
     }
@@ -66,16 +68,16 @@ function sortStackedBar(fCause) {
         .sort((a, b) => yCopy(a.data.occupation) - yCopy(b.data.occupation))
 
     // define what will do the transition
-    var t0 = d3.transition().duration(1000);
+    var t0 = d3.transition('stackedSortFade').duration(1000);
 
     // fade out unselected
     t0.selectAll("g.stacked-bar-group")
         .duration(1000)
         .attr("opacity", function (d) {
-            return (d.key !== causes[stackedFirstCause] && stackedFirstCause !== -1) ? 0.25 : 1;
+            return (d.key !== FATAL_CAUSE_RATES[stackedFirstCause] && stackedFirstCause !== -1) ? 0.25 : 1;
         })
 
-    var t1 = t0.transition();
+    var t1 = t0.transition('stackedSortStackOrder');
     // sort order of stack
     t1.selectAll("g.stacked-bar-group")
         .selectAll(".bar")
@@ -83,7 +85,7 @@ function sortStackedBar(fCause) {
             return stacked_x(d[0]);
         })
 
-    var t2 = t1.transition();
+    var t2 = t1.transition('stackedSortOccupations');
     // sort data y axis - needs seperate transition so stack sort happens first
     t2.selectAll("g.stacked-bar-group")
         .selectAll(".bar")
@@ -97,9 +99,58 @@ function sortStackedBar(fCause) {
 
 // initially draw the chart
 function drawStackedChart() {
+
+    const TOOLTIP_WIDTH = 600;
+    const TOOLTIP_HEIGHT = 100;
+    // Prep the tooltip bits, initial display is hidden
+    var tooltip = svg_stacked.append("g").attr('opacity', 0)
+
+    tooltip.append("rect")
+        .attr("x", -0.5 * TOOLTIP_WIDTH)
+        .attr("width", TOOLTIP_WIDTH)
+        .attr("height", TOOLTIP_HEIGHT)
+        .attr('stroke', 'white')
+        .attr('stroke-width', '5')
+        .attr('fill', 'black')
+
+    tooltip.append("text")
+        .attr("id", "stacked_tooltext_occ")
+        .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
+        .attr("y", 5)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+    tooltip.append("text")
+        .attr("id", "stacked_tooltext_ind")
+        .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
+        .attr("y", 35)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+    tooltip.append("text")
+        .attr("id", "stacked_tooltext_tEmp")
+        .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
+        .attr("y", 65)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+
+
     stacked_g.append("g")
         .selectAll("g")
-        .data(d3.stack().keys(causes).order(d3.stackOrderAscending)(stacked_dataset))
+        .data(d3.stack().keys(FATAL_CAUSE_RATES).order(d3.stackOrderAscending)(stacked_dataset))
         .enter().append("g")
             .classed("stacked-bar-group", true)
             .attr("fill", function (d) { return stacked_z(d.key); })
@@ -118,28 +169,45 @@ function drawStackedChart() {
                 return stacked_x(d[1]) - stacked_x(d[0]);
             })
             .attr("height", stacked_y.bandwidth())
-            .on('mouseover', function (d) {
-                stacked_g.append("text")
-                    .attr("id", "tooltip")
-                    .attr("x", stacked_x(d[0]))
-                    .attr("y", stacked_y(d.data.occupation))
-                    .attr("text-anchor", "left")
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", "15px")
-                    .attr("font-weight", "bold")
-                    .attr("fill", "white")
-                    .text(function () {
-                        console.log(d.data);
-                        return (d.data.occupation.trim() +
-                            '\nCode: ' + d.data.occCode + 
-                            '\ntot emp.: ' + d.data.totEmp + 
-                            '\fat rate: ' + d.data.f_total_rate)
+            .on("mouseover", function (d) {
+                tooltip.transition('stackedTooltipMouseOver')
+                    .attr("opacity", 1);
+                /*
+                stackedFirstCause =  d.data.majorOccCodeGroup; 
+                shouldColor = [];
+                //console.log(d3.select(this.parentNode).datum()[1].data.majorOccCodeGroup)
+                for (let index = 0; index < d3.select(this.parentNode).datum().length; index++) {
+                    shouldColor[index] = (d3.select(this.parentNode).datum()[index].data.majorOccCodeGroup === stackedFirstCause) ? 'red' : 'white' 
+                }
+                stackedYTicks.selectAll("text")
+                    .transition('stackedTextHighlight')
+                    .style('fill', function (n, i) {
+                        return shouldColor[i]
                     })
-
+                    */
             })
-            .on("mouseout", function (d) {
-                d3.select("#tooltip").remove();
-            });
+            .on("mouseout", function () { 
+
+                var t0 = d3.transition;
+                tooltip.transition('stackedTooltipMouseOut')
+                    .attr("opacity", 0);
+                    /*
+                stackedYTicks.selectAll("text")
+                    .transition('stackedTextReturnToWhite')
+                    .style('fill', function () {
+                        return 'white'
+                    })
+                    */
+            })
+            .on("mousemove", function (d) {
+                var xPosition = stacked_x(d.data.f_total_rate) + STACKED_LEFT + (TOOLTIP_WIDTH / 2) + 5; 
+                var yPosition = stacked_y(d.data.occupation) - 2.5;
+                tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+                tooltip.select('#stacked_tooltext_occ').text(d.data.occupation.trim())
+                tooltip.select('#stacked_tooltext_ind').text("Industry: " + d.data.majorOccNameGroup)
+                tooltip.select('#stacked_tooltext_tEmp').text("Total Emp: " + d.data.totEmp)
+            })
+
 
         info_g.append("rect")
             .attr("width", STACKED_WIDTH / 3 + 90)
@@ -187,20 +255,20 @@ function drawStackedAxis() {
             .style('font-weight', '900')
             .text("Fatal Injuries per 100k");
 
-    stacked_g.append("g")
+    stackedYTicks = stacked_g.append("g")
         .attr("class", "axisStackedY")
-        .call(d3.axisLeft(stacked_y))
+        .call(d3.axisLeft(stacked_y))       
 
 }
 
-// add the legend
+// add the legend - not used
 function drawStackedLegend() {
     var legend = stacked_g.append("g")
         .attr("font-family", "sans-serif")
         .attr("font-size", 10)
         .attr("text-anchor", "end")
         .selectAll("g")
-        .data(causes.slice().reverse())
+        .data(FATAL_CAUSE_RATES.slice().reverse())
         .enter().append("g")
         .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
 
@@ -225,39 +293,39 @@ function drawStackedButtons() {
 
     function clickStackedButton(justSelected) {
         //if the btn just clicked is different to the currently selected, fade currently selected
-        var fadeLabel = (stackedFirstCause === -1) ? '#f_total_rate' : '#' + causes[stackedFirstCause];
-        var visLabel = (justSelected === stackedFirstCause) ? '#f_total_rate' : '#' + causes[justSelected];
+        var fadeLabel = (stackedFirstCause === -1) ? '#f_total_rate' : '#' + FATAL_CAUSE_RATES[stackedFirstCause];
+        var visLabel = (justSelected === stackedFirstCause) ? '#f_total_rate' : '#' + FATAL_CAUSE_RATES[justSelected];
 
         d3.select(fadeLabel + '_stacked_btn') // old button
-            .transition()
+            .transition('fadeStackedButton')
             .duration(100)
             .attr('opacity', 0.5)
             .attr('r', sizeOfBtn)
 
-        d3.select(visLabel + '_btn') // new button
-            .transition()
+        d3.select(visLabel + '_stacked_btn') // new button
+            .transition('visStackedButton')
             .duration(100)
             .attr('opacity', 1)
             .attr('r', sizeOfBtn * 1.1)
 
         d3.selectAll(fadeLabel + '_stacked_lbl') // old label
-            .transition()
+            .transition('fadeStackedLbl')
             .duration(100)
             .style('opacity', 0.5)
 
         d3.selectAll(visLabel + '_stacked_lbl') // new label
-            .transition()
+            .transition('visStackedLbl')
             .duration(100)
             .style('opacity', 1)
             .attr('r', sizeOfBtn * 1.1)
 
 
         // info 
-        var t0 = d3.transition().duration(800);
+        var t0 = d3.transition('fadestackedInfo').duration(800);
         t0.select('#info' + stackedFirstCause)
             .style('opacity', 0)
             
-        var t1 = t0.transition();
+        var t1 = t0.transition('visStackedInfo');
         t1.select('#info' + justSelected)
             .style('opacity', 1)
 
@@ -267,25 +335,25 @@ function drawStackedButtons() {
     }
 
     function mouseOverStackedButton(num) {
-        var field = (num === -1) ? '#f_total_rate' : '#' + causes[num];
+        var field = (num === -1) ? '#f_total_rate' : '#' + FATAL_CAUSE_RATES[num];
         // button
         d3.select(field + '_stacked_btn')
-            .transition()
+            .transition('stackedButonMouseOver')
             .duration(100)
             .attr('opacity', 1)
             .attr('r', sizeOfBtn * 1.1)
         // label
         d3.selectAll(field + '_stacked_lbl')
-            .transition()
+            .transition('stackedLblMouseOver')
             .duration(100)
             .style('opacity', 1)
     }
 
     function mouseOutStackedButton(num) {
-        var field = (num === -1) ? '#f_total_rate' : '#' + causes[num];
+        var field = (num === -1) ? '#f_total_rate' : '#' + FATAL_CAUSE_RATES[num];
         // button
         d3.select(field + '_stacked_btn')
-            .transition()
+            .transition('stackedButonMouseOut')
             .duration(100)
             .attr('opacity', function () {
                 return (stackedFirstCause == num) ? 1 : 0.5;
@@ -295,7 +363,7 @@ function drawStackedButtons() {
             })
         // label
         d3.selectAll(field + '_stacked_lbl')
-            .transition()
+            .transition('stackedLblMouseOut')
             .duration(100)
             .style('opacity', function () {
                 return (stackedFirstCause == num) ? 1 : 0.5;
@@ -348,9 +416,9 @@ function drawStackedButtons() {
 
     // add the rest
     for (let index = 0; index < 7; index++) {
-        var field = '#' + causes[index] + '_btn';
+        var field = '#' + FATAL_CAUSE_RATES[index] + '_btn';
         buttonGroup.append('circle')
-            .attr('id', causes[index] + '_stacked_btn')
+            .attr('id', FATAL_CAUSE_RATES[index] + '_stacked_btn')
             .attr('cx', (2 * spaceBetweenCentres) + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
             .attr('cy', '80')
             .attr('r', sizeOfBtn)
@@ -362,7 +430,7 @@ function drawStackedButtons() {
             .on('mouseover', function () { mouseOverStackedButton(index) })
             .on('mouseout', function () { mouseOutStackedButton(index) })
         buttonGroup.append('text')
-            .attr('id', causes[index] + '_stacked_lbl')
+            .attr('id', FATAL_CAUSE_RATES[index] + '_stacked_lbl')
             .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
             .attr('y', '200')
             .attr("text-anchor", "middle")
@@ -375,7 +443,7 @@ function drawStackedButtons() {
             .style('font-weight', '900')
             .text(READABLE_CAUSES_TOP[index])
         buttonGroup.append('text')
-            .attr('id', causes[index] + '_stacked_lbl')
+            .attr('id', FATAL_CAUSE_RATES[index] + '_stacked_lbl')
             .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
             .attr('y', '230')
             .attr("text-anchor", "middle")
