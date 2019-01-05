@@ -31,6 +31,29 @@ simpleBar_z = d3.scaleOrdinal().range(STACK_COLOURS_EXTRA);
 
 // initially draw the chart
 function drawSimpleBarChart() {
+
+    // Prep the tooltip bits, initial display is hidden
+    var tooltip = svg_simpleBar.append("g").attr('opacity', 0)
+
+    tooltip.append("rect")
+        .attr("x", -50)
+        .attr("width", 100)
+        .attr("height", 60)
+        .attr('stroke', 'white')
+        .attr('stroke-width', '5')
+        .attr('fill', 'black')
+
+    tooltip.append("text")
+        .attr("x", 0)
+        .attr("y", 5)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "25px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+
     simpleBar_g.append("g")
         .selectAll("g")
         .data(d3.stack().keys(SIMPLE_CAUSES)(simpleBar_dataset))
@@ -43,6 +66,7 @@ function drawSimpleBarChart() {
         .enter().append("rect")
             .classed("bar", true)
             .attr("y", function (d) {
+                console.log(d)
                 return simpleBar_y(d.data.outcome);
             })
             .attr("x", function (d) {
@@ -52,45 +76,24 @@ function drawSimpleBarChart() {
                 return simpleBar_x(d[1]) - simpleBar_x(d[0]);
             })
             .attr("height", simpleBar_y.bandwidth())
-            .on("mouseover", function (d) {
-                fadeInSimpleBar("#simple_bar_label", 1, d); // ALREADY DEFINED IN VERSUS
+            .on("mouseover", function () {
+                tooltip.transition()
+                    .attr("opacity", 1); 
+                //tooltip.style("display", null); 
             })
-            .on("mouseout", function (d, i) {
-                console.log(d)
-                var id = '#simple_bar_label_' + d3.format(".3n")(d[1] - d[0])
-                fadeOutSimpleBar(id, 0, d);
+            .on("mouseout", function () { 
+                tooltip.transition()
+                    .attr("opacity", 0);
+                //tooltip.style("display", "none"); 
+            })
+            .on("mousemove", function (d) {
+                var xPosition = d3.mouse(this)[0] + SIMPLEBAR_LEFT; //simpleBar_x(d[0])+ SIMPLEBAR_LEFT + ((simpleBar_x(d[1]) - simpleBar_x(d[0])) / 2);
+                var yPosition = simpleBar_y(d.data.outcome) + ((d.data.outcome == 'Fatal') ? 0 : 175);
+                tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+                tooltip.select("text").text(d3.format(".3n")(d[1] - d[0]) + '%');
             });
-        
-    simpleBar_g.append("g")
-        .selectAll("g")
-        .data(d3.stack().keys(SIMPLE_CAUSES)(simpleBar_dataset))
-        .enter().append("g")
-            .classed("simple-bar-group", true)
-            .attr("fill", function (d) { return simpleBar_z(d.key); })
-            .attr("opacity", 1) // so first fade animation is smooth
-        .selectAll("rect")
-        .data(function (d) { return d; })
-        .enter().append("text")
-            .attr('id', function (d) {
-                'simple_bar_label_' + d3.format(".3n")(d[1] - d[0])
-            }) //use the valu
-            .text(function (d) { return d3.format(".3n")(d[1] - d[0])})
-            .attr("x", function (d) {
-                return simpleBar_x(d[0]) + ((simpleBar_x(d[1]) - simpleBar_x(d[0])) / 2)
-            })
-            .attr("y", function (d) {
-                var offset = (d.data.outcome === 'Fatal') ? -50 : +100
-                return (simpleBar_y(d.data.outcome) + offset);
-            })
-            .style("text-anchor", "middle")
-            .attr("dy", ".75em")
-            .attr('class', 'simple_text_info')
-            .attr("font-family", "sans-serif")
-            .attr("font-size", "15px")
-            .attr("font-weight", "bold")
-            .attr("fill", "white")
-            .style('opacity', 1)
-        }
+            
+    }
 
 function fadeOutSimpleBar(tag, opacity, d) {
     d3.selectAll(tag)
@@ -125,8 +128,8 @@ function drawSimpleBarAxis() {
             .style('font-weight', '900')
             .text("Cause of accident (%)");
 
-    //simpleBar_g.append("g")
-    //    .attr("class", "axisStackedY")
-    //    .call(d3.axisLeft(simpleBar_y))
+    simpleBar_g.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(simpleBar_y))
 
 }

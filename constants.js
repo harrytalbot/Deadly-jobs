@@ -32,6 +32,7 @@ const SIMPLE_CAUSES = ["trans_cases", "violence_cases", "fireExp_cases", "fallSl
 const STACK_COLOURS = ["#377eb8", "#e41a1c", "#ff7f00", "#984ea3", "#ffff33", "#4daf4a", "#e78ac3"]
 const STACK_COLOURS_EXTRA = ["#377eb8", "#e41a1c", "#ff7f00", "#984ea3", "#ffff33", "#4daf4a","#fff8dc", "#e78ac3"]
 
+const BAR_PADDING = 0.2;
 
 // MARGIN BITS
 
@@ -40,15 +41,15 @@ const DEVICE_HEIGHT = window.innerHeight;
 
 const VERSUS_LEFT = 150;
 const VERSUS_RIGHT = 150;
-const VERSUS_TOP = 20;
-const VERSUS_BOTTOM = 40;
-const VERSUS_HEIGHT = 700;
+const VERSUS_TOP = 40;
+const VERSUS_BOTTOM = 50;
+const VERSUS_HEIGHT = 600;
 const VERSUS_WIDTH = DEVICE_WIDTH - VERSUS_LEFT - VERSUS_RIGHT;
 
-const SIMPLEBAR_LEFT = 100;
+const SIMPLEBAR_LEFT = 175;
 const SIMPLEBAR_RIGHT = 100;
-const SIMPLEBAR_TOP = 100;
-const SIMPLEBAR_BOTTOM = 100;
+const SIMPLEBAR_TOP = 120;
+const SIMPLEBAR_BOTTOM = 75;
 const SIMPLEBAR_HEIGHT = 100;
 const SIMPLEBAR_WIDTH = DEVICE_WIDTH - SIMPLEBAR_LEFT - SIMPLEBAR_RIGHT;
 
