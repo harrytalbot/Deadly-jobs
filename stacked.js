@@ -170,11 +170,9 @@ function drawStackedChart() {
             })
             .attr("height", stacked_y.bandwidth())
             .on("mouseover", function (d) {
-                tooltip.transition('stackedTooltipMouseOver').attr("opacity", 1);
-                
+                tooltip.transition('stackedTooltipMouseOver').attr("opacity", 1);    
                 stackedIndusty =  d.data.majorOccCodeGroup; 
                 shouldColor = [];
-
                 for (let index = 0; index < d3.select(this.parentNode).datum().length; index++) {
                     shouldColor[index] = (d3.select(this.parentNode).datum()[index].data.majorOccCodeGroup === stackedIndusty) ? 'red' : 'white' 
                 }
@@ -182,20 +180,14 @@ function drawStackedChart() {
                     .transition('stackedTextHighlight')
                     .style('fill', function (n, i) {
                         return shouldColor[i]
-                    })
-                    
+                    })      
             })
             .on("mouseout", function () { 
-
                 tooltip.transition('stackedTooltipMouseOut')
                     .attr("opacity", 0);
-
-
                 stackedYTicks.selectAll("text")
                     .transition('stackedTextReturnToWhite')
                     .style('fill', 'white')
-
-
             })
             .on("mousemove", function (d) {
                 var xPosition = stacked_x(d.data.f_total_rate) + STACKED_LEFT + (TOOLTIP_WIDTH / 2) + 5; 

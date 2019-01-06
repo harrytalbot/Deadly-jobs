@@ -41,6 +41,7 @@ scatter_g_versus.append("rect")
     .attr('stroke', 'white')
     .attr('stroke-width', '5')
     .attr('fill', 'black')
+    .attr('opacity', 0)
 
 scatter_versus_g_nonfatal = scatter_g_versus.append("g").attr("transform", "translate(" + (SCATTER_VERSUS_LEFT + (SCATTER_VERSUS_WIDTH /2)) + "," + (SCATTER_VERSUS_TOP) + ")")
 
@@ -104,6 +105,53 @@ function drawScatterPlot() {
     drawScatterVersus();
     drawScatterVersusAxis();
 
+    const TOOLTIP_WIDTH = 500;
+    const TOOLTIP_HEIGHT = 100;
+    // Prep the tooltip bits, initial display is hidden
+    var tooltip = svg_scatter.append("g").attr('opacity', 0)
+
+    tooltip.append("rect")
+        .attr("x", -0.5 * TOOLTIP_WIDTH)
+        .attr("width", TOOLTIP_WIDTH)
+        .attr("height", TOOLTIP_HEIGHT)
+        .attr('stroke', 'white')
+        .attr('stroke-width', '5')
+        .attr('fill', 'black')
+
+    tooltip.append("text")
+        .attr("id", "scatter_tooltext_ind")
+        .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
+        .attr("y", 5)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+    tooltip.append("text")
+        .attr("id", "scatter_tooltext_f")
+        .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
+        .attr("y", 35)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+    tooltip.append("text")
+        .attr("id", "scatter_tooltext_nf")
+        .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
+        .attr("y", 65)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+
     var circles = scatter_g.selectAll('circle')
         .data(scatter_dataset)
         .enter()
@@ -117,6 +165,7 @@ function drawScatterPlot() {
             .on('mouseover', function (d) {
 
                 updateScatterVersus(d.majorOccCodeGroup);
+                tooltip.transition('scatterTooltip').attr("opacity", 1);    
 
                 d3.select(this)
                     .transition()
@@ -125,20 +174,27 @@ function drawScatterPlot() {
                     .attr('stroke-width', 3)
             })
             .on('mouseout', function () {
+                // fade it
+                tooltip.transition('scatterTooltip').duration(100).attr("opacity", 0);
+                // move it so it doesn't get in way of mouseover
+                tooltip.transition('scatterTooltip').delay(100).duration(0).attr("transform", "translate(" + 0 + "," + 0 + ")");
+
+                
                 d3.select(this)
                     .transition()
                     .duration(200)
                     .attr('r', function (d) { return scatter_plotSize(d.totEmp)})
                     .attr('stroke-width', 1)
             })
-            .append('title') // Tooltip
-            .text(function (d) {
-                return d.occupation.trim() +
-                    '\nNon-Fatal: ' + d.nf_total_rate +
-                    '\nFatal.: ' + d.f_total_rate
-            });
-
-        
+            
+            .on("mousemove", function (d) {
+                var xPosition = scatter_x(d.nf_total_rate) + SCATTER_LEFT + (TOOLTIP_WIDTH / 2) + 25; 
+                var yPosition = scatter_y(d.f_total_rate) - (TOOLTIP_HEIGHT / 2) - 25;
+                tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+                tooltip.select('#scatter_tooltext_ind').text("Industry: "  + d.occupation.trim())
+                tooltip.select('#scatter_tooltext_f').text("Fatal: " + d3.format(".3n")(d.f_total_rate))
+                tooltip.select('#scatter_tooltext_nf').text("Non Fatal: " + d3.format(",.2f")(d.nf_total_rate))
+            })
 }
 
 function drawScatterVersus(){
@@ -308,6 +364,7 @@ function drawScatterVersusAxis(){
         .call(d3.axisBottom(scatter_versus_x_nonfatal)
             .tickFormat(Math.abs)) // for negative values
         .attr("transform", "translate(-" + SCATTER_VERSUS_GAP_HALF + "," + SCATTER_VERSUS_HEIGHT + ")")
+        .attr('opacity', 0)
         /*.append("text")
         .attr("transform", "translate(-" + SCATTER_VERSUS_GAP_HALF + " ," + 50 + ")")
         .style("text-anchor", "middle")
@@ -323,6 +380,7 @@ function drawScatterVersusAxis(){
         .attr("class", "axis")
         .call(d3.axisBottom(scatter_versus_x_fatal))
         .attr("transform", "translate(" + SCATTER_VERSUS_GAP_HALF + "," + SCATTER_VERSUS_HEIGHT + ")")
+        .attr('opacity', 0)
         /*.append("text")
         .attr("transform", "translate(" + SCATTER_VERSUS_GAP_HALF + " ," + 50 + ")")
         .style("text-anchor", "middle")
@@ -340,6 +398,8 @@ function drawScatterVersusAxis(){
         .attr("class", "yaxis")
         .call(d3.axisLeft(scatter_versus_y))
         .attr("transform", "translate(" + SCATTER_VERSUS_GAP_HALF + ",0)")
+        .attr('opacity', 0)
+
 
     // Align these labels
     yElements.selectAll("text")
@@ -352,6 +412,7 @@ function drawScatterVersusAxis(){
         .attr("class", "yaxis")
         .call(d3.axisRight(scatter_versus_y))
         .attr("transform", "translate(-" + SCATTER_VERSUS_GAP_HALF + ",0)")
+        .attr('opacity', 0)
 
     // Remove these labels
     yElements.selectAll("text").remove();
@@ -362,20 +423,24 @@ function updateScatterVersus(code) {
     var oldSize = scatter_versus_dataset_filtered.length;
     // filter the set
     scatter_versus_dataset_filtered = scatter_versus_dataset.filter(function (d) { return (d.majorOccCodeGroup == code) })
-
+    // get a different chart height if there aren't many items
     var chartHeight = (scatter_versus_dataset_filtered.length < 5) ? SCATTER_VERSUS_HEIGHT / 3 * 2 : SCATTER_VERSUS_HEIGHT;
-
     scatter_versus_y = d3.scaleBand().range([0, chartHeight])
     // uses the stacked dataset for occupations.
     scatter_versus_y.domain(scatter_versus_dataset_filtered.map(function (d) { return d.occupation; })).padding(BAR_PADDING);
     scatter_versus_x_fatal.domain([0, d3.max(scatter_versus_dataset_filtered, function (d) { return d.f_total_rate; })]).nice();
     scatter_versus_x_nonfatal.domain([d3.min(scatter_versus_dataset_filtered, function (d) { return +-1 * d.nf_total_rate; }), 0]).nice();
     
-    // if the chart is bigger, make the box bigger first
-    if (oldSize < scatter_versus_dataset_filtered.length) {
+    if (oldSize == 0) { // first time so don't animate height transition
+        scatter_g_versus.select('.scatter_versus_back')
+            .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
+            .transition()
+            .attr('opacity', 1)
+    } else if (oldSize < scatter_versus_dataset_filtered.length) { // if the chart is bigger, make the box bigger first
         scatter_g_versus.select('.scatter_versus_back')
             .transition()
             .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
+            .attr('opacity', 1)
     }
     //first fatal - go in, change the data, redraw and transition
     var bars = scatter_versus_g_fatal.selectAll(".scatter_versus_fatal_rect")
@@ -390,7 +455,7 @@ function updateScatterVersus(code) {
         .duration(400)
         .delay(400)
         .attr("y", function (d) { return scatter_versus_y(d.occupation) })
-        .attr("x", function (d) { return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF })
+        .attr("x", function (d) { return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF + 3})
         .attr("width", function (d) { return scatter_versus_x_fatal(d.f_total_rate) })
         .attr("height", scatter_versus_y.bandwidth())
 
@@ -399,7 +464,7 @@ function updateScatterVersus(code) {
         .append("rect")
         .attr('class', 'scatter_versus_fatal_rect')
         .attr("y", function (d) { return scatter_versus_y(d.occupation) })
-        .attr("x", function (d) { return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF })
+        .attr("x", function (d) { return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF + 3 })
         .attr("height", scatter_versus_y.bandwidth())
         .attr("fill", "steelblue")
         .on("mouseover", function (d) { console.log(d.occCode) })
@@ -419,17 +484,14 @@ function updateScatterVersus(code) {
         .attr("width", scatter_versus_x_nonfatal(0))
         .attr("x", -SCATTER_VERSUS_GAP_HALF)
         .remove()
-
     // update old bars
     bars.transition()
         .duration(400)
         .delay(400)
         .attr("y", function (d) { return scatter_versus_y(d.occupation) })
-        .attr("x", function (d) { return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF })
+        .attr("x", function (d) { return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF - 2.25})
         .attr("width", function (d) { return scatter_versus_x_nonfatal(d.nf_total_rate) })
         .attr("height", scatter_versus_y.bandwidth())
-
-
     // add new bars
     bars.enter()
         .append("rect")
@@ -443,7 +505,7 @@ function updateScatterVersus(code) {
         .delay(800)
         .attr("width", function (d) { return scatter_versus_x_nonfatal(d.nf_total_rate) })
         // need to transition x so they don't draw the wrong way round
-        .attr("x", function (d) { return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF })
+        .attr("x", function (d) { return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF - 2.25 })
 
     // if the chart is smaller, make the box smaller last
     if (oldSize > scatter_versus_dataset_filtered.length) {
@@ -472,14 +534,12 @@ function updateScatterVersus(code) {
     
 
     var yElements = scatter_versus_g_fatal.select(".yaxis")
-
         .call(d3.axisLeft(scatter_versus_y))
         .attr("transform", "translate(" + SCATTER_VERSUS_GAP_HALF + ",0)")
         .attr('opacity', 0)
         .transition()
         .delay(800)
         .attr('opacity', 1)
-
     yElements.selectAll("text").remove();     // Remove these labels
 
     /* Align these labels
