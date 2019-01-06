@@ -18,6 +18,10 @@ var scatter_y;
 var scatter_x;
 var scatter_z;
 
+var scatter_versus_y;
+var scatter_versus_x;
+var scatter_versus_z;
+
 
 d3.select('body').attr("class", "background"); // PAGE BACKGROUND COLOUR
 
@@ -78,6 +82,12 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
     scatter_x.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) { return d.nf_total_rate })]) + 1]).nice();
     scatter_z.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) {return d.salaryMed})])])
     scatter_plotSize.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) {return d.totEmp})])])  
+
+    // uses the stacked dataset for occupations.
+    scatter_versus_y.domain(stacked_dataset.map(function (d) { return d.occupation; })) .padding(BAR_PADDING);
+    scatter_versus_x_fatal.domain([0, d3.max(stacked_dataset, function (d) { return d.f_total_rate; })]).nice();
+    scatter_versus_x_nonfatal.domain([d3.min(stacked_dataset, function (d) { return +-1 * d.nf_total_rate; }), 0]).nice();
+    scatter_versus_z.domain([0, d3.max([0, d3.max(stacked_dataset, function (d) {return d.salaryMed})])])
 
 });
 

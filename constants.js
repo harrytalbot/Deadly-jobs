@@ -3,8 +3,8 @@ const FATAL_CAUSE_RATES = ["f_trans_rate", "f_violence_rate", "f_fireExp_rate", 
 const READABLE_CAUSES = ["Transportation", "Violence", "Fires & Explosions", "Falls, Slips and Trips", "Exposure to Chemicals", "Contact with Equipment", "Other"]
 
 // for the stacked bar button
-const READABLE_CAUSES_TOP = ["Transportation", "Violence", "Fires &", "Falls, Slips", "Exposure to", "Contact with", "Other"]
-const READABLE_CAUSES_BOTTOM = ["Incidents", "or Homicide", "Explosions", "and Trips", "Chemicals", "Equipment", "Events"]
+const READABLE_CAUSES_TOP = ["Transportation", "Violence", "Fires and", "Falls, Slips", "Exposure to", "Contact with", "All Other"]
+const READABLE_CAUSES_BOTTOM = ["Incidents", "or Homicide", "Explosions", "and Trips", "Substances", "Equipment", "Causes"]
 
 // for the simple bar chart that includes overextertion
 const SIMPLE_CAUSES = ["trans_cases", "violence_cases", "fireExp_cases", "fallSlipTrip_cases", "exposure_cases", "contact_cases", "overextertion_cases", "allOther_cases"]
@@ -28,7 +28,7 @@ const FIRE_ORANGE = "#ff7f00";
 const FALLS_PURP = "#984ea3";
 const EXP_YELL = "#ffff33";
 const CONTACT_GREEN = "#4daf4a";
-const OVER_BEIGE = "#fff8dc";
+const OVER_BEIGE = "#f0b27a";
 const OTHER_PINK = "#e78ac3";
 const STACK_COLOURS = [TRANS_BLUE, VIOLENCE_RED, FIRE_ORANGE, FALLS_PURP, EXP_YELL, CONTACT_GREEN, OTHER_PINK]
 const STACK_COLOURS_EXTRA = [TRANS_BLUE, VIOLENCE_RED, FIRE_ORANGE, FALLS_PURP, EXP_YELL, CONTACT_GREEN, OVER_BEIGE, OTHER_PINK]
@@ -67,5 +67,8 @@ const SCATTER_TOP = 40;
 const SCATTER_BOTTOM = 100;
 const SCATTER_HEIGHT = 700;
 const SCATTER_WIDTH = DEVICE_WIDTH - SCATTER_LEFT - SCATTER_RIGHT;
+
+const SCATTER_VERSUS_WIDTH = SCATTER_WIDTH / 3 + 90;
+const SCATTER_VERSUS_HEIGHT = SCATTER_HEIGHT / 2;
 
 const BAR_HEIGHT = 25;

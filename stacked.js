@@ -170,34 +170,32 @@ function drawStackedChart() {
             })
             .attr("height", stacked_y.bandwidth())
             .on("mouseover", function (d) {
-                tooltip.transition('stackedTooltipMouseOver')
-                    .attr("opacity", 1);
-                /*
-                stackedFirstCause =  d.data.majorOccCodeGroup; 
+                tooltip.transition('stackedTooltipMouseOver').attr("opacity", 1);
+                
+                stackedIndusty =  d.data.majorOccCodeGroup; 
                 shouldColor = [];
-                //console.log(d3.select(this.parentNode).datum()[1].data.majorOccCodeGroup)
+
                 for (let index = 0; index < d3.select(this.parentNode).datum().length; index++) {
-                    shouldColor[index] = (d3.select(this.parentNode).datum()[index].data.majorOccCodeGroup === stackedFirstCause) ? 'red' : 'white' 
+                    shouldColor[index] = (d3.select(this.parentNode).datum()[index].data.majorOccCodeGroup === stackedIndusty) ? 'red' : 'white' 
                 }
                 stackedYTicks.selectAll("text")
                     .transition('stackedTextHighlight')
                     .style('fill', function (n, i) {
                         return shouldColor[i]
                     })
-                    */
+                    
             })
             .on("mouseout", function () { 
 
-                var t0 = d3.transition;
                 tooltip.transition('stackedTooltipMouseOut')
                     .attr("opacity", 0);
-                    /*
+
+
                 stackedYTicks.selectAll("text")
                     .transition('stackedTextReturnToWhite')
-                    .style('fill', function () {
-                        return 'white'
-                    })
-                    */
+                    .style('fill', 'white')
+
+
             })
             .on("mousemove", function (d) {
                 var xPosition = stacked_x(d.data.f_total_rate) + STACKED_LEFT + (TOOLTIP_WIDTH / 2) + 5; 
@@ -291,10 +289,13 @@ function drawStackedButtons() {
     var spaceBetweenCentres = (DEVICE_WIDTH+SCATTER_LEFT+SCATTER_RIGHT-100) / 9;
     var sizeOfBtn = spaceBetweenCentres / 3
 
-    function clickStackedButton(justSelected) {
+    function clickStackedButton(justSelected, d) {
         //if the btn just clicked is different to the currently selected, fade currently selected
         var fadeLabel = (stackedFirstCause === -1) ? '#f_total_rate' : '#' + FATAL_CAUSE_RATES[stackedFirstCause];
         var visLabel = (justSelected === stackedFirstCause) ? '#f_total_rate' : '#' + FATAL_CAUSE_RATES[justSelected];
+
+        console.log(stackedFirstCause);
+        console.log(visLabel);
 
         d3.select(fadeLabel + '_stacked_btn') // old button
             .transition('fadeStackedButton')
@@ -387,7 +388,7 @@ function drawStackedButtons() {
         .attr('stroke', 'white')
         .attr('stroke-width', '3')
         .attr('fill', 'white')
-        .on("click", function () { clickStackedButton(-1) })
+        .on("click", function () { clickStackedButton(-1, this) })
         .on('mouseover', function () { mouseOverStackedButton(-1) })
         .on('mouseout', function () { mouseOutStackedButton(-1) })
     buttonGroup.append('text')
@@ -426,7 +427,7 @@ function drawStackedButtons() {
             .attr('stroke', STACK_COLOURS[index])
             .attr('stroke-width', '3')
             .attr('fill', STACK_COLOURS[index])
-            .on("click", function () { clickStackedButton(index) })
+            .on("click", function () { clickStackedButton(index, this) })
             .on('mouseover', function () { mouseOverStackedButton(index) })
             .on('mouseout', function () { mouseOutStackedButton(index) })
         buttonGroup.append('text')

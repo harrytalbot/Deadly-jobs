@@ -123,7 +123,7 @@ function drawSimpleBarAxis() {
             .style('fill', 'white')
             .style('opacity', '1')
             .style('font-weight', '900')
-            .text("Cause of accident (%)");
+            .text("Cause of Accident (%)");
 
     simpleBar_g.append("g")
         .attr("class", "axis")

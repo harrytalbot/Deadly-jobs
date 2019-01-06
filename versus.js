@@ -35,6 +35,12 @@ versus_z = d3.scaleOrdinal().range(STACK_COLOURS);
 
 // initially draw the chart
 function drawVersusChart() {
+
+    var fatalTotal = 0;
+    var nonFatalTotal = 0;
+    var numBars = 0;
+    
+    // bars
     versus_g_fatal.append("g")
         .attr("fill", "steelblue")
         .selectAll("g")
@@ -47,9 +53,12 @@ function drawVersusChart() {
                 return versus_y(d.occupation);
             })
             .attr("x", function (d) {
+                
                 return versus_x_fatal(0) + VERSUS_GAP_HALF;
             })
             .attr("width", function (d) {
+                fatalTotal += d.f_total_rate;
+                numBars++;
                 return versus_x_fatal(d.f_total_rate);
             })
             .attr("height", versus_y.bandwidth())
@@ -57,10 +66,14 @@ function drawVersusChart() {
                 // make all bars opaque
                 fadeOutVersus('#versus_rect', .2, d);
                 fadeInVersus("#versus_bar_label", 1, d);
+                d3.selectAll('#versus_average_text').transition().style("opacity", 0.2);
             })
             .on("mouseout", function (d) {
                 fadeOutVersus('#versus_rect', 1, d);
                 fadeInVersus("#versus_bar_label", 0, d);
+                d3.selectAll('#versus_average_text').transition().style("opacity", 1);
+
+
             });
 
     versus_g_fatal.append("g")
@@ -96,17 +109,22 @@ function drawVersusChart() {
                 return versus_x_nonfatal(-d.nf_total_rate) - VERSUS_GAP_HALF;
             })
             .attr("width", function (d) {
-                return Math.abs(versus_x_nonfatal(d.nf_total_rate) - versus_x_nonfatal(0));
+                nonFatalTotal += d.nf_total_rate;
+                return versus_x_nonfatal(d.nf_total_rate);
             })
             .attr("height", versus_y.bandwidth())
             .on("mouseover", function (d) {
-                // make all bars opaque
                 fadeOutVersus('#versus_rect', .2, d);
                 fadeInVersus("#versus_bar_label", 1, d);
+                d3.selectAll('#versus_average_text').transition().style("opacity", 0.2);
+
             })
             .on("mouseout", function (d) {
                 fadeOutVersus('#versus_rect', 1, d);
                 fadeInVersus("#versus_bar_label", 0, d);
+                d3.selectAll('#versus_average_text').transition().style("opacity", 1);
+
+
             });
 
     versus_g_nonfatal.append("g")
@@ -127,6 +145,54 @@ function drawVersusChart() {
             .attr('class', 'stacked_text_info')
             .style('fill', 'white')
             .style('opacity', 0)
+    
+
+    // avg lines
+    versus_g_fatal.append("line")
+        .attr('id', 'versus_fatal_average_line')
+        .style("stroke", "white")
+        .attr('stroke-width', '3')
+        .attr('opacity', 0.5)
+        .attr("x1", versus_x_fatal(fatalTotal / numBars) + VERSUS_GAP_HALF)
+        .attr("y1", 0)
+        .attr("x2", versus_x_fatal(fatalTotal / numBars) + VERSUS_GAP_HALF)
+        .attr("y2", VERSUS_HEIGHT);
+    
+    versus_g_fatal.append("text")
+        //.attr("x", versus_x_fatal(fatalTotal / numBars) + VERSUS_GAP_HALF)
+        //.attr("y", VERSUS_HEIGHT)
+        .attr('id', 'versus_average_text')
+        .attr('class', 'versus_average_text')
+        .attr("transform", "translate("+ (versus_x_fatal(fatalTotal / numBars) + VERSUS_GAP_HALF + 10) + ","+ (VERSUS_HEIGHT- 10) + ")")
+        .text("Average: " +  d3.format(".3n")(fatalTotal / numBars))
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+
+        // avg lines
+    versus_g_nonfatal.append("line")
+        .attr('id', 'versus_nonfatal_average_line')
+        .style("stroke", "white")
+        .attr('stroke-width', '3')
+        .attr('opacity', 0.5)
+        .attr("x1", -versus_x_nonfatal(nonFatalTotal / numBars) - VERSUS_GAP_HALF)
+        .attr("y1", 0)
+        .attr("x2", -versus_x_nonfatal(nonFatalTotal / numBars) - VERSUS_GAP_HALF)
+        .attr("y2", VERSUS_HEIGHT);
+
+    versus_g_nonfatal.append("text")
+        //.attr("x", versus_x_fatal(fatalTotal / numBars) + VERSUS_GAP_HALF)
+        //.attr("y", VERSUS_HEIGHT)
+        .attr('id', 'versus_average_text')
+        .attr('class', 'versus_average_text')
+        .attr("transform", "translate("+ (-versus_x_nonfatal(nonFatalTotal / numBars) - VERSUS_GAP_HALF - 10) + ","+ (VERSUS_HEIGHT - 10) + ")")
+        .text("Average: " + d3.format(",.2f")(nonFatalTotal / numBars) )
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+        .attr("text-anchor", "end")
 }
 
 
@@ -140,8 +206,6 @@ function drawVersusButtons() {
         var fadeLabel = versusSortField
         var visLabel = justSelected;
 
-        console.log(fadeLabel);
-        console.log(visLabel);
         if (justSelected == versusSortField) { return;}
 
         d3.select('#' + fadeLabel + '_versus_btn') // old button
@@ -289,6 +353,7 @@ function drawVersusButtons() {
     
 
 }
+
 
 function fadeOutVersus(tag, opacity, d) {
     d3.selectAll(tag)
