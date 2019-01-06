@@ -300,7 +300,7 @@ function drawStackedButtons() {
         d3.select(fadeLabel + '_stacked_btn') // old button
             .transition('fadeStackedButton')
             .duration(100)
-            .attr('opacity', 0.5)
+            .attr('opacity', BUTTON_FADED)
             .attr('r', sizeOfBtn)
 
         d3.select(visLabel + '_stacked_btn') // new button
@@ -312,7 +312,7 @@ function drawStackedButtons() {
         d3.selectAll(fadeLabel + '_stacked_lbl') // old label
             .transition('fadeStackedLbl')
             .duration(100)
-            .style('opacity', 0.5)
+            .style('opacity', BUTTON_FADED)
 
         d3.selectAll(visLabel + '_stacked_lbl') // new label
             .transition('visStackedLbl')
@@ -357,7 +357,7 @@ function drawStackedButtons() {
             .transition('stackedButonMouseOut')
             .duration(100)
             .attr('opacity', function () {
-                return (stackedFirstCause == num) ? 1 : 0.5;
+                return (stackedFirstCause == num) ? 1 : BUTTON_FADED;
             })
             .attr('r', function () {
                 return (stackedFirstCause == num) ? sizeOfBtn * 1.1 : sizeOfBtn
@@ -367,7 +367,7 @@ function drawStackedButtons() {
             .transition('stackedLblMouseOut')
             .duration(100)
             .style('opacity', function () {
-                return (stackedFirstCause == num) ? 1 : 0.5;
+                return (stackedFirstCause == num) ? 1 : BUTTON_FADED;
             })
 
     }
@@ -423,7 +423,7 @@ function drawStackedButtons() {
             .attr('cx', (2 * spaceBetweenCentres) + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
             .attr('cy', '80')
             .attr('r', sizeOfBtn)
-            .attr('opacity', '0.5')
+            .attr('opacity', BUTTON_FADED)
             .attr('stroke', STACK_COLOURS[index])
             .attr('stroke-width', '3')
             .attr('fill', STACK_COLOURS[index])
@@ -440,7 +440,7 @@ function drawStackedButtons() {
             .style("font-family", 'Lora')
             .style("font-size", "25px")
             .style('fill', 'white')
-            .style('opacity', '0.5')
+            .style('opacity', BUTTON_FADED)
             .style('font-weight', '900')
             .text(READABLE_CAUSES_TOP[index])
         buttonGroup.append('text')
@@ -453,7 +453,7 @@ function drawStackedButtons() {
             .style("font-family", 'Lora')
             .style("font-size", "25px")
             .style('fill', 'white')
-            .style('opacity', '0.5')
+            .style('opacity', BUTTON_FADED)
             .style('font-weight', '900')
             .text(READABLE_CAUSES_BOTTOM[index])
     }

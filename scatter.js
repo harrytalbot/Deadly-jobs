@@ -169,12 +169,14 @@ function drawScatterVersus(){
             .attr("height", scatter_versus_y.bandwidth())
             .on("mouseover", function (d) {
                 // make all bars opaque
-                fadeOutVersus('#scatter_versus_rect', .2, d);
+                fadeOutVersus('#scatter_versus_fatal_rect', .2, d);
+                fadeOutVersus('#scatter_versus_nonfatal_rect', .2, d);
                 fadeInVersus("#scatter_versus_bar_label", 1, d);
                 d3.selectAll('#scatter_versus_average_text').transition().style("opacity", 0.2);
             })
             .on("mouseout", function (d) {
-                fadeOutVersus('#scatter_versus_rect', 1, d);
+                fadeOutVersus('#scatter_versus_fatal_rect', 1, d);
+                fadeOutVersus('#scatter_versus_nonfatal_rect', 1, d);
                 fadeInVersus("#scatter_versus_bar_label", 0, d);
                 d3.selectAll('#scatter_versus_average_text').transition().style("opacity", 1);
 
@@ -219,13 +221,15 @@ function drawScatterVersus(){
             })
             .attr("height", scatter_versus_y.bandwidth())
             .on("mouseover", function (d) {
-                fadeOutVersus('#scatter_versus_rect', .2, d);
+                fadeOutVersus('#scatter_versus_fatal_rect', .2, d);
+                fadeOutVersus('#scatter_versus_nonfatal_rect', .2, d);
                 fadeInVersus("#scatter_versus_bar_label", 1, d);
                 d3.selectAll('#scatter_versus_average_text').transition().style("opacity", 0.2);
 
             })
             .on("mouseout", function (d) {
-                fadeOutVersus('#scatter_versus_rect', 1, d);
+                fadeOutVersus('#scatter_versus_fatal_rect', 1, d);
+                fadeOutVersus('#scatter_versus_nonfatal_rect', 1, d);
                 fadeInVersus("#scatter_versus_bar_label", 0, d);
                 d3.selectAll('#scatter_versus_average_text').transition().style("opacity", 1);
 

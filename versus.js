@@ -211,7 +211,7 @@ function drawVersusButtons() {
         d3.select('#' + fadeLabel + '_versus_btn') // old button
             .transition()
             .duration(100)
-            .attr('opacity', 0.5)
+            .attr('opacity', BUTTON_FADED)
             .attr('r', sizeOfBtn)
 
         d3.select('#' + visLabel + '_versus_btn') // new button
@@ -223,7 +223,7 @@ function drawVersusButtons() {
         d3.selectAll('#' + fadeLabel + '_versus_lbl') // old label
             .transition()
             .duration(100)
-            .style('opacity', 0.5)
+            .style('opacity', BUTTON_FADED)
 
         d3.selectAll('#' + visLabel + '_versus_lbl') // new label
             .transition()
@@ -254,7 +254,7 @@ function drawVersusButtons() {
             .transition()
             .duration(100)
             .attr('opacity', function () {
-                return (versusSortField == field) ? 1 : 0.5;
+                return (versusSortField == field) ? 1 : BUTTON_FADED;
             })
             .attr('r', function () {
                 return (versusSortField == field) ? sizeOfBtn * 1.1 : sizeOfBtn
@@ -264,7 +264,7 @@ function drawVersusButtons() {
             .transition()
             .duration(100)
             .style('opacity', function () {
-                return (versusSortField == field) ? 1 : 0.5;
+                return (versusSortField == field) ? 1 : BUTTON_FADED;
             })
 
     }
@@ -278,22 +278,59 @@ function drawVersusButtons() {
         .attr("transform", "translate(" + (VERSUS_WIDTH / 5 * 4 * 0 ) + ",0)")
         //.attr("class", "background") // SVG BACKGROUND COLOUR
 
+     // Add first for fatal
+    buttonGroup.append('circle')
+     .attr('id', 'nf_total_rate_versus_btn')
+     .attr('cx', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+     .attr('cy', 80)
+     .attr('r', sizeOfBtn * 1.1)
+     .attr('opacity', BUTTON_FADED)
+     .attr('stroke', 'orange')
+     .attr('stroke-width', '3')
+     .attr('fill', 'orange')
+     .on("click", function () { clickVersusButton('nf_total_rate') })
+     .on('mouseover', function () { mouseOverVersusButton('nf_total_rate') })
+     .on('mouseout', function () { mouseOutVersusButton('nf_total_rate') })
+ buttonGroup.append('text')
+     .attr('id', 'nf_total_rate_versus_lbl')
+     .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+     .attr('y', '200')
+     .attr("text-anchor", "middle")
+     .style("font-family", 'Lora')
+     .style("font-size", "25px")
+     .style('fill', 'white')
+     .style('opacity', BUTTON_FADED)
+     .style('font-weight', '900')
+     .text("Sort by")
+ buttonGroup.append('text')
+     .attr('id', 'nf_total_rate_versus_lbl')
+     .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+     .attr('y', '230')
+     .attr("text-anchor", "middle")
+     .style("font-family", 'Lora')
+     .style("font-size", "25px")
+     .style('fill', 'white')
+     .style('opacity', BUTTON_FADED)
+     .style('font-weight', '900')
+     .text("Non-Fatal")
+
+
     // Add first for fatal
     buttonGroup.append('circle')
         .attr('id', 'f_total_rate_versus_btn')
-        .attr('cx', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+        .attr('cx', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
         .attr('cy', 80)
         .attr('r', sizeOfBtn * 1.1)
         .attr('opacity', '1')
-        .attr('stroke', 'white')
+        .attr('stroke', 'steelblue')
         .attr('stroke-width', '3')
-        .attr('fill', 'white')
+        .attr('fill', 'steelblue')
         .on("click", function () { clickVersusButton('f_total_rate') })
         .on('mouseover', function () { mouseOverVersusButton('f_total_rate') })
         .on('mouseout', function () { mouseOutVersusButton('f_total_rate') })
     buttonGroup.append('text')
         .attr('id', 'f_total_rate_versus_lbl')
-        .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+        .attr('x', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
         .attr('y', '200')
         .attr("text-anchor", "middle")
         .style("font-family", 'Lora')
@@ -304,7 +341,7 @@ function drawVersusButtons() {
         .text("Sort by")
     buttonGroup.append('text')
         .attr('id', 'f_total_rate_versus_lbl')
-        .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
+        .attr('x', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
         .attr('y', '230')
         .attr("text-anchor", "middle")
         .style("font-family", 'Lora')
@@ -314,43 +351,7 @@ function drawVersusButtons() {
         .style('font-weight', '900')
         .text("Fatal")
 
-
-        // Add first for fatal
-    buttonGroup.append('circle')
-        .attr('id', 'nf_total_rate_versus_btn')
-        .attr('cx', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-        .attr('cy', 80)
-        .attr('r', sizeOfBtn * 1.1)
-        .attr('opacity', '0.5')
-        .attr('stroke', 'white')
-        .attr('stroke-width', '3')
-        .attr('fill', 'white')
-        .on("click", function () { clickVersusButton('nf_total_rate') })
-        .on('mouseover', function () { mouseOverVersusButton('nf_total_rate') })
-        .on('mouseout', function () { mouseOutVersusButton('nf_total_rate') })
-    buttonGroup.append('text')
-        .attr('id', 'nf_total_rate_versus_lbl')
-        .attr('x', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-        .attr('y', '200')
-        .attr("text-anchor", "middle")
-        .style("font-family", 'Lora')
-        .style("font-size", "25px")
-        .style('fill', 'white')
-        .style('opacity', '0.5')
-        .style('font-weight', '900')
-        .text("Sort by")
-    buttonGroup.append('text')
-        .attr('id', 'nf_total_rate_versus_lbl')
-        .attr('x', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-        .attr('y', '230')
-        .attr("text-anchor", "middle")
-        .style("font-family", 'Lora')
-        .style("font-size", "25px")
-        .style('fill', 'white')
-        .style('opacity', '0.5')
-        .style('font-weight', '900')
-        .text("Non-Fatal")
-    
+   
 
 }
 
