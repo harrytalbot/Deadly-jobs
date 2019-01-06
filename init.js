@@ -70,7 +70,7 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
     scatter_dataset = scatter_dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
     versus_dataset = versus_dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
     scatter_versus_dataset = scatter_versus_dataset.filter(function (d) { return (d.end_00 == 'FALSE' && d.end_0 == 'TRUE') })
-    scatter_versus_dataset_filtered = scatter_versus_dataset//.filter(function (d) { return (d.majorOccCodeGroup == '53-0000')})
+    scatter_versus_dataset_filtered = scatter_versus_dataset.filter(function (d) { return (d.majorOccCodeGroup == '')})
 
     versus_y.domain(versus_dataset.map(function (d) { return d.occupation; })).padding(BAR_PADDING);
     versus_x_fatal.domain([0, d3.max(versus_dataset, function (d) { return d.f_total_rate; })]).nice();

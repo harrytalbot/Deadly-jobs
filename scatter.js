@@ -35,6 +35,7 @@ var scatter_versus_y_labels;
 scatter_g_versus = svg_scatter.append("g").attr("transform", "translate(" + (SCATTER_LEFT + 70) + "," + SCATTER_TOP + ")");
 
 scatter_g_versus.append("rect")
+    .attr('class', 'scatter_versus_back')
     .attr("width", SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT +SCATTER_VERSUS_RIGHT)
     .attr("height", SCATTER_VERSUS_HEIGHT + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
     .attr('stroke', 'white')
@@ -152,9 +153,7 @@ function drawScatterVersus(){
         .selectAll("g")
         .data(scatter_versus_dataset_filtered)
         .enter().append("rect")
-            .attr('id', 'scatter_versus_fatal_rect')
-            .classed("bar", true)
-            .attr("class", "bar")
+            .attr('class', 'scatter_versus_fatal_rect')
             .attr("y", function (d) {
                 return scatter_versus_y(d.occupation);
             })
@@ -169,15 +168,15 @@ function drawScatterVersus(){
             .attr("height", scatter_versus_y.bandwidth())
             .on("mouseover", function (d) {
                 // make all bars opaque
-                fadeOutVersus('#scatter_versus_fatal_rect', .2, d);
-                fadeOutVersus('#scatter_versus_nonfatal_rect', .2, d);
-                fadeInVersus("#scatter_versus_bar_label", 1, d);
+                fadeOutVersus('.scatter_versus_fatal_rect', .2, d);
+                fadeOutVersus('.scatter_versus_nonfatal_rect', .2, d);
+                fadeInVersus(".scatter_versus_bar_label", 1, d);
                 d3.selectAll('#scatter_versus_average_text').transition().style("opacity", 0.2);
             })
             .on("mouseout", function (d) {
-                fadeOutVersus('#scatter_versus_fatal_rect', 1, d);
-                fadeOutVersus('#scatter_versus_nonfatal_rect', 1, d);
-                fadeInVersus("#scatter_versus_bar_label", 0, d);
+                fadeOutVersus('.scatter_versus_fatal_rect', 1, d);
+                fadeOutVersus('.scatter_versus_nonfatal_rect', 1, d);
+                fadeInVersus(".scatter_versus_bar_label", 0, d);
                 d3.selectAll('#scatter_versus_average_text').transition().style("opacity", 1);
 
 
@@ -188,7 +187,7 @@ function drawScatterVersus(){
         .data(scatter_versus_dataset_filtered)
         .enter()
         .append("text")
-            .attr('id', 'scatter_versus_bar_label')
+            .attr('class', 'scatter_versus_bar_label')
             .text(function (d) { return d3.format(".3n")(d.f_total_rate) + " | " + d.f_total })
             .attr("x", function (d) {
                 return scatter_versus_x_fatal(d.f_total_rate) + SCATTER_VERSUS_GAP_HALF + 10;
@@ -207,8 +206,7 @@ function drawScatterVersus(){
         .selectAll("g")
         .data(scatter_versus_dataset_filtered)
         .enter().append("rect")
-            .attr('id', 'scatter_versus_nonfatal_rect')
-            .classed("bar", true)
+            .attr('class', 'scatter_versus_nonfatal_rect')
             .attr("y", function (d) {
                 return scatter_versus_y(d.occupation);
             })
@@ -241,7 +239,7 @@ function drawScatterVersus(){
         .data(scatter_versus_dataset_filtered)
         .enter()
         .append("text")
-            .attr('id', 'scatter_versus_bar_label')
+            .attr('class', 'scatter_versus_bar_label')
             .text(function (d) { return d3.format(",.2f")(d.nf_total_rate) + " | " + d.nf_total})
             .attr("x", function (d) {
                 return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF - 10;
@@ -361,19 +359,36 @@ function drawScatterVersusAxis(){
 }
 
 function updateScatterVersus(code){
+
+    var oldSize = scatter_versus_dataset_filtered.length;
     // filter the set
     scatter_versus_dataset_filtered = scatter_versus_dataset.filter(function (d) { return (d.majorOccCodeGroup == code) })
+
+    var chartHeight = (scatter_versus_dataset_filtered.length < 5) ? SCATTER_VERSUS_HEIGHT / 3 * 2 : SCATTER_VERSUS_HEIGHT;
+
+    scatter_versus_y = d3.scaleBand().range([0, chartHeight])
     // uses the stacked dataset for occupations.
     scatter_versus_y.domain(scatter_versus_dataset_filtered.map(function (d) { return d.occupation; })).padding(BAR_PADDING);
     scatter_versus_x_fatal.domain([0, d3.max(scatter_versus_dataset_filtered, function (d) { return d.f_total_rate; })]).nice();
     scatter_versus_x_nonfatal.domain([d3.min(scatter_versus_dataset_filtered, function (d) { return +-1 * d.nf_total_rate; }), 0]).nice();
 
-    var bars = d3.selectAll("#scatter_versus_fatal_rect")
+    if (oldSize < scatter_versus_dataset_filtered.length) {
+        scatter_g_versus.select('.scatter_versus_back')
+            .transition()
+            .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
+    }
+
+    var bars = scatter_versus_g_fatal.selectAll(".scatter_versus_fatal_rect")
         .data(scatter_versus_dataset_filtered)
     bars.exit()
+        .transition()
+        .duration(400)
+        .attr("width", 0)
         .remove()
+    // update old bars
     bars.transition()
-        .duration(600)
+        .duration(400)
+        .delay(400)
         .attr("y", function (d) {
             return scatter_versus_y(d.occupation);
         })
@@ -384,31 +399,43 @@ function updateScatterVersus(code){
             return scatter_versus_x_fatal(d.f_total_rate);
         })
         .attr("height", scatter_versus_y.bandwidth())
-    
+       
+    // add new bars
     bars.enter()
         .append("rect")
-        .attr('id', 'scatter_versus_fatal_rect')
-        .classed("bar", true)
+        .attr('class', 'scatter_versus_fatal_rect')
         .attr("y", function (d) {
             return scatter_versus_y(d.occupation);
         })
         .attr("x", function (d) {
             return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF;
         })
+        .attr("height", scatter_versus_y.bandwidth())
+        .attr("fill", "steelblue")
+        .on("mouseover", function (d) { console.log(d.occCode)})
+        .transition()
+        .duration(400)
+        .delay(800)
         .attr("width", function (d) {
             return scatter_versus_x_fatal(d.f_total_rate);
         })
-        .attr("height", scatter_versus_y.bandwidth())
+
+
 
     //then nonfatal - go in, change the data, redraw and transition
-    bars = d3.selectAll("#scatter_versus_nonfatal_rect")
+    bars = scatter_versus_g_nonfatal.selectAll(".scatter_versus_nonfatal_rect")
         .data(scatter_versus_dataset_filtered)
     bars.exit()
+        .transition()
+        .duration(400)
+        .attr("width", scatter_versus_x_nonfatal(0))
+        .attr("x", -SCATTER_VERSUS_GAP_HALF )
         .remove()
-    bars.enter()
-        .append("rect")
-        .attr('id', 'scatter_versus_nonfatal_rect')
-        .classed("bar", true)
+
+    // update old bars
+    bars.transition()
+        .duration(400)
+        .delay(400)
         .attr("y", function (d) {
             return scatter_versus_y(d.occupation);
         })
@@ -420,16 +447,33 @@ function updateScatterVersus(code){
         })
         .attr("height", scatter_versus_y.bandwidth())
 
-    bars.transition()
-        .duration(600)
+    
+    // add new bars
+    bars.enter()
+        .append("rect")
+        .attr('class', 'scatter_versus_nonfatal_rect')
         .attr("y", function (d) {
             return scatter_versus_y(d.occupation);
         })
-        .attr("x", function (d) {
-            return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF;
-        })
+        .attr("height", scatter_versus_y.bandwidth())
+        .attr("fill", "orange")
+        .on("mouseover", function (d) { console.log(d.occCode)})
+        .transition()
+        .duration(400)
+        .delay(800)
         .attr("width", function (d) {
             return scatter_versus_x_nonfatal(d.nf_total_rate);
         })
-        .attr("height", scatter_versus_y.bandwidth())
+        .attr("x", function (d) { // need to transition x so they don't draw the wrong way round
+            return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF;
+        })
+
+    
+
+        if (oldSize > scatter_versus_dataset_filtered.length) {
+            scatter_g_versus.select('.scatter_versus_back')
+                .transition()
+                .delay(800)
+                .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
+        }
     }
