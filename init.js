@@ -63,18 +63,20 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
     //simpleBar_dataset = dataset;
     stacked_dataset = dataset;
     scatter_dataset = dataset;
-    versus_dataset = dataset;   
-    
-    stacked_dataset = stacked_dataset.filter(function (d) { return (d.end_00 == 'FALSE' && d.end_0 == 'TRUE' && d.totEmp > +50000 && d.f_total_rate >1) })
-    //stacked_dataset = stacked_dataset.filter(function (d) { return (d.end_0 == 'FALSE' && d.totEmp < +300000 && d.totEmp > +50000 && d.f_total_rate >0.5) })
-    scatter_dataset = scatter_dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
-    versus_dataset = scatter_dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
+    versus_dataset = dataset;
+    scatter_versus_dataset = dataset; 
 
-    versus_y.domain(versus_dataset.map(function (d) { return d.occupation; }))    .padding(BAR_PADDING);
+    stacked_dataset = stacked_dataset.filter(function (d) { return (d.end_00 == 'FALSE' && d.end_0 == 'TRUE' && d.totEmp > +50000 && d.f_total_rate >1) })
+    scatter_dataset = scatter_dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
+    versus_dataset = versus_dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
+    scatter_versus_dataset = scatter_versus_dataset.filter(function (d) { return (d.end_00 == 'FALSE' && d.end_0 == 'TRUE') })
+    scatter_versus_dataset_filtered = scatter_versus_dataset.filter(function (d) { return (d.majorOccCodeGroup == '53-0000')})
+
+    versus_y.domain(versus_dataset.map(function (d) { return d.occupation; })).padding(BAR_PADDING);
     versus_x_fatal.domain([0, d3.max(versus_dataset, function (d) { return d.f_total_rate; })]).nice();
     versus_x_nonfatal.domain([d3.min(versus_dataset, function (d) { return +-1 * d.nf_total_rate; }), 0]).nice();
     
-    stacked_y.domain(stacked_dataset.map(function (d) { return d.occupation; })) .padding(BAR_PADDING);
+    stacked_y.domain(stacked_dataset.map(function (d) { return d.occupation; })).padding(BAR_PADDING);
     stacked_x.domain([0, d3.max(stacked_dataset, function (d) { return d.f_total_rate; })]).nice();
     stacked_z.domain(FATAL_CAUSE_RATES);
 
@@ -84,10 +86,10 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
     scatter_plotSize.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) {return d.totEmp})])])  
 
     // uses the stacked dataset for occupations.
-    scatter_versus_y.domain(stacked_dataset.map(function (d) { return d.occupation; })) .padding(BAR_PADDING);
-    scatter_versus_x_fatal.domain([0, d3.max(stacked_dataset, function (d) { return d.f_total_rate; })]).nice();
-    scatter_versus_x_nonfatal.domain([d3.min(stacked_dataset, function (d) { return +-1 * d.nf_total_rate; }), 0]).nice();
-    scatter_versus_z.domain([0, d3.max([0, d3.max(stacked_dataset, function (d) {return d.salaryMed})])])
+    scatter_versus_y.domain(scatter_versus_dataset_filtered.map(function (d) { return d.occupation; })).padding(BAR_PADDING);
+    scatter_versus_x_fatal.domain([0, d3.max(scatter_versus_dataset_filtered, function (d) { return d.f_total_rate; })]).nice();
+    scatter_versus_x_nonfatal.domain([d3.min(scatter_versus_dataset_filtered, function (d) { return +-1 * d.nf_total_rate; }), 0]).nice();
+    scatter_versus_z.domain([0, d3.max([0, d3.max(scatter_versus_dataset_filtered, function (d) {return d.salaryMed})])])
 
 });
 

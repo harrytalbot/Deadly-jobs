@@ -428,8 +428,6 @@ function drawVersusAxis() {
 
     // Remove these labels
     yElements.selectAll("text").remove();
-
-
 }
 
 function sortVersus(side) {
