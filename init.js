@@ -57,7 +57,7 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
     if (error) throw error;
     // store globally
     dataset = data;
-    dataset.sort((a, b) => d3.descending(a.f_total_rate, b.f_total_rate));
+    dataset.sort((a, b) => d3.descending(+a.f_total_rate, +b.f_total_rate));
     // initially sort the data by total descending
     // each have their own copy
     //simpleBar_dataset = dataset;
@@ -66,7 +66,7 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
     versus_dataset = dataset;
     scatter_versus_dataset = dataset; 
 
-    stacked_dataset = stacked_dataset.filter(function (d) { return (d.end_00 == 'FALSE' && d.end_0 == 'TRUE' && d.totEmp > +50000 && d.f_total_rate >1) })
+    stacked_dataset = stacked_dataset.filter(function (d) { return (d.end_0000 == 'FALSE' && d.end_00 == 'TRUE' && d.totEmp > +50000 && d.f_total_rate >1 && !(d.occupation.trim().startsWith('Other')))})
     scatter_dataset = scatter_dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
     versus_dataset = versus_dataset.filter(function (d) { return (d.end_0000 == 'TRUE') })
     scatter_versus_dataset = scatter_versus_dataset.filter(function (d) { return (d.end_00 == 'FALSE' && d.end_0 == 'TRUE') })

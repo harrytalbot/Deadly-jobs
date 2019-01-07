@@ -27,8 +27,8 @@ var scatter_plotSize = d3.scaleLinear().range([5,12])
 var scatter_versus_dataset; // the main set
 var scatter_versus_dataset_filtered;
 
-
 var scatter_versus_y_labels;
+var scatter_versus_code = '';
 
 /// SCATTER VERSUS SETUP /////////////////////////////////////////////////////////////////
 
@@ -420,6 +420,8 @@ function drawScatterVersusAxis(){
 
 function updateScatterVersus(code) {
 
+    if (scatter_versus_code == code) return;
+    scatter_versus_code = code;
     var oldSize = scatter_versus_dataset_filtered.length;
     // filter the set
     scatter_versus_dataset_filtered = scatter_versus_dataset.filter(function (d) { return (d.majorOccCodeGroup == code) })
@@ -455,20 +457,21 @@ function updateScatterVersus(code) {
         .duration(400)
         .delay(400)
         .attr("y", function (d) { return scatter_versus_y(d.occupation) })
-        .attr("x", function (d) { return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF + 3})
+        .attr("x", function (d) { return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF })//+ 3})
         .attr("width", function (d) { return scatter_versus_x_fatal(d.f_total_rate) })
         .attr("height", scatter_versus_y.bandwidth())
+        
 
     // add new bars
     bars.enter()
         .append("rect")
         .attr('class', 'scatter_versus_fatal_rect')
         .attr("y", function (d) { return scatter_versus_y(d.occupation) })
-        .attr("x", function (d) { return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF + 3 })
+        .attr("x", function (d) { return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF })//+ 3 })
         .attr("height", scatter_versus_y.bandwidth())
         .attr("fill", "steelblue")
         .on("mouseover", function (d) { console.log(d.occCode) })
-        .transition()
+        .transition('scatter_versus_bar_trans')
         .duration(400)
         .delay(800)
         .attr("width", function (d) {
@@ -489,7 +492,7 @@ function updateScatterVersus(code) {
         .duration(400)
         .delay(400)
         .attr("y", function (d) { return scatter_versus_y(d.occupation) })
-        .attr("x", function (d) { return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF - 2.25})
+        .attr("x", function (d) { return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF })//- 2.25})
         .attr("width", function (d) { return scatter_versus_x_nonfatal(d.nf_total_rate) })
         .attr("height", scatter_versus_y.bandwidth())
     // add new bars
@@ -500,12 +503,12 @@ function updateScatterVersus(code) {
         .attr("height", scatter_versus_y.bandwidth())
         .attr("fill", "orange")
         .on("mouseover", function (d) { console.log(d.occCode) })
-        .transition()
+        .transition('scatter_versus_bar_trans')
         .duration(400)
         .delay(800)
         .attr("width", function (d) { return scatter_versus_x_nonfatal(d.nf_total_rate) })
         // need to transition x so they don't draw the wrong way round
-        .attr("x", function (d) { return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF - 2.25 })
+        .attr("x", function (d) { return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF })//- 2.25 })
 
     // if the chart is smaller, make the box smaller last
     if (oldSize > scatter_versus_dataset_filtered.length) {
@@ -515,29 +518,30 @@ function updateScatterVersus(code) {
             .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
     }
 
-    // The Axis
-    // Y AXIS
-    if (oldSize != scatter_versus_dataset_filtered.length) {
-        var yElements = scatter_versus_g_fatal.select(".yaxis")
-            .transition()
-            .attr('opacity', 0)
-        yElements = scatter_versus_g_nonfatal.select(".yaxis")
-            .transition()
-            .attr('opacity', 0)
-        scatter_versus_g_nonfatal.select(".axis")
-            .transition()
-            .attr('opacity', 0)
-        scatter_versus_g_fatal.select(".axis")
-            .transition()
-            .attr('opacity', 0)
-    }
-    
-
+    // fade old axis. remove y so it is redrawn over the bars 
     var yElements = scatter_versus_g_fatal.select(".yaxis")
+        .transition()
+        .attr('opacity', 0)
+        .remove()
+    yElements = scatter_versus_g_nonfatal.select(".yaxis")
+        .transition()
+        .attr('opacity', 0)
+        .remove()
+    scatter_versus_g_nonfatal.select(".axis")
+        .transition()
+        .attr('opacity', 0)
+    scatter_versus_g_fatal.select(".axis")
+        .transition()
+        .attr('opacity', 0)
+    
+    // Y AXIS
+
+    var yElements = scatter_versus_g_fatal.append("g")
+        .attr("class", "yaxis")
         .call(d3.axisLeft(scatter_versus_y))
         .attr("transform", "translate(" + SCATTER_VERSUS_GAP_HALF + ",0)")
         .attr('opacity', 0)
-        .transition()
+        .transition('scatter_versus_y_trans')
         .delay(800)
         .attr('opacity', 1)
     yElements.selectAll("text").remove();     // Remove these labels
@@ -549,11 +553,12 @@ function updateScatterVersus(code) {
         })
         .style("text-anchor", "middle")
 */
-    yElements = scatter_versus_g_nonfatal.select(".yaxis")
+    yElements = scatter_versus_g_nonfatal.append("g")
+        .attr("class", "yaxis")
         .call(d3.axisRight(scatter_versus_y))
         .attr("transform", "translate(-" + SCATTER_VERSUS_GAP_HALF + ",0)")
         .attr('opacity', 0)
-        .transition()
+        .transition('scatter_versus_y_trans')
         .delay(800)
         .attr('opacity', 1)
 
