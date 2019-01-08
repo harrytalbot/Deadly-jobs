@@ -138,4 +138,8 @@ function begin(){
 
     drawScatterPlot();
     drawScatterAxis();
+    
+    drawScatterVersus();
+    drawScatterVersusAxis();
+    drawScatterVersusButtons();
 }
