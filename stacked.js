@@ -102,16 +102,28 @@ function drawStackedChart() {
 
     const TOOLTIP_WIDTH = 600;
     const TOOLTIP_HEIGHT = 100;
+    const TOOLTIP_ROW_HEIGHT = 30;
     // Prep the tooltip bits, initial display is hidden
     var tooltip = svg_stacked.append("g").attr('opacity', 0)
 
     tooltip.append("rect")
+        .attr('id', 'stacked_tooltip_rect')
         .attr("x", -0.5 * TOOLTIP_WIDTH)
         .attr("width", TOOLTIP_WIDTH)
-        .attr("height", TOOLTIP_HEIGHT)
+        .attr("height", 30 + (FATAL_CAUSE_RATES.length + 3) * TOOLTIP_ROW_HEIGHT)
         .attr('stroke', 'white')
         .attr('stroke-width', '5')
         .attr('fill', 'black')
+    
+    // avg lines
+    tooltip.append("line")
+        .style("stroke", "white")
+        .attr('stroke-width', '3')
+        .attr("x1", -0.5 * TOOLTIP_WIDTH + 10)
+        .attr("y1", 45)
+        .attr("x2", 0.5 * TOOLTIP_WIDTH - 10)
+        .attr("y2", 45);
+
 
     tooltip.append("text")
         .attr("id", "stacked_tooltext_occ")
@@ -121,13 +133,13 @@ function drawStackedChart() {
         .style("text-anchor", "left")
         .attr('class', 'simple_text_info')
         .attr("font-family", "Lora")
-        .attr("font-size", "20px")
+        .attr("font-size", "25px")
         .attr("font-weight", "bold")
         .attr("fill", "white")
     tooltip.append("text")
         .attr("id", "stacked_tooltext_ind")
         .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
-        .attr("y", 35)
+        .attr("y", 45)
         .attr("dy", "1.2em")
         .style("text-anchor", "left")
         .attr('class', 'simple_text_info')
@@ -138,7 +150,7 @@ function drawStackedChart() {
     tooltip.append("text")
         .attr("id", "stacked_tooltext_tEmp")
         .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
-        .attr("y", 65)
+        .attr("y", 75)
         .attr("dy", "1.2em")
         .style("text-anchor", "left")
         .attr('class', 'simple_text_info')
@@ -147,7 +159,23 @@ function drawStackedChart() {
         .attr("font-weight", "bold")
         .attr("fill", "white")
 
+    for (let index = 0; index < FATAL_CAUSE_RATES.length; index++) {
+        tooltip.append("text")
+            .attr("id", "stacked_tooltext_" + FATAL_CAUSE_RATES[index])
+            .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
+            .attr("y", 75 + ((index+1) * TOOLTIP_ROW_HEIGHT))
+            .attr("dy", "1.2em")
+            .style("text-anchor", "left")
+            .attr('class', 'simple_text_info')
+            .attr("font-family", "Lora")
+            .attr("font-size", "20px")
+            .attr("font-weight", "bold")
+            .attr("fill", "white")
+            .text('jsdn')
+    }
 
+
+    
     stacked_g.append("g")
         .selectAll("g")
         .data(d3.stack().keys(FATAL_CAUSE_RATES).order(d3.stackOrderAscending)(stacked_dataset))
@@ -202,6 +230,13 @@ function drawStackedChart() {
                 tooltip.select('#stacked_tooltext_occ').text(d.data.occupation.trim())
                 tooltip.select('#stacked_tooltext_ind').text("Industry: " + d.data.majorOccNameGroup)
                 tooltip.select('#stacked_tooltext_tEmp').text("Total Emp: " + d.data.totEmp)
+                var rows = 4;
+                for (let index = 0; index < FATAL_CAUSE_RATES.length; index++) {
+                    var rate = d3.format(".3n")(d.data[FATAL_CAUSE_RATES[index]]);
+                    tooltip.select('#stacked_tooltext_' + FATAL_CAUSE_RATES[index])
+                         .text(READABLE_CAUSES[index] + ": " + rate)
+                }
+
             })         
 }
 
@@ -213,7 +248,7 @@ function drawStackedInfoTexts() {
     function getLineY(index){ return yOffset + ((index + 1) * (fontSize + lineSpacing)) }
 
     //TODO: Loop this. really don't have time right now 
-    
+
     // main box
     info_g.append("rect")
         .attr("width", STACKED_WIDTH / 3 + 120)
@@ -279,14 +314,14 @@ function drawStackedInfoTexts() {
     }
     // text for exposure rate
     texts = info_g.append('g').attr('id', 'info4')
-    for (let index = 0; index < STACKED_INFO_TEXTS_EXPLO.length; index++) {
+    for (let index = 0; index < STACKED_INFO_TEXTS_EXPO.length; index++) {
         texts.append("text")
             .attr("x", 20)
             .attr("y", getLineY(index))
             .attr('class', 'stacked_text_info')
             .style('fill', 'white')
             .style('opacity', 0)
-            .text(STACKED_INFO_TEXTS_EXPLO[index]) 
+            .text(STACKED_INFO_TEXTS_EXPO[index]) 
     }
     // text for contact rate
     texts = info_g.append('g').attr('id', 'info5')

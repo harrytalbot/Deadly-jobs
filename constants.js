@@ -40,7 +40,7 @@ const STACKED_INFO_TEXTS_TRANS = ['the interesting thing is', 'i have no idea' ,
 const STACKED_INFO_TEXTS_VIOLENCE = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'viol']
 const STACKED_INFO_TEXTS_FEXP = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'fexp']
 const STACKED_INFO_TEXTS_FST = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'fst']
-const STACKED_INFO_TEXTS_EXPLO = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'expo']
+const STACKED_INFO_TEXTS_EXPO = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'expo']
 const STACKED_INFO_TEXTS_CONTACT = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'cont']
 const STACKED_INFO_TEXTS_OTHER = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'other']
 
