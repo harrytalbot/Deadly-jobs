@@ -401,7 +401,7 @@ function drawStackedLegend() {
 
 function drawStackedButtons() {
 
-    var spaceBetweenCentres = (DEVICE_WIDTH+SCATTER_LEFT+SCATTER_RIGHT-100) / 9;
+    var spaceBetweenCentres = (STACKED_WIDTH+STACKED_RIGHT+STACKED_LEFT) / 25 * 3 ;
     var sizeOfBtn = spaceBetweenCentres / 3
 
     function clickStackedButton(justSelected, d) {

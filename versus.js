@@ -40,8 +40,6 @@ function drawVersusChart() {
     var nonFatalTotal = 0;
     var numBars = 0;
     
-    //d3.select('body').select('#scattertest').text('This is just some filler text to see how the data visualisation will lookThis will be a short introduction. Im not sure how long it will be but this looks about right. It will  be changed before the final article.')
-
     // bars
     versus_g_fatal.append("g")
         .attr("fill", "steelblue")
@@ -197,10 +195,9 @@ function drawVersusChart() {
         .attr("text-anchor", "end")
 }
 
-
 function drawVersusButtons() {
 
-    var spaceBetweenCentres = (400+SCATTER_LEFT+SCATTER_RIGHT) / 3;
+    var spaceBetweenCentres = (VERSUS_LEFT + VERSUS_RIGHT) / 3 * 2;
     var sizeOfBtn = spaceBetweenCentres / 3
 
     function clickVersusButton(justSelected) {
@@ -356,7 +353,6 @@ function drawVersusButtons() {
    
 
 }
-
 
 function fadeOutVersus(tag, opacity, d) {
     d3.selectAll(tag)
