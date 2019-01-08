@@ -17,7 +17,7 @@ var svg_stacked = d3.select('body')
 
 stacked_g = svg_stacked.append("g").attr("transform", "translate(" + STACKED_LEFT + "," + (STACKED_TOP - 25) + ")"); //space for label
 
-info_g = svg_stacked.append("g").attr("transform", "translate(" + STACKED_WIDTH + "," + (STACKED_HEIGHT / 3) + ")");
+info_g = svg_stacked.append("g").attr("transform", "translate(" + (STACKED_WIDTH -100)+ ",100)");
 
 // set stacked y scale
 stacked_y = d3.scaleBand().range([0, STACKED_HEIGHT])
@@ -190,40 +190,128 @@ function drawStackedChart() {
                     .style('fill', 'white')
             })
             .on("mousemove", function (d) {
-                var xPosition = stacked_x(d.data.f_total_rate) + STACKED_LEFT + (TOOLTIP_WIDTH / 2) + 5; 
+                var xPosition = stacked_x(d.data.f_total_rate) + STACKED_LEFT + (TOOLTIP_WIDTH / 2) + 5;
                 var yPosition = stacked_y(d.data.occupation) + 8;
+                //if the bar is too long, put it under it
+                if (xPosition > STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT){
+                    xPosition = stacked_x(d.data.f_total_rate) + STACKED_LEFT - (TOOLTIP_WIDTH / 2) - 2.5// - (TOOLTIP_WIDTH /2)
+                    var yPosition = stacked_y(d.data.occupation) + 24;
+                }
+
                 tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
                 tooltip.select('#stacked_tooltext_occ').text(d.data.occupation.trim())
                 tooltip.select('#stacked_tooltext_ind').text("Industry: " + d.data.majorOccNameGroup)
                 tooltip.select('#stacked_tooltext_tEmp').text("Total Emp: " + d.data.totEmp)
-            })
+            })         
+}
 
+function drawStackedInfoTexts() {
+    var lineSpacing = 10;
+    var yOffset = 10;
+    var fontSize = 25;
 
-        info_g.append("rect")
-            .attr("width", STACKED_WIDTH / 3 + 90)
-            .attr("height", STACKED_HEIGHT / 2)
-            .attr('stroke', 'white')
-            .attr('stroke-width', '5')
-            .attr('fill', 'black')
-      
-        // text for total rate
-        info_g.append("text")
-            .attr('id', 'info-1')
+    function getLineY(index){ return yOffset + ((index + 1) * (fontSize + lineSpacing)) }
+
+    //TODO: Loop this. really don't have time right now 
+    
+    // main box
+    info_g.append("rect")
+        .attr("width", STACKED_WIDTH / 3 + 120)
+        .attr("height", STACKED_HEIGHT / 2 )
+        .attr('stroke', 'white')
+        .attr('stroke-width', '5')
+        .attr('fill', 'black')
+  
+    // text for total rate
+    var texts = info_g.append('g').attr('id', 'info-1')
+    for (let index = 0; index < STACKED_INFO_TEXTS_TOTAL.length; index++) {
+        texts.append("text")
             .attr("x", 20)
-            .attr("y", 50)
+            .attr("y", getLineY(index))
             .attr('class', 'stacked_text_info')
             .style('fill', 'white')
             .style('opacity', 1)
-            .text("Text text text.") 
-        // text for transportation
-        info_g.append("text")
-            .attr('id', 'info0')
+            .text(STACKED_INFO_TEXTS_TOTAL[index]) 
+    }
+    // text for trans rate
+    texts = info_g.append('g').attr('id', 'info0')
+    for (let index = 0; index < STACKED_INFO_TEXTS_TRANS.length; index++) {
+        texts.append("text")
             .attr("x", 20)
-            .attr("y", 50)
+            .attr("y", getLineY(index))
             .attr('class', 'stacked_text_info')
             .style('fill', 'white')
             .style('opacity', 0)
-            .text("More more more")
+            .text(STACKED_INFO_TEXTS_TRANS[index]) 
+    }
+    // text for violence rate
+    texts = info_g.append('g').attr('id', 'info1')
+    for (let index = 0; index < STACKED_INFO_TEXTS_VIOLENCE.length; index++) {
+        texts.append("text")
+            .attr("x", 20)
+            .attr("y", getLineY(index))
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 0)
+            .text(STACKED_INFO_TEXTS_VIOLENCE[index]) 
+    }
+    // text for f&e rate
+    texts = info_g.append('g').attr('id', 'info2')
+    for (let index = 0; index < STACKED_INFO_TEXTS_FEXP.length; index++) {
+        texts.append("text")
+            .attr("x", 20)
+            .attr("y", getLineY(index))
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 0)
+            .text(STACKED_INFO_TEXTS_FEXP[index]) 
+    }
+    // text for fst rate
+    texts = info_g.append('g').attr('id', 'info3')
+    for (let index = 0; index < STACKED_INFO_TEXTS_FST.length; index++) {
+        texts.append("text")
+            .attr("x", 20)
+            .attr("y", getLineY(index))
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 0)
+            .text(STACKED_INFO_TEXTS_FST[index]) 
+    }
+    // text for exposure rate
+    texts = info_g.append('g').attr('id', 'info4')
+    for (let index = 0; index < STACKED_INFO_TEXTS_EXPLO.length; index++) {
+        texts.append("text")
+            .attr("x", 20)
+            .attr("y", getLineY(index))
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 0)
+            .text(STACKED_INFO_TEXTS_EXPLO[index]) 
+    }
+    // text for contact rate
+    texts = info_g.append('g').attr('id', 'info5')
+    for (let index = 0; index < STACKED_INFO_TEXTS_CONTACT.length; index++) {
+        texts.append("text")
+            .attr("x", 20)
+            .attr("y", getLineY(index))
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 0)
+            .text(STACKED_INFO_TEXTS_CONTACT[index]) 
+    }
+    // text for all other rate
+    texts = info_g.append('g').attr('id', 'info6')
+    for (let index = 0; index < STACKED_INFO_TEXTS_OTHER.length; index++) {
+        texts.append("text")
+            .attr("x", 20)
+            .attr("y", getLineY(index))
+            .attr('class', 'stacked_text_info')
+            .style('fill', 'white')
+            .style('opacity', 0)
+            .text(STACKED_INFO_TEXTS_OTHER[index]) 
+    }
+        
+
 }
 
 // add the axis
@@ -286,9 +374,6 @@ function drawStackedButtons() {
         var fadeLabel = (stackedFirstCause === -1) ? '#f_total_rate' : '#' + FATAL_CAUSE_RATES[stackedFirstCause];
         var visLabel = (justSelected === stackedFirstCause) ? '#f_total_rate' : '#' + FATAL_CAUSE_RATES[justSelected];
 
-        console.log(stackedFirstCause);
-        console.log(visLabel);
-
         d3.select(fadeLabel + '_stacked_btn') // old button
             .transition('fadeStackedButton')
             .duration(100)
@@ -315,11 +400,11 @@ function drawStackedButtons() {
 
         // info 
         var t0 = d3.transition('fadestackedInfo').duration(800);
-        t0.select('#info' + stackedFirstCause)
+        t0.select('#info' + stackedFirstCause).selectAll('.stacked_text_info')
             .style('opacity', 0)
             
         var t1 = t0.transition('visStackedInfo');
-        t1.select('#info' + justSelected)
+        t1.select('#info' + justSelected).selectAll('.stacked_text_info')
             .style('opacity', 1)
 
         // sort chart - no need to fade button, will already have been done on mouseOverButton
@@ -409,7 +494,6 @@ function drawStackedButtons() {
 
     // add the rest
     for (let index = 0; index < 7; index++) {
-        var field = '#' + FATAL_CAUSE_RATES[index] + '_btn';
         buttonGroup.append('circle')
             .attr('id', FATAL_CAUSE_RATES[index] + '_stacked_btn')
             .attr('cx', (2 * spaceBetweenCentres) + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))

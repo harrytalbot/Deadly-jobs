@@ -133,6 +133,7 @@ function begin(){
 
     drawStackedChart();
     drawStackedAxis();
+    drawStackedInfoTexts();
     drawStackedButtons();
 
     drawScatterPlot();

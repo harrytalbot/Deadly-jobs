@@ -2,7 +2,7 @@
 const FATAL_CAUSE_RATES = ["f_trans_rate", "f_violence_rate", "f_fireExp_rate", "f_fallSlipTrip_rate", "f_exposure_rate", "f_contact_rate", "f_allOther_rate"]
 const READABLE_CAUSES = ["Transportation", "Violence", "Fires & Explosions", "Falls, Slips and Trips", "Exposure to Chemicals", "Contact with Equipment", "Other"]
 
-// for the stacked bar button
+// for the stacked bar buttons
 const READABLE_CAUSES_TOP = ["Transportation", "Violence", "Fires and", "Falls, Slips", "Exposure to", "Contact with", "All Other"]
 const READABLE_CAUSES_BOTTOM = ["Incidents", "or Homicide", "Explosions", "and Trips", "Substances", "Equipment", "Causes"]
 
@@ -33,9 +33,22 @@ const OTHER_PINK = "#e78ac3";
 const STACK_COLOURS = [TRANS_BLUE, VIOLENCE_RED, FIRE_ORANGE, FALLS_PURP, EXP_YELL, CONTACT_GREEN, OTHER_PINK]
 const STACK_COLOURS_EXTRA = [TRANS_BLUE, VIOLENCE_RED, FIRE_ORANGE, FALLS_PURP, EXP_YELL, CONTACT_GREEN, OVER_BEIGE, OTHER_PINK]
 
+// INFO SCREENS
+
+const STACKED_INFO_TEXTS_TOTAL = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'total']
+const STACKED_INFO_TEXTS_TRANS = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'trans']
+const STACKED_INFO_TEXTS_VIOLENCE = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'viol']
+const STACKED_INFO_TEXTS_FEXP = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'fexp']
+const STACKED_INFO_TEXTS_FST = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'fst']
+const STACKED_INFO_TEXTS_EXPLO = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'expo']
+const STACKED_INFO_TEXTS_CONTACT = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'cont']
+const STACKED_INFO_TEXTS_OTHER = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'other']
+
+
 const BAR_PADDING = 0.2;
 const BAR_HEIGHT = 25;
 const BUTTON_FADED = 0.7;
+
 // MARGIN BITS
 
 const DEVICE_WIDTH = window.innerWidth - 100;

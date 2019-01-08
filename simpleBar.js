@@ -99,28 +99,38 @@ function drawSimpleBarChart() {
             })
             .attr("height", simpleBar_y.bandwidth())
             .on("mouseover", function () {
+                //fade in tooltip
                 tooltip.transition()
                     .duration(200)
                     .attr("opacity", 1);
+                // fade in title
                 infoSingleBar.transition('simpleinfotrans').duration(400).style("color", simpleBar_z(simpleBarMouseOverOcc))
-
+                // fade out hint
+                simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').duration(400).style("opacity", 0)
             })
             .on("mouseout", function () { 
+                //fade out tooltip
                 tooltip.transition()
                     .duration(200)
                     .attr("opacity", 0);
+                // fade out title
                 infoSingleBar.transition('simpleinfotrans').duration(400).style("color", 'black')
+                // fade in hint
+                simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').delay(200).duration(400).style("opacity", 1)
             })
             .on("mousemove", function (d) {
                 var newText = CAUSES_MAP.get(d3.select(this.parentNode).datum().key)
                 
                 if (simpleBarInfoText !== newText) {
                     if (simpleBarInfoText === ''){
-                        simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').duration(400).style("opacity", 0).remove()
+                        //simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').duration(400).style("opacity", 0).remove()
                     }
-                    infoSingleBar.transition('simpleinfotrans').duration(200).style("opacity", 0)
-                    console.log(d.data)
-                    infoSingleBar.transition('simpleinfotrans').text(newText).duration(200).delay(200).style("opacity", 1).style("color", simpleBar_z(simpleBarMouseOverOcc))
+                    infoSingleBar.transition('simpleinfotrans').duration(200).style("opacity", 0) // fade out
+                    infoSingleBar.transition('simpleinfotrans')
+                    .text(newText)
+                    .duration(200).delay(200)
+                    .style("opacity", 1)
+                    .style("color", simpleBar_z(simpleBarMouseOverOcc))
                     simpleBarInfoText = newText;
                 }
 
