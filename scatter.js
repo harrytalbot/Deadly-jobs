@@ -448,12 +448,12 @@ function updateScatterVersus(code) {
     var bars = scatter_versus_g_fatal.selectAll(".scatter_versus_fatal_rect")
         .data(scatter_versus_dataset_filtered)
     bars.exit()
-        .transition()
+        .transition('scatter_versus_bar_trans')
         .duration(400)
         .attr("width", 0)
         .remove()
     // update old bars
-    bars.transition()
+    bars.transition('scatter_versus_bar_trans')
         .duration(400)
         .delay(400)
         .attr("y", function (d) { return scatter_versus_y(d.occupation) })
@@ -473,7 +473,7 @@ function updateScatterVersus(code) {
         .on("mouseover", function (d) { console.log(d.occCode) })
         .transition('scatter_versus_bar_trans')
         .duration(400)
-        .delay(800)
+        .delay(1000)
         .attr("width", function (d) {
             return scatter_versus_x_fatal(d.f_total_rate);
         })
@@ -482,13 +482,13 @@ function updateScatterVersus(code) {
     bars = scatter_versus_g_nonfatal.selectAll(".scatter_versus_nonfatal_rect")
         .data(scatter_versus_dataset_filtered)
     bars.exit()
-        .transition()
+        .transition('scatter_versus_bar_trans')
         .duration(400)
         .attr("width", scatter_versus_x_nonfatal(0))
         .attr("x", -SCATTER_VERSUS_GAP_HALF)
         .remove()
     // update old bars
-    bars.transition()
+    bars.transition('scatter_versus_bar_trans')
         .duration(400)
         .delay(400)
         .attr("y", function (d) { return scatter_versus_y(d.occupation) })
@@ -505,7 +505,7 @@ function updateScatterVersus(code) {
         .on("mouseover", function (d) { console.log(d.occCode) })
         .transition('scatter_versus_bar_trans')
         .duration(400)
-        .delay(800)
+        .delay(1000)
         .attr("width", function (d) { return scatter_versus_x_nonfatal(d.nf_total_rate) })
         // need to transition x so they don't draw the wrong way round
         .attr("x", function (d) { return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF })//- 2.25 })
@@ -518,6 +518,7 @@ function updateScatterVersus(code) {
             .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
     }
 
+    
     // fade old axis. remove y so it is redrawn over the bars 
     var yElements = scatter_versus_g_fatal.select(".yaxis")
         .transition()

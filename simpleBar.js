@@ -2,9 +2,13 @@
 
 var simpleBar_dataset;
 
-var simpleBar_tooltip;
-
 var simpleBarFirstCause = -1;
+
+var simpleBarInfoText = ''; // text displayed on mouseover
+
+var simpleBarMouseOverOcc = ''; // currently mouseovered occupation, for colouring text
+
+var simpleBar_tooltip;
 
 var simpleBar = { width: SIMPLEBAR_WIDTH - SIMPLEBAR_LEFT - SIMPLEBAR_RIGHT, height: SIMPLEBAR_HEIGHT - SIMPLEBAR_TOP - SIMPLEBAR_BOTTOM };
 
@@ -17,8 +21,9 @@ var svg_simpleBar = d3.select('body')
 
 simpleBar_g = svg_simpleBar.append("g").attr("transform", "translate(" + SIMPLEBAR_LEFT + "," + (SIMPLEBAR_TOP - 25) + ")"); //space for label
 
-info_g = svg_simpleBar.append("g").attr("transform", "translate(" + SIMPLEBAR_WIDTH + "," + (SIMPLEBAR_HEIGHT / 3) + ")");
+svg_simpleBar.append("g").attr("transform", "translate(" + SIMPLEBAR_WIDTH + "," + (SIMPLEBAR_HEIGHT / 3) + ")");
 
+var infoSingleBar = d3.select('body').select('#infoSingleBar');
 
 // set simpleBar y scale
 simpleBar_y = d3.scaleBand().range([0, SIMPLEBAR_HEIGHT])
@@ -36,8 +41,8 @@ function drawSimpleBarChart() {
     var tooltip = svg_simpleBar.append("g").attr('opacity', 0)
 
     tooltip.append("rect")
-        .attr("x", -50)
-        .attr("width", 100)
+        .attr("x", -55)
+        .attr("width", 110)
         .attr("height", 60)
         .attr('stroke', 'white')
         .attr('stroke-width', '5')
@@ -47,13 +52,25 @@ function drawSimpleBarChart() {
         .attr("x", 0)
         .attr("y", 5)
         .attr("dy", "1.2em")
+        .attr("font-family", "Lora")
+        .attr("font-size", "30px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+        .style("text-anchor", "middle")
+
+    simpleBar_g.append("text")
+        .attr('id', 'simpleBarHint')
+        .attr("x", SIMPLEBAR_WIDTH / 2)
+        .attr("y", -50)
         .style("text-anchor", "middle")
         .attr('class', 'simple_text_info')
         .attr("font-family", "Lora")
-        .attr("font-size", "25px")
+        .attr("font-size", "20px")
         .attr("font-weight", "bold")
         .attr("fill", "white")
+        .text("Mouse over the bars to view more detailed rates.")
 
+    
     simpleBar_g.append("g")
         .selectAll("g")
         .data(d3.stack().keys(SIMPLE_CAUSES)(simpleBar_dataset))
@@ -61,6 +78,12 @@ function drawSimpleBarChart() {
             .classed("simple-bar-group", true)
             .attr("fill", function (d) { return simpleBar_z(d.key); })
             .attr("opacity", 1) // so first fade animation is smooth
+            .on("mouseover", function (d) {
+                simpleBarMouseOverOcc = d.key;
+            })
+            .on("mousemove", function (d) {
+                simpleBarMouseOverOcc = d.key;
+            })
         .selectAll("rect")
         .data(function (d) { return d; })
         .enter().append("rect")
@@ -77,18 +100,35 @@ function drawSimpleBarChart() {
             .attr("height", simpleBar_y.bandwidth())
             .on("mouseover", function () {
                 tooltip.transition()
-                    .attr("opacity", 1); 
+                    .duration(200)
+                    .attr("opacity", 1);
+                infoSingleBar.transition('simpleinfotrans').duration(400).style("color", simpleBar_z(simpleBarMouseOverOcc))
+
             })
             .on("mouseout", function () { 
                 tooltip.transition()
+                    .duration(200)
                     .attr("opacity", 0);
+                infoSingleBar.transition('simpleinfotrans').duration(400).style("color", 'black')
             })
             .on("mousemove", function (d) {
+                var newText = CAUSES_MAP.get(d3.select(this.parentNode).datum().key)
+                
+                if (simpleBarInfoText !== newText) {
+                    if (simpleBarInfoText === ''){
+                        simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').duration(400).style("opacity", 0).remove()
+                    }
+                    infoSingleBar.transition('simpleinfotrans').duration(200).style("opacity", 0)
+                    console.log(d.data)
+                    infoSingleBar.transition('simpleinfotrans').text(newText).duration(200).delay(200).style("opacity", 1).style("color", simpleBar_z(simpleBarMouseOverOcc))
+                    simpleBarInfoText = newText;
+                }
+
                 var xPosition = d3.mouse(this)[0] + SIMPLEBAR_LEFT; //simpleBar_x(d[0])+ SIMPLEBAR_LEFT + ((simpleBar_x(d[1]) - simpleBar_x(d[0])) / 2);
-                var yPosition = simpleBar_y(d.data.outcome) + ((d.data.outcome == 'Fatal') ? 0 : 175);
+                var yPosition = simpleBar_y(d.data.outcome) + ((d.data.outcome == 'Fatal') ? -8 : 179);
                 tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
                 tooltip.select("text")
-                        .text(CAUSES_MAP.get(d3.select(this.parentNode).datum().key) + ": " + d3.format(".3n")(d[1] - d[0]) + '%');
+                .text(d3.format(".3n")(d[1] - d[0]) + '%');
             });
     }
 

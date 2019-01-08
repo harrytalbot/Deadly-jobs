@@ -191,7 +191,7 @@ function drawStackedChart() {
             })
             .on("mousemove", function (d) {
                 var xPosition = stacked_x(d.data.f_total_rate) + STACKED_LEFT + (TOOLTIP_WIDTH / 2) + 5; 
-                var yPosition = stacked_y(d.data.occupation) - 2.5;
+                var yPosition = stacked_y(d.data.occupation) + 8;
                 tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
                 tooltip.select('#stacked_tooltext_occ').text(d.data.occupation.trim())
                 tooltip.select('#stacked_tooltext_ind').text("Industry: " + d.data.majorOccNameGroup)
