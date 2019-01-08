@@ -71,6 +71,7 @@
 
   .wrapper {
     width: 100%;
+    padding-top: 200px;
     border: 1px solid black;
     overflow: hidden; /* will contain if #first is longer than #second */
   }
@@ -116,7 +117,13 @@
  
   .background {
     background-color: black;
+    overflow: hidden;
   }   
+
+  body, html{
+    margin:0;
+    padding:0;
+}
   .red {
     background-color: red;
   }   

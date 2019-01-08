@@ -22,6 +22,7 @@ var scatter_versus_y;
 var scatter_versus_x;
 var scatter_versus_z;
 
+var currentPagePos = 0;
 
 d3.select('body').attr("class", "background"); // PAGE BACKGROUND COLOUR
 
@@ -138,8 +139,49 @@ function begin(){
 
     drawScatterPlot();
     drawScatterAxis();
-    
+
     drawScatterVersus();
     drawScatterVersusAxis();
     drawScatterVersusButtons();
+
+    //var top = document.getElementById("articleTop"); top.scrollIntoView();
+    // keypress
+    document.onkeypress = KeyPressHappened;
+
+}
+
+function KeyPressHappened(e){
+
+    // sections to scroll to
+    var sections = ["#articleTop", "#svgVersusSortButton", "#infoSingleBar", "#svgStackedSortButton", "#svgScatter"]
+
+    var code = ((e.charCode) && (e.keyCode==0)) ? e.charCode : e.keyCode; 
+    
+
+    switch (code) {
+
+        case 37: // 37 = LEFT
+            currentPagePos = (currentPagePos - 1 <= 0) ? 0 : currentPagePos - 1; 
+            break;
+        case 38: // 38 = UP
+            currentPagePos = (currentPagePos - 1 <= 0) ? 0 : currentPagePos - 1; 
+            break;
+        case 39: // 39 = RIGHT
+            currentPagePos = (currentPagePos + 1 >= sections.length) ? sections.length - 1 :currentPagePos + 1; 
+            break;
+        case 40: // 40 = DOWN
+        console.log(currentPagePos + 1);
+        console.log(sections.length);
+            currentPagePos = (currentPagePos + 1 >= sections.length) ? sections.length - 1 : currentPagePos + 1; 
+            break;
+        
+    }
+
+    $('html, body').animate({
+        scrollTop: $(sections[currentPagePos]).offset().top
+    }, 1000);
+
+    console.log(code)
+
+
 }

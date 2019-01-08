@@ -16,9 +16,9 @@ var svg_versus = d3.select('body')
     .attr('width', VERSUS_WIDTH + VERSUS_LEFT + VERSUS_RIGHT)
     .attr('height', VERSUS_HEIGHT + VERSUS_TOP + VERSUS_BOTTOM )
 
-versus_g_nonfatal = svg_versus.append("g").attr("transform", "translate(" + (VERSUS_LEFT + (VERSUS_WIDTH /2) + 25) + "," + (VERSUS_TOP - 20) + ")");
+versus_g_nonfatal = svg_versus.append("g").attr("transform", "translate(" + (VERSUS_LEFT + (VERSUS_WIDTH /2)) + "," + (VERSUS_TOP - 20) + ")");
 
-versus_g_fatal = svg_versus.append("g").attr("transform", "translate(" + (VERSUS_LEFT + (VERSUS_WIDTH /2) + 25) + "," + (VERSUS_TOP - 20) + ")");
+versus_g_fatal = svg_versus.append("g").attr("transform", "translate(" + (VERSUS_LEFT + (VERSUS_WIDTH /2)) + "," + (VERSUS_TOP - 20) + ")");
 
 const VERSUS_GAP_HALF = 235;
 

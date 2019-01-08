@@ -401,8 +401,8 @@ function drawStackedLegend() {
 
 function drawStackedButtons() {
 
-    var spaceBetweenCentres = (STACKED_WIDTH+STACKED_RIGHT+STACKED_LEFT) / 25 * 3 ;
-    var sizeOfBtn = spaceBetweenCentres / 3
+    var spaceBetweenCentres =  (STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT) / 9;
+    var sizeOfBtn = (spaceBetweenCentres / 3) - 5
 
     function clickStackedButton(justSelected, d) {
         //if the btn just clicked is different to the currently selected, fade currently selected
@@ -493,7 +493,7 @@ function drawStackedButtons() {
     // Add first for total
     buttonGroup.append('circle')
         .attr('id', 'f_total_rate_stacked_btn')
-        .attr('cx', spaceBetweenCentres - (0.5 * sizeOfBtn))
+        .attr('cx', spaceBetweenCentres - (0.5* sizeOfBtn))
         .attr('cy', 80)
         .attr('r', sizeOfBtn * 1.1)
         .attr('opacity', '1')
