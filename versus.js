@@ -20,7 +20,7 @@ versus_g_nonfatal = svg_versus.append("g").attr("transform", "translate(" + (VER
 
 versus_g_fatal = svg_versus.append("g").attr("transform", "translate(" + (VERSUS_LEFT + (VERSUS_WIDTH /2) + 25) + "," + (VERSUS_TOP - 20) + ")");
 
-const VERSUS_GAP_HALF = 250;
+const VERSUS_GAP_HALF = 235;
 
 // set versus y scale
 versus_y = d3.scaleBand().range([0, VERSUS_HEIGHT])

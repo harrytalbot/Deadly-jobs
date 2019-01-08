@@ -191,7 +191,7 @@ function drawScatterPlot() {
                 var xPosition = scatter_x(d.nf_total_rate) + SCATTER_LEFT + (TOOLTIP_WIDTH / 2) + 25; 
                 var yPosition = scatter_y(d.f_total_rate) - (TOOLTIP_HEIGHT / 2) - 25;
                 tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-                tooltip.select('#scatter_tooltext_ind').text("Industry: "  + d.occupation.trim())
+                tooltip.select('#scatter_tooltext_ind').text("Industry: "  + d.majorOccNameGroup)
                 tooltip.select('#scatter_tooltext_f').text("Fatal: " + d3.format(".3n")(d.f_total_rate))
                 tooltip.select('#scatter_tooltext_nf').text("Non Fatal: " + d3.format(",.2f")(d.nf_total_rate))
             })
