@@ -36,29 +36,71 @@ const STACK_COLOURS_EXTRA = [TRANS_BLUE, VIOLENCE_RED, FIRE_ORANGE, FALLS_PURP, 
 // INFO SCREENS
 
 const STACKED_INFO_TEXTS_TOTAL = [
-    'Forest, Conservation and Logging workers',
-    'were involved in 5 times more fatal',
-    'accidents than the second most dangerous',
-    'job in 2016.', 
+    'Forestry, Conservation and Logging workers were',
+    'involved in 5 times more fatal accidents than',
+    'the second most dangerous job in 2016.',
     '',
-    'The nature of the work is high risk - as well',
-    'as often far from medical aid - however,',
-    'there were no fatalities due to falls, slips',
-    'or trips.']
+    'Police, Firefighters and Lawyers were all less likely',
+    'to die at work than Agricultural and Construction',
+    'workers - but it\'s the Healthcare Practitioners',
+    'who are the safest.' 
+     ]
 const STACKED_INFO_TEXTS_TRANS = [
-    'Despite the safety of modern aviation,',
-    'Air transportation workers have the',
-    'highest fatality rate in their industy.', 
+    'Transportation-related deaths rose by 7% to 1,338 ',
+    'in 2016. Despite the safety of modern aviation,',
+    'air transportation workers have the highest fatality',
+    'rate in their industy, reporting 130 cases.',
     '',
-    'And if you\'re a material mover - such as a',
-    'boat or lorry loader - you\'re better off not',
-    'taking that promotion.']
-const STACKED_INFO_TEXTS_VIOLENCE = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'viol']
-const STACKED_INFO_TEXTS_FEXP = ['Fires and Explosions the interesting thing is', 'i have no idea' , 'what i am doing!', 'fexp']
-const STACKED_INFO_TEXTS_FST = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'fst']
-const STACKED_INFO_TEXTS_EXPO = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'expo']
-const STACKED_INFO_TEXTS_CONTACT = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'cont']
-const STACKED_INFO_TEXTS_OTHER = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'other']
+    '60% of transport deaths involved a vehicle - 628',
+    'fatalities involved more than one vehicle, and 342',
+    'involved a vehicle and a roadside object.']
+const STACKED_INFO_TEXTS_VIOLENCE = [
+    'Unsurprisingly, Law enforcement workers are most',
+    'at risk of fatal violence at work, with the figure',
+    'rising 32% from 2015.',
+    '',
+    'And while sales work might seem a safe job, ',
+    'supervisors of sales workers are 4.7x more likely',
+    'to be involved in a fatal violent attack than their',
+    'supervisee.'
+    ]
+const STACKED_INFO_TEXTS_FEXP = [
+    'Your chances of being involved in a deadly fire or',
+    'explosion are the slimmest of all the causes listed',
+    '- only 4% of jobs have a fatality rate higher than ',
+    '1 in 100,000.',
+    '',
+    'In 2016, it was cited as the cause of death in 88',
+    'cases - down 28% from 2015, and 38% from 2011.'
+    ]
+const STACKED_INFO_TEXTS_FST = [
+    'Most common in construction or maintanance ',
+    'roles, there were 849 reported cases of ',
+    'fatal falls, slips or trips, up 24.7% from 2011.',
+    '',
+    'Surprisingly, religious workers are more',
+    ' likely to fall, slip or trip to their death than',
+    'Entertainers, Logging Workers or Mechanics',
+    ]
+const STACKED_INFO_TEXTS_EXPO = [
+    'Exposure to harmful substances or environments',
+    'accounted for 9.9% of workplace deaths in 2016, ',
+    'with Electricity accounting for 154 cases (5.1%)',
+    'and Extreme Temperature 48 cases (0.92%).',
+    '',
+    'Overdoses from the non-medical use of drugs or',
+    'alcohol while at work increased by 32% from 165 ',
+    'in 2015 to 217 in 2016.', 
+    ]
+const STACKED_INFO_TEXTS_CONTACT = [
+    '72.6% of Forestry, Conservation and Logging ',
+    'fatalities were caused by contact with objects ',
+    'or equipment.',
+    ]
+const STACKED_INFO_TEXTS_OTHER = [
+    'On occasion accidents cannot be classified into',
+    'existing categories.'
+]
 
 
 const BAR_PADDING = 0.2;

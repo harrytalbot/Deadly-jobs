@@ -42,7 +42,7 @@ function drawVersusChart() {
     
     // bars
     versus_g_fatal.append("g")
-        .attr("fill", "steelblue")
+        .attr("fill", "orange")
         .selectAll("g")
         .data(versus_dataset)
         .enter().append("rect")
@@ -96,7 +96,7 @@ function drawVersusChart() {
             
 
     versus_g_nonfatal.append("g")
-        .attr("fill", "orange")
+        .attr("fill", "steelblue")
         .selectAll("g")
         .data(versus_dataset)
         .enter().append("rect")
@@ -116,12 +116,12 @@ function drawVersusChart() {
             .on("mouseover", function (d) {
                 fadeOutVersus('#versus_rect', .2, d);
                 fadeInVersus("#versus_bar_label", 1, d);
-                //d3.selectAll('.versus_average_text').transition().style("opacity", 0.2).attr("opacity", 0);
+                d3.selectAll('.versus_average_text').transition().style("opacity", 0.2).attr("opacity", 0);
             })
             .on("mouseout", function (d) {
                 fadeOutVersus('#versus_rect', 1, d);
                 fadeInVersus("#versus_bar_label", 0, d);
-                //d3.selectAll('.versus_average_text').transition().style("opacity", 1).attr("opacity", 0.5); //style for text, att for lines
+                d3.selectAll('.versus_average_text').transition().style("opacity", 1).attr("opacity", 0.5); //style for text, att for lines
             });
 
     versus_g_nonfatal.append("g")
@@ -283,9 +283,9 @@ function drawVersusButtons() {
      .attr('cy', 100)
      .attr('r', sizeOfBtn * 1.1)
      .attr('opacity', BUTTON_FADED)
-     .attr('stroke', 'orange')
+     .attr('stroke', 'steelblue')
      .attr('stroke-width', '3')
-     .attr('fill', 'orange')
+     .attr('fill', 'steelblue')
      .on("click", function () { clickVersusButton('nf_total_rate') })
      .on('mouseover', function () { mouseOverVersusButton('nf_total_rate') })
      .on('mouseout', function () { mouseOutVersusButton('nf_total_rate') })
@@ -320,9 +320,9 @@ function drawVersusButtons() {
         .attr('cy', 100)
         .attr('r', sizeOfBtn * 1.1)
         .attr('opacity', '1')
-        .attr('stroke', 'steelblue')
+        .attr('stroke', 'orange')
         .attr('stroke-width', '3')
-        .attr('fill', 'steelblue')
+        .attr('fill', 'orange')
         .on("click", function () { clickVersusButton('f_total_rate') })
         .on('mouseover', function () { mouseOverVersusButton('f_total_rate') })
         .on('mouseout', function () { mouseOutVersusButton('f_total_rate') })

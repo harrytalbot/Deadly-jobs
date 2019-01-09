@@ -128,16 +128,20 @@
     color: #377eb8
   }
 
+  mark.violence {
+    color: red
+  }
+
   mark.oabr {
     color: #f0b27a
   }
 
   mark.nonfatal {
-    color: orange;
+    color: steelblue;
   }
 
   mark.fatal {
-    color: steelblue;
+    color: orange;
   }
 
   /* AXIS BITS /////////////////////////////////////////////////////////////////*/

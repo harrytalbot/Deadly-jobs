@@ -18,7 +18,7 @@ scatter_y = d3.scaleLinear().range([SCATTER_HEIGHT, 0])
 // set scatter x scale
 scatter_x = d3.scaleLinear().range([0, SCATTER_WIDTH])
 // set the scatter_x colors                   
-scatter_z = d3.scaleLinear().range(["LightBlue ", "SteelBlue "]);
+scatter_z = d3.scaleLinear().range(["white ", "purple"]);
 
 var scatter_plotSize = d3.scaleLinear().range([5,12])
 
@@ -225,7 +225,7 @@ function drawScatterVersus(){
     
     // bars
     scatter_versus_g_fatal.append("g")
-        .attr("fill", "steelblue")
+        .attr("fill", "orange")
         .selectAll("g")
         .data(scatter_versus_dataset_filtered)
         .enter().append("rect")
@@ -278,7 +278,7 @@ function drawScatterVersus(){
             
 
     scatter_versus_g_nonfatal.append("g")
-        .attr("fill", "orange")
+        .attr("fill", "steelblue")
         .selectAll("g")
         .data(scatter_versus_dataset_filtered)
         .enter().append("rect")
@@ -508,9 +508,9 @@ function drawScatterVersusButtons() {
         .attr('cy', 50)
         .attr('r', sizeOfBtn * 1.1)
         .attr('opacity', 0)
-        .attr('stroke', 'orange')
+        .attr('stroke', 'steelblue')
         .attr('stroke-width', '3')
-        .attr('fill', 'orange')
+        .attr('fill', 'steelblue')
         .on("click", function () { clickScatterVersusButton('nf_total_rate') })
         .on('mouseover', function () { mouseOverScatterVersusButton('nf_total_rate') })
         .on('mouseout', function () { mouseOutScatterVersusButton('nf_total_rate') })
@@ -548,9 +548,9 @@ function drawScatterVersusButtons() {
         .attr('cy', 50)
         .attr('r', sizeOfBtn * 1.1)
         .attr('opacity', '0')
-        .attr('stroke', 'steelblue')
+        .attr('stroke', 'orange')
         .attr('stroke-width', '3')
-        .attr('fill', 'steelblue')
+        .attr('fill', 'orange')
         .on("click", function () { clickScatterVersusButton('f_total_rate') })
         .on('mouseover', function () { mouseOverScatterVersusButton('f_total_rate') })
         .on('mouseout', function () { mouseOutScatterVersusButton('f_total_rate') })
@@ -659,7 +659,7 @@ function updateScatterVersus(code) {
         .attr("y", function (d) { return scatter_versus_y(d.occupation) })
         .attr("x", function (d) { return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF })//+ 3 })
         .attr("height", scatter_versus_y.bandwidth())
-        .attr("fill", "steelblue")
+        .attr("fill", "orange")
         .on("mouseover", function (d) { console.log(d.occCode) })
         .transition('scatter_versus_bar_trans')
         .duration(400)
@@ -691,7 +691,7 @@ function updateScatterVersus(code) {
         .attr('class', 'scatter_versus_nonfatal_rect')
         .attr("y", function (d) { return scatter_versus_y(d.occupation) })
         .attr("height", scatter_versus_y.bandwidth())
-        .attr("fill", "orange")
+        .attr("fill", "steelblue")
         .on("mouseover", function (d) { console.log(d.occCode) })
         .transition('scatter_versus_bar_trans')
         .duration(400)
