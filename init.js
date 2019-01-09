@@ -24,6 +24,9 @@ var scatter_versus_z;
 
 var currentPagePos = 0;
 
+var fatalFormatter = d3.format(".3n");
+var nonFatalFormatter = d3.format(",.2f");
+
 d3.select('body').attr("class", "background"); // PAGE BACKGROUND COLOUR
 
 
@@ -139,6 +142,8 @@ function begin(){
 
     drawScatterPlot();
     drawScatterAxis();
+    drawScatterEmploymentLegend();
+    drawScatterIncomeLegend();
 
     drawScatterVersus();
     drawScatterVersusAxis();
@@ -178,7 +183,7 @@ function KeyPressHappened(e){
     }
 
     $('html, body').animate({
-        scrollTop: $(sections[currentPagePos]).offset().top
+        scrollTop: $(sections[4]).offset().top
     }, 1000);
 
     console.log(code)

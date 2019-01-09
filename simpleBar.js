@@ -138,7 +138,7 @@ function drawSimpleBarChart() {
                 var yPosition = simpleBar_y(d.data.outcome) + ((d.data.outcome == 'Fatal') ? -8 : 179);
                 tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
                 tooltip.select("text")
-                .text(d3.format(".3n")(d[1] - d[0]) + '%');
+                .text(fatalFormatter(d[1] - d[0]) + '%');
             });
     }
 

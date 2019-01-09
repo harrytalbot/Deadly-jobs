@@ -176,27 +176,7 @@ function drawStackedChart() {
             .text('jsdn')
     }
 
-         // avg lines
-    stacked_g.append("line")
-         .style("stroke", "white")
-         .attr('stroke-width', '3')
-         .attr('opacity', 0.5)
-         .attr("x1", stacked_x(4.37))
-         .attr("y1", 0)
-         .attr("x2", stacked_x(4.37))
-         .attr("y2", STACKED_HEIGHT);
- 
-    stacked_g.append("text")
-         //.attr("x", versus_x_fatal(fatalTotal / numBars) + VERSUS_GAP_HALF)
-         //.attr("y", VERSUS_HEIGHT)
-         .attr('id', 'versus_average_text')
-         .attr('class', 'versus_average_text')
-         .attr("transform", "translate("+ (stacked_x(4.37) + 10) + ","+ (STACKED_HEIGHT - 10) + ")")
-         .text("Total Fatality Average: 4.37")
-         .attr("font-family", "Lora")
-         .attr("font-size", "20px")
-         .attr("font-weight", "bold")
-         .attr("fill", "white")
+
 
          // now the chart
     stacked_g.append("g")
@@ -261,12 +241,34 @@ function drawStackedChart() {
                 tooltip.select('#stacked_tooltext_tEmp').text("Total Emp: " + d.data.totEmp)
 
                 for (let index = 0; index < FATAL_CAUSE_RATES.length; index++) {
-                    var rate = d3.format(".3n")(d.data[FATAL_CAUSE_RATES[index]]);
+                    var rate = fatalFormatter(d.data[FATAL_CAUSE_RATES[index]]);
                     tooltip.select('#stacked_tooltext_' + FATAL_CAUSE_RATES[index])
                          .text(READABLE_CAUSES[index] + ": " + rate)
                 }
 
-            })         
+            })      
+            
+                 // avg lines
+    stacked_g.append("line")
+    .style("stroke", "white")
+    .attr('stroke-width', '3')
+    .attr('opacity', 0.5)
+    .attr("x1", stacked_x(4.37))
+    .attr("y1", 0)
+    .attr("x2", stacked_x(4.37))
+    .attr("y2", STACKED_HEIGHT);
+
+stacked_g.append("text")
+    //.attr("x", versus_x_fatal(fatalTotal / numBars) + VERSUS_GAP_HALF)
+    //.attr("y", VERSUS_HEIGHT)
+    .attr('id', 'versus_average_text')
+    .attr('class', 'versus_average_text')
+    .attr("transform", "translate("+ (stacked_x(4.37) + 10) + ","+ (STACKED_HEIGHT - 10) + ")")
+    .text("Total Fatality Average: 4.37")
+    .attr("font-family", "Lora")
+    .attr("font-size", "20px")
+    .attr("font-weight", "bold")
+    .attr("fill", "white")
 }
 
 function drawStackedInfoTexts() {   

@@ -42,7 +42,7 @@ function drawVersusChart() {
     
     // bars
     versus_g_fatal.append("g")
-        .attr("fill", "orange")
+        .attr("fill", FATAL_COLOUR)
         .selectAll("g")
         .data(versus_dataset)
         .enter().append("rect")
@@ -82,7 +82,7 @@ function drawVersusChart() {
         .enter()
         .append("text")
             .attr('id', 'versus_bar_label')
-            .text(function (d) { return d3.format(".3n")(d.f_total_rate) + " | " + d.f_total })
+            .text(function (d) { return fatalFormatter(d.f_total_rate) + " | " + d.f_total })
             .attr("x", function (d) {
                 return versus_x_fatal(d.f_total_rate) + VERSUS_GAP_HALF + 10;
             })
@@ -96,7 +96,7 @@ function drawVersusChart() {
             
 
     versus_g_nonfatal.append("g")
-        .attr("fill", "steelblue")
+        .attr("fill", NONFATAL_COLOUR)
         .selectAll("g")
         .data(versus_dataset)
         .enter().append("rect")
@@ -116,12 +116,12 @@ function drawVersusChart() {
             .on("mouseover", function (d) {
                 fadeOutVersus('#versus_rect', .2, d);
                 fadeInVersus("#versus_bar_label", 1, d);
-                d3.selectAll('.versus_average_text').transition().style("opacity", 0.2).attr("opacity", 0);
+                d3.selectAll('#versus_average_text').transition().style("opacity", 0.2);
             })
             .on("mouseout", function (d) {
                 fadeOutVersus('#versus_rect', 1, d);
                 fadeInVersus("#versus_bar_label", 0, d);
-                d3.selectAll('.versus_average_text').transition().style("opacity", 1).attr("opacity", 0.5); //style for text, att for lines
+                d3.selectAll('#versus_average_text').transition().style("opacity", 1);
             });
 
     versus_g_nonfatal.append("g")
@@ -130,7 +130,7 @@ function drawVersusChart() {
         .enter()
         .append("text")
             .attr('id', 'versus_bar_label')
-            .text(function (d) { return d3.format(",.2f")(d.nf_total_rate) + " | " + d.nf_total})
+            .text(function (d) { return nonFatalFormatter(d.nf_total_rate) + " | " + d.nf_total})
             .attr("x", function (d) {
                 return versus_x_nonfatal(-d.nf_total_rate) - VERSUS_GAP_HALF - 10;
             })
@@ -162,7 +162,7 @@ function drawVersusChart() {
         .attr('id', 'versus_average_text')
         .attr('class', 'versus_average_text')
         .attr("transform", "translate("+ (versus_x_fatal(fatalTotal / numBars) + VERSUS_GAP_HALF + 10) + ","+ (VERSUS_HEIGHT- 10) + ")")
-        .text("Average: " +  d3.format(".3n")(fatalTotal / numBars))
+        .text("Average: " +  fatalFormatter(fatalTotal / numBars))
         .attr("font-family", "Lora")
         .attr("font-size", "20px")
         .attr("font-weight", "bold")
@@ -186,7 +186,7 @@ function drawVersusChart() {
         .attr('id', 'versus_average_text')
         .attr('class', 'versus_average_text')
         .attr("transform", "translate("+ (-versus_x_nonfatal(nonFatalTotal / numBars) - VERSUS_GAP_HALF - 10) + ","+ (VERSUS_HEIGHT - 10) + ")")
-        .text("Average: " + d3.format(",.2f")(nonFatalTotal / numBars) )
+        .text("Average: " + nonFatalFormatter(nonFatalTotal / numBars) )
         .attr("font-family", "Lora")
         .attr("font-size", "20px")
         .attr("font-weight", "bold")
@@ -283,9 +283,9 @@ function drawVersusButtons() {
      .attr('cy', 100)
      .attr('r', sizeOfBtn * 1.1)
      .attr('opacity', BUTTON_FADED)
-     .attr('stroke', 'steelblue')
+     .attr('stroke', NONFATAL_COLOUR)
      .attr('stroke-width', '3')
-     .attr('fill', 'steelblue')
+     .attr('fill', NONFATAL_COLOUR)
      .on("click", function () { clickVersusButton('nf_total_rate') })
      .on('mouseover', function () { mouseOverVersusButton('nf_total_rate') })
      .on('mouseout', function () { mouseOutVersusButton('nf_total_rate') })
@@ -320,9 +320,9 @@ function drawVersusButtons() {
         .attr('cy', 100)
         .attr('r', sizeOfBtn * 1.1)
         .attr('opacity', '1')
-        .attr('stroke', 'orange')
+        .attr('stroke', FATAL_COLOUR)
         .attr('stroke-width', '3')
-        .attr('fill', 'orange')
+        .attr('fill', FATAL_COLOUR)
         .on("click", function () { clickVersusButton('f_total_rate') })
         .on('mouseover', function () { mouseOverVersusButton('f_total_rate') })
         .on('mouseout', function () { mouseOutVersusButton('f_total_rate') })

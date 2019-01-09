@@ -22,6 +22,8 @@ CAUSES_MAP.set("allOther_cases", 'All Other Causes')
 //const STACK_COLOURS = ["#b2182b", "#ef8a62", "#fddbc7", "#f7f7f7", "#d1e5f0", "#67a9cf", "#2166ac"]
 // adapted from http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=7
 
+const FATAL_COLOUR = 'Gold';
+const NONFATAL_COLOUR = 'MediumOrchid'
 const TRANS_BLUE = "#377eb8";
 const VIOLENCE_RED = "#e41a1c";
 const FIRE_ORANGE = "#ff7f00";
@@ -80,7 +82,7 @@ const STACKED_INFO_TEXTS_FST = [
     '',
     'Surprisingly, religious workers are more',
     ' likely to fall, slip or trip to their death than',
-    'Entertainers, Logging Workers or Mechanics',
+    'Entertainers, Logging Workers or Mechanics.',
     ]
 const STACKED_INFO_TEXTS_EXPO = [
     'Exposure to harmful substances or environments',
@@ -133,17 +135,21 @@ const STACKED_BOTTOM = 40;
 const STACKED_HEIGHT =  screen.height - 350 //800;
 const STACKED_WIDTH = DEVICE_WIDTH - STACKED_LEFT - STACKED_RIGHT;
 
+
+
 const SCATTER_LEFT = 100;
 const SCATTER_RIGHT = 500;
-const SCATTER_TOP = 100;
+const SCATTER_TOP = 50;
 const SCATTER_BOTTOM = 100;
-const SCATTER_HEIGHT = 700;
+const SCATTER_HEIGHT = 650;
 const SCATTER_WIDTH = DEVICE_WIDTH - SCATTER_LEFT - SCATTER_RIGHT;
 
-const SCATTER_VERSUS_WIDTH = SCATTER_WIDTH / 2;
+
+
+const SCATTER_VERSUS_WIDTH = (SCATTER_WIDTH / 2) + 40;
 const SCATTER_VERSUS_HEIGHT = SCATTER_HEIGHT / 2;
 const SCATTER_VERSUS_LEFT = 10;
 const SCATTER_VERSUS_RIGHT = 10;
 const SCATTER_VERSUS_TOP = 10;
-const SCATTER_VERSUS_BOTTOM = 30;
+const SCATTER_VERSUS_BOTTOM = 70;
 
