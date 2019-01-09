@@ -17,7 +17,7 @@ var svg_stacked = d3.select('body')
 
 stacked_g = svg_stacked.append("g").attr("transform", "translate(" + STACKED_LEFT + "," + (STACKED_TOP - 25) + ")"); //space for label
 
-info_g = svg_stacked.append("g").attr("transform", "translate(" + (STACKED_WIDTH -100)+ ",100)");
+info_g = svg_stacked.append("g").attr("transform", "translate(" + (STACKED_WIDTH -100)+ ",50)");
 
 // set stacked y scale
 stacked_y = d3.scaleBand().range([0, STACKED_HEIGHT])
@@ -198,6 +198,7 @@ function drawStackedChart() {
             })
             .attr("height", stacked_y.bandwidth())
             .on("mouseover", function (d) {
+                console.log(d.data.f_total_rate)
                 tooltip.transition('stackedTooltipMouseOver').attr("opacity", 1);    
                 stackedIndusty =  d.data.majorOccCodeGroup; 
                 shouldColor = [];
@@ -374,35 +375,105 @@ function drawStackedAxis() {
 
 }
 
-// add the legend - not used
-function drawStackedLegend() {
-    var legend = stacked_g.append("g")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", 10)
-        .attr("text-anchor", "end")
-        .selectAll("g")
-        .data(FATAL_CAUSE_RATES.slice().reverse())
-        .enter().append("g")
-        .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
-
-    legend.append("rect")
-        .attr("x", STACKED_WIDTH - 19)
-        .attr("width", 19)
-        .attr("height", 19)
-        .attr("fill", stacked_z);
-
-    legend.append("text")
-        .attr("x", STACKED_WIDTH - 24)
-        .attr("y", 9.5)
-        .attr("dy", "0.32em")
-        .attr("fill", 'white')
-        .text(function (d) { return d; });
-}
-
 function drawStackedButtons() {
 
     var spaceBetweenCentres =  (STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT) / 9;
-    var sizeOfBtn = (spaceBetweenCentres / 3) - 5
+    var sizeOfBtn = (spaceBetweenCentres / 3) - 15
+
+    var buttonGroup = d3.select('body')
+        .select('#svgStackedSortButton')
+        .attr('width', STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT)
+        .attr('height', 275)
+        .attr("class", "background") // SVG BACKGROUND COLOUR
+        .attr("align","center");
+
+    buttonGroup.append('text')
+        .attr('id', 'stacked_tip')
+        .attr('x', (STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT) / 2)
+        .attr('y', 40)
+        .attr('class','article-text-tip')
+        .attr("text-anchor", "middle")
+        .style('fill', 'white')
+        .text("Use the buttons below to sort the bar chart by specific causes. Mouse over the bars to view specific rates, and highlight all occupations in the same industy.")
+
+    // Add first for total
+    buttonGroup.append('circle')
+        .attr('id', 'f_total_rate_stacked_btn')
+        .attr('cx', spaceBetweenCentres)
+        .attr('cy', 130)
+        .attr('r', sizeOfBtn * 1.1)
+        .attr('opacity', '1')
+        .attr('stroke', 'white')
+        .attr('stroke-width', '3')
+        .attr('fill', 'white')
+        .on("click", function () { clickStackedButton(-1, this) })
+        .on('mouseover', function () { mouseOverStackedButton(-1) })
+        .on('mouseout', function () { mouseOutStackedButton(-1) })
+    buttonGroup.append('text')
+        .attr('id', 'f_total_rate_stacked_lbl')
+        .attr('x', spaceBetweenCentres)
+        .attr('y', 230)
+        .attr("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "25px")
+        .style('fill', 'white')
+        .style('opacity', '1')
+        .style('font-weight', '900')
+        .text("Total")
+    buttonGroup.append('text')
+        .attr('id', 'f_total_rate_stacked_lbl')
+        .attr('x', spaceBetweenCentres)
+        .attr('y', 260)
+        .attr("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "25px")
+        .style('fill', 'white')
+        .style('opacity', '1')
+        .style('font-weight', '900')
+        .text("Fatalities")
+
+
+    // add the rest
+    for (let index = 0; index < 7; index++) {
+        buttonGroup.append('circle')
+            .attr('id', FATAL_CAUSE_RATES[index] + '_stacked_btn')
+            .attr('cx', (2 * spaceBetweenCentres) + (index * spaceBetweenCentres) )
+            .attr('cy', 130)
+            .attr('r', sizeOfBtn)
+            .attr('opacity', BUTTON_FADED)
+            .attr('stroke', STACK_COLOURS[index])
+            .attr('stroke-width', '3')
+            .attr('fill', STACK_COLOURS[index])
+            .on("click", function () { clickStackedButton(index, this) })
+            .on('mouseover', function () { mouseOverStackedButton(index) })
+            .on('mouseout', function () { mouseOutStackedButton(index) })
+        buttonGroup.append('text')
+            .attr('id', FATAL_CAUSE_RATES[index] + '_stacked_lbl')
+            .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) )
+            .attr('y', 230)
+            .attr("text-anchor", "middle")
+            .style("font-family", 'Lora')
+            .style("font-size", "25px")
+            .style("font-family", 'Lora')
+            .style("font-size", "25px")
+            .style('fill', 'white')
+            .style('opacity', BUTTON_FADED)
+            .style('font-weight', '900')
+            .text(READABLE_CAUSES_TOP[index])
+        buttonGroup.append('text')
+            .attr('id', FATAL_CAUSE_RATES[index] + '_stacked_lbl')
+            .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) )
+            .attr('y', 260)
+            .attr("text-anchor", "middle")
+            .style("font-family", 'Lora')
+            .style("font-size", "25px")
+            .style("font-family", 'Lora')
+            .style("font-size", "25px")
+            .style('fill', 'white')
+            .style('opacity', BUTTON_FADED)
+            .style('font-weight', '900')
+            .text(READABLE_CAUSES_BOTTOM[index])
+    }
 
     function clickStackedButton(justSelected, d) {
         //if the btn just clicked is different to the currently selected, fade currently selected
@@ -482,91 +553,6 @@ function drawStackedButtons() {
                 return (stackedFirstCause == num) ? 1 : BUTTON_FADED;
             })
 
-    }
-
-
-    var buttonGroup = d3.select('body')
-        .select('#svgStackedSortButton')
-        .attr('width', STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT)
-        .attr("class", "background") // SVG BACKGROUND COLOUR
-
-    // Add first for total
-    buttonGroup.append('circle')
-        .attr('id', 'f_total_rate_stacked_btn')
-        .attr('cx', spaceBetweenCentres - (0.5* sizeOfBtn))
-        .attr('cy', 80)
-        .attr('r', sizeOfBtn * 1.1)
-        .attr('opacity', '1')
-        .attr('stroke', 'white')
-        .attr('stroke-width', '3')
-        .attr('fill', 'white')
-        .on("click", function () { clickStackedButton(-1, this) })
-        .on('mouseover', function () { mouseOverStackedButton(-1) })
-        .on('mouseout', function () { mouseOutStackedButton(-1) })
-    buttonGroup.append('text')
-        .attr('id', 'f_total_rate_stacked_lbl')
-        .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn))
-        .attr('y', '200')
-        .attr("text-anchor", "middle")
-        .style("font-family", 'Lora')
-        .style("font-size", "25px")
-        .style('fill', 'white')
-        .style('opacity', '1')
-        .style('font-weight', '900')
-        .text("Total")
-    buttonGroup.append('text')
-        .attr('id', 'f_total_rate_stacked_lbl')
-        .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn))
-        .attr('y', '230')
-        .attr("text-anchor", "middle")
-        .style("font-family", 'Lora')
-        .style("font-size", "25px")
-        .style('fill', 'white')
-        .style('opacity', '1')
-        .style('font-weight', '900')
-        .text("Fatalities")
-
-
-    // add the rest
-    for (let index = 0; index < 7; index++) {
-        buttonGroup.append('circle')
-            .attr('id', FATAL_CAUSE_RATES[index] + '_stacked_btn')
-            .attr('cx', (2 * spaceBetweenCentres) + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
-            .attr('cy', '80')
-            .attr('r', sizeOfBtn)
-            .attr('opacity', BUTTON_FADED)
-            .attr('stroke', STACK_COLOURS[index])
-            .attr('stroke-width', '3')
-            .attr('fill', STACK_COLOURS[index])
-            .on("click", function () { clickStackedButton(index, this) })
-            .on('mouseover', function () { mouseOverStackedButton(index) })
-            .on('mouseout', function () { mouseOutStackedButton(index) })
-        buttonGroup.append('text')
-            .attr('id', FATAL_CAUSE_RATES[index] + '_stacked_lbl')
-            .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
-            .attr('y', '200')
-            .attr("text-anchor", "middle")
-            .style("font-family", 'Lora')
-            .style("font-size", "25px")
-            .style("font-family", 'Lora')
-            .style("font-size", "25px")
-            .style('fill', 'white')
-            .style('opacity', BUTTON_FADED)
-            .style('font-weight', '900')
-            .text(READABLE_CAUSES_TOP[index])
-        buttonGroup.append('text')
-            .attr('id', FATAL_CAUSE_RATES[index] + '_stacked_lbl')
-            .attr('x', 2 * spaceBetweenCentres + (index * spaceBetweenCentres) - (0.5 * sizeOfBtn))
-            .attr('y', '230')
-            .attr("text-anchor", "middle")
-            .style("font-family", 'Lora')
-            .style("font-size", "25px")
-            .style("font-family", 'Lora')
-            .style("font-size", "25px")
-            .style('fill', 'white')
-            .style('opacity', BUTTON_FADED)
-            .style('font-weight', '900')
-            .text(READABLE_CAUSES_BOTTOM[index])
     }
 
 }

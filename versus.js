@@ -116,15 +116,12 @@ function drawVersusChart() {
             .on("mouseover", function (d) {
                 fadeOutVersus('#versus_rect', .2, d);
                 fadeInVersus("#versus_bar_label", 1, d);
-                d3.selectAll('#versus_average_text').transition().style("opacity", 0.2);
-
+                //d3.selectAll('.versus_average_text').transition().style("opacity", 0.2).attr("opacity", 0);
             })
             .on("mouseout", function (d) {
                 fadeOutVersus('#versus_rect', 1, d);
                 fadeInVersus("#versus_bar_label", 0, d);
-                d3.selectAll('#versus_average_text').transition().style("opacity", 1);
-
-
+                //d3.selectAll('.versus_average_text').transition().style("opacity", 1).attr("opacity", 0.5); //style for text, att for lines
             });
 
     versus_g_nonfatal.append("g")
@@ -150,6 +147,7 @@ function drawVersusChart() {
     // avg lines
     versus_g_fatal.append("line")
         .attr('id', 'versus_fatal_average_line')
+        .attr('class', 'versus_average_text')
         .style("stroke", "white")
         .attr('stroke-width', '3')
         .attr('opacity', 0.5)
@@ -173,6 +171,7 @@ function drawVersusChart() {
         // avg lines
     versus_g_nonfatal.append("line")
         .attr('id', 'versus_nonfatal_average_line')
+        .attr('class', 'versus_average_text')
         .style("stroke", "white")
         .attr('stroke-width', '3')
         .attr('opacity', 0.5)
@@ -281,7 +280,7 @@ function drawVersusButtons() {
     buttonGroup.append('circle')
      .attr('id', 'nf_total_rate_versus_btn')
      .attr('cx', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-     .attr('cy', 80)
+     .attr('cy', 100)
      .attr('r', sizeOfBtn * 1.1)
      .attr('opacity', BUTTON_FADED)
      .attr('stroke', 'orange')
@@ -293,7 +292,7 @@ function drawVersusButtons() {
  buttonGroup.append('text')
      .attr('id', 'nf_total_rate_versus_lbl')
      .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-     .attr('y', '200')
+     .attr('y', 220)
      .attr("text-anchor", "middle")
      .style("font-family", 'Lora')
      .style("font-size", "25px")
@@ -304,7 +303,7 @@ function drawVersusButtons() {
  buttonGroup.append('text')
      .attr('id', 'nf_total_rate_versus_lbl')
      .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-     .attr('y', '230')
+     .attr('y', 250)
      .attr("text-anchor", "middle")
      .style("font-family", 'Lora')
      .style("font-size", "25px")
@@ -318,7 +317,7 @@ function drawVersusButtons() {
     buttonGroup.append('circle')
         .attr('id', 'f_total_rate_versus_btn')
         .attr('cx', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-        .attr('cy', 80)
+        .attr('cy', 100)
         .attr('r', sizeOfBtn * 1.1)
         .attr('opacity', '1')
         .attr('stroke', 'steelblue')
@@ -330,7 +329,7 @@ function drawVersusButtons() {
     buttonGroup.append('text')
         .attr('id', 'f_total_rate_versus_lbl')
         .attr('x', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-        .attr('y', '200')
+        .attr('y', 220)
         .attr("text-anchor", "middle")
         .style("font-family", 'Lora')
         .style("font-size", "25px")
@@ -341,7 +340,7 @@ function drawVersusButtons() {
     buttonGroup.append('text')
         .attr('id', 'f_total_rate_versus_lbl')
         .attr('x', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-        .attr('y', '230')
+        .attr('y', 250)
         .attr("text-anchor", "middle")
         .style("font-family", 'Lora')
         .style("font-size", "25px")

@@ -35,10 +35,26 @@ const STACK_COLOURS_EXTRA = [TRANS_BLUE, VIOLENCE_RED, FIRE_ORANGE, FALLS_PURP, 
 
 // INFO SCREENS
 
-const STACKED_INFO_TEXTS_TOTAL = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'total']
-const STACKED_INFO_TEXTS_TRANS = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'trans']
+const STACKED_INFO_TEXTS_TOTAL = [
+    'Forest, Conservation and Logging workers',
+    'were involved in 5 times more fatal',
+    'accidents than the second most dangerous',
+    'job in 2016.', 
+    '',
+    'The nature of the work is high risk - as well',
+    'as often far from medical aid - however,',
+    'there were no fatalities due to falls, slips',
+    'or trips.']
+const STACKED_INFO_TEXTS_TRANS = [
+    'Despite the safety of modern aviation,',
+    'Air transportation workers have the',
+    'highest fatality rate in their industy.', 
+    '',
+    'And if you\'re a material mover - such as a',
+    'boat or lorry loader - you\'re better off not',
+    'taking that promotion.']
 const STACKED_INFO_TEXTS_VIOLENCE = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'viol']
-const STACKED_INFO_TEXTS_FEXP = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'fexp']
+const STACKED_INFO_TEXTS_FEXP = ['Fires and Explosions the interesting thing is', 'i have no idea' , 'what i am doing!', 'fexp']
 const STACKED_INFO_TEXTS_FST = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'fst']
 const STACKED_INFO_TEXTS_EXPO = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'expo']
 const STACKED_INFO_TEXTS_CONTACT = ['the interesting thing is', 'i have no idea' , 'what i am doing!', 'cont']
@@ -68,7 +84,7 @@ const SIMPLEBAR_BOTTOM = 100;
 const SIMPLEBAR_HEIGHT = 100;
 const SIMPLEBAR_WIDTH = DEVICE_WIDTH - SIMPLEBAR_LEFT - SIMPLEBAR_RIGHT;
 
-const STACKED_LEFT = 500;
+const STACKED_LEFT = 450;
 const STACKED_RIGHT = 100;
 const STACKED_TOP = 30;
 const STACKED_BOTTOM = 40;

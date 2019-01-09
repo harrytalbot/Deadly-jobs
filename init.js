@@ -153,7 +153,7 @@ function begin(){
 function KeyPressHappened(e){
 
     // sections to scroll to
-    var sections = ["#articleTop", "#svgVersusSortButton", "#infoSingleBar", "#svgStackedSortButton", "#svgScatter"]
+    var sections = ["#articleTop", "#svgVersusSortButton", "#infoBarText", "#svgStackedSortButton", "#svgScatter"]
 
     var code = ((e.charCode) && (e.keyCode==0)) ? e.charCode : e.keyCode; 
     

@@ -10,63 +10,73 @@
     width: 700px;
   }
 
-  .article-text-left {
+  .article-text-left, 
+  .article-text-right,
+  .article-text-center,
+  .article-text-tip,
+  .article-text-tip-first,
+  .versus-text-left {
     font-size: 35px;
     color: white;
     font-family: 'Lora', serif; 
     font-weight: 900;
     line-height: 40px;
     padding-top: 30px;
-    padding-left: 1%;
+    margin-bottom: 30px;
     padding-right: 1%;
+  }
+
+  .article-text-left {
     text-align: left;
     float: left;
-    margin-bottom: 30px;
+    padding-left: 1%;
     width: 95%;
   }
 
   .article-text-right {
-    font-size: 35px;
-    color: white;
-    font-family: 'Lora', serif; 
-    font-weight: 900;
-    line-height: 40px;
-    padding-top: 30px;
-    padding-left: 2.5%;
-    padding-right: 1%;
     text-align: right;
     float: right;
-    margin-bottom: 30px;
+    padding-left: 2.5%;
     width: 95%;
   }
 
   .article-text-center {
-    font-size: 35px;
-    color: white;
-    font-family: 'Lora', serif; 
-    font-weight: 900;
-    line-height: 40px;
-    padding-top: 30px;
-    padding-left: 2.5%;
-    padding-right: 1%;
     text-align: center;
-    margin-bottom: 30px;
-    width: auto;
+    display: inline-block;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+    margin-bottom: 0px;
+    width: 95%;
   }
 
   .article-text-tip {
     font-size: 20px;
-    color: white;
-    font-family: 'Lora', serif; 
-    font-weight: 900;
-    line-height: 40px;
     padding-top: 10px;
-    text-align: center;
     margin-bottom: 10px;
+    text-align: center;
     width: auto;
     padding-right: 300px;
     padding-left: 300px;
 
+  }
+  
+  .article-text-tip-first {
+    font-size: 20px;
+    padding-top: 40px;
+    margin-bottom: 10px;
+    text-align: center;
+    width: auto;
+    padding-right: 100px;
+    padding-left: 100px;
+  }
+  .versus-text-left {
+    display: inline-block; 
+    padding-top: 30px;
+    padding-left: 1%;
+    padding-right: 1%;
+    text-align: left;
+    float: left; /* ignore warning, this is needed*/
+    width: 65%;
   }
 
   .wrapper {
@@ -81,21 +91,6 @@
     overflow: hidden; /* if you don't want #second to wrap below #first */
 }
 
-  .versus-text-left {
-    display: inline-block; 
-    font-size: 35px;
-    color: white;
-    font-family: 'Lora', serif; 
-    font-weight: 900;
-    line-height: 40px;
-    padding-top: 30px;
-    padding-left: 1%;
-    padding-right: 1%;
-    text-align: left;
-    float: left;
-    margin-bottom: 30px;
-    width: 65%;
-  }
 
   .button_text {
     font-family: 'Lora', serif;
@@ -117,25 +112,33 @@
  
   .background {
     background-color: black;
-    overflow: hidden;
+      overflow: hidden; /**/
+    margin: auto;
   }   
 
-  body, html{
-    margin:0;
-    padding:0;
-}
   .red {
     background-color: red;
   }   
 
-  .article-text-left transInc {
+  mark {
+    background-color: black;
+  }
+
+  mark.trans {
     color: #377eb8
   }
 
-  .article-text-left oabr {
+  mark.oabr {
     color: #f0b27a
   }
 
+  mark.nonfatal {
+    color: orange;
+  }
+
+  mark.fatal {
+    color: steelblue;
+  }
 
   /* AXIS BITS /////////////////////////////////////////////////////////////////*/
 
