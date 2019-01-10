@@ -78,7 +78,7 @@
 }
 
 .wrapper-text-right {
-  display: inline-block; 
+  display: inline-block;
   padding-top: 30px;
   padding-right: 2.5%;
   text-align: right;
@@ -94,12 +94,11 @@
 }
 
 .wrapper {
- /* / width: 100%; */
+  /* / width: 100%; */
   padding-top: 100px;
   border: 1px solid black;
   overflow: hidden;
   font-size: 0;
-
   /* will contain if #first is longer than #second */
 }
 
@@ -112,7 +111,8 @@
 
 .background {
   background-color: black;
-  overflow: hidden; /**/
+  overflow: hidden;
+  /**/
   margin: auto;
 }
 
@@ -123,7 +123,7 @@
 }
 
 mark {
-  background-color: transparent ;
+  background-color: transparent;
 }
 
 mark.bls {
@@ -146,8 +146,28 @@ mark.violence {
   color: red
 }
 
+mark.fire {
+  color: #ff7f00
+}
+
+mark.falls {
+  color: #984ea3
+}
+
+mark.exp {
+  color: #ffff33
+}
+
+mark.contact {
+  color: #4daf4a
+}
+
 mark.oabr {
   color: #f0b27a
+}
+
+mark.other {
+  color: #e78ac3
 }
 
 
@@ -180,7 +200,6 @@ mark.oabr {
   opacity: 0
 }
 
-
 .axisScatterVersusY line {
   /* used on versus scatter axis ticks */
   stroke: white;
@@ -190,7 +209,7 @@ mark.oabr {
 .axisScatterVersusY path {
   /* used on axis */
   stroke: white;
-  stroke-width: 2 ;
+  stroke-width: 2;
   shape-rendering: crispEdges;
   pointer-events: "none";
 }

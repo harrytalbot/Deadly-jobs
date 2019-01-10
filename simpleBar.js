@@ -61,7 +61,7 @@ function drawSimpleBarChart() {
     simpleBar_g.append("text")
         .attr('id', 'simpleBarHint')
         .attr("x", SIMPLEBAR_WIDTH / 2)
-        .attr("y", -50)
+        .attr("y", -25)
         .style("text-anchor", "middle")
         .attr('class', 'simple_text_info')
         .attr("font-family", "Lora")
@@ -70,77 +70,123 @@ function drawSimpleBarChart() {
         .attr("fill", "white")
         .text("Mouse over the bars to view more detailed rates.")
 
-    
-    simpleBar_g.append("g")
+
+     bars = simpleBar_g.append("g")
         .selectAll("g")
         .data(d3.stack().keys(SIMPLE_CAUSES)(simpleBar_dataset))
         .enter().append("g")
-            .classed("simple-bar-group", true)
-            .attr("fill", function (d) { return simpleBar_z(d.key); })
-            .attr("opacity", 1) // so first fade animation is smooth
-            .on("mouseover", function (d) {
-                simpleBarMouseOverOcc = d.key;
-            })
-            .on("mousemove", function (d) {
-                simpleBarMouseOverOcc = d.key;
-            })
-        .selectAll("rect")
+        .classed("simple-bar-group", true)
+        .attr("fill", function (d) { return simpleBar_z(d.key); })
+        .attr("opacity", 1) // so first fade animation is smooth
+        .on("mouseover", function (d) {
+            simpleBarMouseOverOcc = d.key;
+        })
+        .on("mousemove", function (d) {
+            simpleBarMouseOverOcc = d.key;
+        })
+
+    bars.selectAll("rect")
         .data(function (d) { return d; })
         .enter().append("rect")
-            .classed("bar", true)
-            .attr("y", function (d) {
-                return simpleBar_y(d.data.outcome);
-            })
-            .attr("x", function (d) {
-                return simpleBar_x(d[0]);
-            })
-            .attr("width", function (d) {
-                return simpleBar_x(d[1]) - simpleBar_x(d[0]);
-            })
-            .attr("height", simpleBar_y.bandwidth())
-            .on("mouseover", function () {
-                //fade in tooltip
-                tooltip.transition()
-                    .duration(200)
-                    .attr("opacity", 1);
-                // fade in title
-                infoSingleBar.transition('simpleinfotrans').duration(400).style("color", simpleBar_z(simpleBarMouseOverOcc))
-                // fade out hint
-                simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').duration(400).style("opacity", 0)
-            })
-            .on("mouseout", function () { 
-                //fade out tooltip
-                tooltip.transition()
-                    .duration(200)
-                    .attr("opacity", 0);
-                // fade out title
-                infoSingleBar.transition('simpleinfotrans').duration(400).style("color", 'black')
-                // fade in hint
-                simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').delay(200).duration(400).style("opacity", 1)
-            })
-            .on("mousemove", function (d) {
-                var newText = CAUSES_MAP.get(d3.select(this.parentNode).datum().key)
-                
-                if (simpleBarInfoText !== newText) {
-                    if (simpleBarInfoText === ''){
-                        //simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').duration(400).style("opacity", 0).remove()
-                    }
-                    infoSingleBar.transition('simpleinfotrans').duration(200).style("opacity", 0) // fade out
-                    infoSingleBar.transition('simpleinfotrans')
+        .classed("bar", true)
+        .attr("y", function (d) {
+            return simpleBar_y(d.data.outcome);
+        })
+        .attr("x", function (d) {
+            return simpleBar_x(d[0]);
+        })
+        .attr("width", function (d) {
+            return simpleBar_x(d[1]) - simpleBar_x(d[0]);
+        })
+        .attr("height", simpleBar_y.bandwidth())
+        .on("mouseover", function () {
+            //fade in tooltip
+            tooltip.transition()
+                .duration(200)
+                .attr("opacity", 1);
+            // fade in title
+            //infoSingleBar.transition('simpleinfotrans').duration(400).style("color", simpleBar_z(simpleBarMouseOverOcc))
+            // fade out hint
+            simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').duration(400).style("opacity", 0)
+        })
+        .on("mouseout", function () {
+            //fade out tooltip
+            tooltip.transition().duration(200)
+                .attr("opacity", 0);
+            // fade out title
+            //infoSingleBar.transition('simpleinfotrans').duration(400).style("color", 'black')
+            // fade in hint
+            simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').delay(200).duration(400).style("opacity", 1)
+        })
+        .on("mousemove", function (d) {
+            /*var newText = CAUSES_MAP.get(d3.select(this.parentNode).datum().key)
+
+            if (simpleBarInfoText !== newText) {
+                if (simpleBarInfoText === '') {
+                    //simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').duration(400).style("opacity", 0).remove()
+                }
+                infoSingleBar.transition('simpleinfotrans').duration(200).style("opacity", 0) // fade out
+                infoSingleBar.transition('simpleinfotrans')
                     .text(newText)
                     .duration(200).delay(200)
                     .style("opacity", 1)
                     .style("color", simpleBar_z(simpleBarMouseOverOcc))
-                    simpleBarInfoText = newText;
-                }
+                simpleBar_g.select('#simpleBarHint').transition('simpleinfotrans').duration(400).text(newText).style("opacity", 1).style("fill", simpleBar_z(simpleBarMouseOverOcc))
 
-                var xPosition = d3.mouse(this)[0] + SIMPLEBAR_LEFT; //simpleBar_x(d[0])+ SIMPLEBAR_LEFT + ((simpleBar_x(d[1]) - simpleBar_x(d[0])) / 2);
-                var yPosition = simpleBar_y(d.data.outcome) + ((d.data.outcome == 'Fatal') ? -8 : 179);
-                tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-                tooltip.select("text")
+                simpleBarInfoText = newText;
+            }
+*/
+            
+            var xPosition = d3.mouse(this)[0] + SIMPLEBAR_LEFT; //simpleBar_x(d[0])+ SIMPLEBAR_LEFT + ((simpleBar_x(d[1]) - simpleBar_x(d[0])) / 2);
+            var yPosition = simpleBar_y(d.data.outcome) + ((d.data.outcome == 'Fatal') ? 0 : SIMPLEBAR_HEIGHT + 60);
+            tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+            tooltip.select("text")
                 .text(fatalFormatter(d[1] - d[0]) + '%');
-            });
-    }
+        });
+
+    var should = [1, 1, 0, 1, 1, 0, 0]   
+
+   /* bars.selectAll("line")
+        .data(function(d) { return d; })
+        .enter()
+        .append("line")
+        .attr("x1",function (d) { return simpleBar_x(d[0]/2) + simpleBar_x(d[1])/2; })
+        .attr("x2",function (d) { return simpleBar_x(d[0]/2) + simpleBar_x(d[1])/2; })
+        .attr("y1", function (d, i) { 
+            var offset = (d.data.outcome == 'Fatal') ? -30 : 100;
+            var dist =  simpleBar_y(d.data.outcome) + offset; 
+            return dist;
+        })
+        .attr("y2", function (d) { return simpleBar_y(d.data.outcome) })
+        .style("stroke", "white").attr('stroke-width', '3').attr('opacity', 1) */ 
+       // drawSimpleBarLabels()
+}
+
+function drawSimpleBarLabels(){
+
+    var xPos= [ 19.55, 22.104, 46.8, ]
+    var top = [1, 0, 1]
+
+    // transport
+    simpleBar_g.append('line')
+    .attr('x1', simpleBar_x(39.1/2))
+    .attr('x2', simpleBar_x(39.1/2))
+    .attr('y1', -50 )
+    .attr('y2', 30 )
+    .style("stroke", "white").attr('stroke-width', '3').attr('opacity', 1)
+    
+    //FST
+    simpleBar_g.append('line')
+    .attr('x1', simpleBar_x(22.104))
+    .attr('x2', simpleBar_x(39.1/2))
+    .attr('y1', SIMPLEBAR_HEIGHT- 30 )
+    .attr('y2', SIMPLEBAR_HEIGHT+50 )
+    .style("stroke", "white").attr('stroke-width', '3').attr('opacity', 1)
+
+
+
+
+}
 
 function fadeOutSimpleBar(tag, opacity, d) {
     d3.selectAll(tag)
@@ -164,16 +210,16 @@ function drawSimpleBarAxis() {
         .call(d3.axisBottom(simpleBar_x))
         .attr("transform", "translate(0," + SIMPLEBAR_HEIGHT + ")")
         .append('text') // X-axis Label
-            .attr('y', 40)
-            .attr('x', SIMPLEBAR_WIDTH / 2)
-            .attr('dy', '.71em')
-            .style("text-anchor", "middle")
-            .style("font-family", 'Lora')
-            .style("font-size", "20px")
-            .style('fill', 'white')
-            .style('opacity', '1')
-            .style('font-weight', '900')
-            .text("Cause of Accident (%)");
+        .attr('y', 40)
+        .attr('x', SIMPLEBAR_WIDTH / 2)
+        .attr('dy', '.71em')
+        .style("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "20px")
+        .style('fill', 'white')
+        .style('opacity', '1')
+        .style('font-weight', '900')
+        .text("Cause of Accident (%)");
 
     simpleBar_g.append("g")
         .attr("class", "axis")

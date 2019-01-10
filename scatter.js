@@ -796,7 +796,7 @@ function updateScatterVersus(code) {
                 actionMouseOver(.2, 1, d, 'in')
                 scatter_chart_info_g.select('#versusInfoHint')
                     .transition()
-                    .style('opacity', 1)
+                    .style('opacity', 0)
             })
             .on("mouseout", function (d) {
                 actionMouseOver(1, 0, d, 'out')
@@ -958,9 +958,17 @@ function updateScatterVersus(code) {
 
     function actionMouseOver(fadeOut, fadeIn, d, event) {
         if (event === 'in'){
+            scatter_chart_info_g.select('#versusInfoHint')
+            .transition()
+            .style("opacity", 0)
             updateVersusInfo(d, 'versus');
         } else {
-            updateVersusInfo(d, 'plot');
+            scatter_chart_info_g.select('#versusInfoHint')
+            .transition()
+            .delay(500)
+            .style("opacity", 1)
+            .style("font-size", "20px")
+            .attr("y", (VERSUS_INFO_HEIGHT) - 20)
         }
         fadeOutVersus('.scatter_versus_fatal_rect', fadeOut, d);
         fadeOutVersus('.scatter_versus_nonfatal_rect', fadeOut, d);
@@ -1177,6 +1185,9 @@ function updateVersusInfo(d, from) {
             .style("opacity", 0)
             .attr("y", 90)
             .style("font-size", "2px")
+            scatter_chart_info_g.select('#versusInfoHint')
+            .transition()
+            .style("opacity", 0)
         scatter_chart_info_g.select('#scatter_versus_info_nf').text('Injuries per 100k: ' + nonFatalFormatter(d.nf_total_rate))
         scatter_chart_info_g.select('#scatter_versus_info_f').text('Fatalities per 100k: ' + fatalFormatter(d.f_total_rate))
         scatter_chart_info_g.select('#scatter_versus_info_tEmp').text('Total Employment: ' + empFormatter(d.totEmp))

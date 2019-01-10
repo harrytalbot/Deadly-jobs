@@ -1,0 +1,28 @@
+occCode,industry,f_total,f_violence,f_trans,f_fireExp,f_fallSlipTrip,f_exposure,f_contact,f_allOther
+-,"Management, business, science, and arts occupations","Management, business, science, and arts occupations",37,14,10,5,3,0,0
+11-0000,Management occupations,Management occupations,11,9,0,0,0,0,0
+13-0000,Business and financial operations occupations,Business and financial operations occupations,0,0,0,0,0,0,0
+15-0000,Computer and mathematical occupations,Computer and mathematical occupations,0,0,0,0,0,0,0
+17-0000,Architecture and engineering occupations,Architecture and engineering occupations,0,0,0,0,0,0,0
+19-0000,"Life, physical, and social science occupations","Life, physical, and social science occupations",0,0,0,0,0,0,0
+21-0000,Community and social services occupations,Community and social services occupations,0,0,0,0,0,0,0
+23-0000,Legal occupations,Legal occupations,0,0,0,0,0,0,0
+25-0000,"Education, training, and library occupations","Education, training, and library occupations",5,3,0,0,0,0,0
+27-0000,"Arts, design, entertainment, sports, and media occupations","Arts, design, entertainment, sports, and media occupations",10,0,0,5,0,0,0
+29-0000,Healthcare practitioners and technical occupations,Healthcare practitioners and technical occupations,5,0,4,0,0,0,0
+-,Service occupations,Service occupations,51,17,15,0,7,4,2
+31-0000,Healthcare support occupations,Healthcare support occupations,0,0,0,0,0,0,0
+33-0000,Protective service occupations,Protective service occupations,18,9,6,0,0,0,0
+35-0000,Food preparation and serving related occupations,Food preparation and serving related occupations,8,5,0,0,0,0,0
+37-0000,Building and grounds cleaning and maintenance occupations,Building and grounds cleaning and maintenance occupations,19,0,6,0,6,0,0
+39-0000,Personal care and service occupations,Personal care and service occupations,4,0,0,0,0,0,0
+-,Sales and office occupations,Sales and office occupations,25,16,7,0,0,0,0
+41-0000,Sales and related occupations,Sales and related occupations,21,16,5,0,0,0,0
+43-0000,Office and administrative support occupations,Office and administrative support occupations,4,0,0,0,0,0,0
+-,"Natural resources, construction, and maintenance occupations","Natural resources, construction, and maintenance occupations",132,16,37,0,36,10,3
+45-0000,"Farming, fishing, and forestry occupations","Farming, fishing, and forestry occupations",38,0,18,0,3,0,1
+47-0000,Construction and extraction occupations,Construction and extraction occupations,54,8,7,0,22,6,0
+51-0000,"Installation, maintenance, and repair occupations","Installation, maintenance, and repair occupations",40,6,12,0,11,0,0
+-,"Production, transportation, and material moving occupations","Production, transportation, and material moving occupations",126,14,73,0,17,4,1
+49-0000,Production occupations,Production occupations,17,4,0,0,6,0,2
+53-0000,Transportation and material moving occupations,Transportation and material moving occupations,109,10,71,0,11,3,2

@@ -1,0 +1,28 @@
+occCode,industry,f_total,f_violence,f_trans,f_fireExp,f_fallSlipTrip,f_exposure,f_contact,f_allOther
+-,"Management, business, science, and arts occupations",5,0,0,0,0,0,0,5
+11-0000,Management occupations,0,0,0,0,0,0,0,0
+13-0000,Business and financial operations occupations,0,0,0,0,0,0,0,0
+15-0000,Computer and mathematical occupations,0,0,0,0,0,0,0,0
+17-0000,Architecture and engineering occupations,0,0,0,0,0,0,0,0
+19-0000,"Life, physical, and social science occupations",0,0,0,0,0,0,0,0
+21-0000,Community and social services occupations,0,0,0,0,0,0,0,0
+23-0000,Legal occupations,0,0,0,0,0,0,0,0
+25-0000,"Education, training, and library occupations",0,0,0,0,0,0,0,0
+27-0000,"Arts, design, entertainment, sports, and media occupations",0,0,0,0,0,0,0,0
+29-0000,Healthcare practitioners and technical occupations,0,0,0,0,0,0,0,0
+-,Service occupations,15,4,4,0,3,3,0,1
+31-0000,Healthcare support occupations,1,0,0,0,0,1,0,0
+33-0000,Protective service occupations,7,3,4,0,0,0,0,0
+35-0000,Food preparation and serving related occupations,0,0,0,0,0,0,0,0
+37-0000,Building and grounds cleaning and maintenance occupations,4,0,0,0,3,0,0,1
+39-0000,Personal care and service occupations,0,0,0,0,0,0,0,0
+-,Sales and office occupations,4,3,0,0,0,0,0,1
+41-0000,Sales and related occupations,4,3,0,0,0,0,0,1
+43-0000,Office and administrative support occupations,0,0,0,0,0,0,0,0
+-,"Natural resources, construction, and maintenance occupations",23,0,3,0,7,7,4,2
+45-0000,"Farming, fishing, and forestry occupations",0,0,0,0,0,0,0,0
+47-0000,Construction and extraction occupations,15,0,3,0,4,5,0,3
+51-0000,"Installation, maintenance, and repair occupations",7,0,0,0,3,0,0,4
+-,"Production, transportation, and material moving occupations",29,0,23,0,0,0,3,3
+49-0000,Production occupations,0,0,0,0,0,0,0,0
+53-0000,Transportation and material moving occupations,29,0,23,0,0,0,3,3
