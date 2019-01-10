@@ -78,14 +78,13 @@
 }
 
 .wrapper-text-right {
-  display: inline-block;
+  display: inline-block; 
   padding-top: 30px;
-  padding-left: 2.5%;
-  padding-right: 1%;
+  padding-right: 2.5%;
   text-align: right;
   float: right;
   /* ignore warning, this is needed*/
-  width: 200px;
+  /* width: 400px; */
 }
 
 .wrapper-svg-left, .wrapper-svg-right {
@@ -95,10 +94,12 @@
 }
 
 .wrapper {
-  width: 100%;
+ /* / width: 100%; */
   padding-top: 100px;
   border: 1px solid black;
   overflow: hidden;
+  font-size: 0;
+
   /* will contain if #first is longer than #second */
 }
 
@@ -115,11 +116,6 @@
   margin: auto;
 }
 
-
-
-div {
- /*border: 5px solid white; /**/
-}
 /* COLORS /////////////////////////////////////////////////////////////////*/
 
 .red {
@@ -172,7 +168,7 @@ mark.oabr {
   stroke-width: 5;
 }
 
-.scatterXAxis path, .scatterYAxis path, .yaxis path, .axis path, .axisStackedY path, .axisScatterVersusY path {
+.scatterXAxis path, .scatterYAxis path, .yaxis path, .axis path, .axisStackedY path {
   /* used on axis */
   stroke: white;
   stroke-width: 5;
@@ -184,8 +180,17 @@ mark.oabr {
   opacity: 0
 }
 
+
 .axisScatterVersusY line {
   /* used on versus scatter axis ticks */
   stroke: white;
   stroke-width: 0;
+}
+
+.axisScatterVersusY path {
+  /* used on axis */
+  stroke: white;
+  stroke-width: 2 ;
+  shape-rendering: crispEdges;
+  pointer-events: "none";
 }

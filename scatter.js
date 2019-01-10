@@ -6,6 +6,10 @@ var scatter = { width: SCATTER_WIDTH - SCATTER_LEFT - SCATTER_RIGHT, height: SCA
 
 /// SCATTER SETUP ///////////////////////////////////////////////////////////////////////
 
+var scatter_z_low = '#31a9b8'
+var scatter_z_high = 'MidnightBlue'
+var scatter_z_mid = '#196E8F'
+
 var svg_scatter = d3.select('body')
     .select('#svgScatter')
     .attr('width', SCATTER_WIDTH + SCATTER_LEFT + SCATTER_RIGHT)
@@ -13,12 +17,25 @@ var svg_scatter = d3.select('body')
 
 scatter_g = svg_scatter.append("g").attr("transform", "translate(" + (SCATTER_LEFT-10) + "," + SCATTER_TOP + ")");
 
+
+svg_scatter.append("g").append("text")
+    .attr('id', 'scatterPlotHint')
+    .attr('y', SCATTER_TOP/2)
+    .attr('x',(SCATTER_WIDTH + SCATTER_LEFT + SCATTER_RIGHT)/2 )
+    .style("text-anchor", "middle")
+    .style("font-family", 'Lora')
+    .style("font-size", "25px")
+    .style('fill', 'white')
+    .style('opacity', '1')
+    .style('font-weight', '900')
+    .text("Mouse over the points to view an occupational comparison per industry.")
+
 // set scatter y scale
 scatter_y = d3.scaleLinear().range([SCATTER_HEIGHT, 0])
 // set scatter x scale
 scatter_x = d3.scaleLinear().range([0, SCATTER_WIDTH])
 // set the scatter_x colors                   
-scatter_z = d3.scaleLinear().range(["LightCyan", "RoyalBlue"]);
+scatter_z = d3.scaleLinear().range([scatter_z_low, scatter_z_high])
 
 var scatter_plotSize = d3.scaleLinear().range([5,12])
 
@@ -63,9 +80,20 @@ var scatter_versus_sort_field = 'f_total_rate'
 
 var scatter_info_code = '';
 
-/////////////////////////////////////////////////////////////////////////////////////////         Mouse over the points to view an occupational comparison per industry.
+/////////////////////////////////////////////////////////////////////////////////////////         
 
 scatter_chart_info_g = svg_scatter.append("g").attr("transform", "translate(" + (VERSUS_INFO_LEFT) + "," + SCATTER_VERSUS_TOP + ")");
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+scatter_legend = d3.select('body')
+    .select('#svgScatterLegend')
+    .attr('width', SCATTER_LEGEND_WIDTH + SCATTER_LEGEND_LEFT + SCATTER_LEGEND_RIGHT)
+    .attr('height', SCATTER_LEGEND_HEIGHT + SCATTER_LEGEND_TOP + SCATTER_LEGEND_BOTTOM)
+
+
+scatter_legend_g = scatter_legend.append("g")
+    .attr("transform", "translate(" + (SCATTER_LEGEND_LEFT) + "," + SCATTER_LEGEND_TOP + ")")
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -128,14 +156,19 @@ function drawScatterPlot() {
         .attr('stroke-width', 1)
         .attr('fill', function (d, i) { return scatter_z(d.salaryMed) })
         .on('mouseover', function (d) {
+            svg_scatter.select('#scatterPlotHint')
+                .transition()
+                .duration(100)
+                .style('opacity', 0)
+                .remove()
+            scatter_chart_info_g.select('#versusInfoHint').transition().style('opacity', 1)
             updateScatterVersus(d.majorOccCodeGroup);
             updateVersusInfo(d, 'plot')
             d3.select(this)
                 .transition()
                 .duration(200)
-                .attr('r', 20)
+                .attr('r', function(d){ return scatter_plotSize(d.totEmp) + 10;})
                 .attr('stroke-width', 3)
-           // tooltip.transition('scatterTooltip').attr("opacity", 1);
 
         })
         .on('mouseout', function () {
@@ -158,6 +191,8 @@ function drawScatterPlot() {
             tooltip.select('#scatter_tooltext_f').text("Fatal: " + fatalFormatter(d.f_total_rate))
             tooltip.select('#scatter_tooltext_nf').text("Non Fatal: " + nonFatalFormatter(d.nf_total_rate))
         })
+        
+
 
     function prepTooltip() {
         // Prep the tooltip bits, initial display is hidden
@@ -227,11 +262,116 @@ function updateScatterViewPort(){
 }
 
 function drawScatterEmploymentLegend() {
-    var empLegend = svg_scatter.append("g")
+    var empLegend = scatter_legend_g.append("g")
+
+    var empMax = 23081200;
+
+    
+    for (let index = 0; index < 5; index++) {
+
+        var x;
+
+        empLegend.append('circle')
+            .attr('cx', function (d) {
+                if (index == 0) return 0;
+                var previousRad = 2 * scatter_plotSize((index-1) * empMax)
+                var thisRad = scatter_plotSize((index) *empMax )
+                x = 30 +thisRad + previousRad;
+                return  30 +thisRad + previousRad
+            })
+            .attr('cy', function (d) { return 180  })
+            .attr('r', function (d) { return scatter_plotSize(empMax/(5-index)) })
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('fill', scatter_z_mid)
+
+        empLegend.append('text') // X-axis Label
+                .attr('class', 'label')
+                .attr('y', 250)
+                .attr('x', x)
+                .style("text-anchor", "middle")
+                .style("font-family", 'Lora')
+                .style("font-size", "20px")
+                .style('fill', 'white')
+                .style('opacity', '1')
+                .style('font-weight', '900')
+                .text(d3.format(",.2s")(empMax/(5-index)));          
+    }
+    empLegend.append('text') // X-axis Label
+            .attr('class', 'label')
+            .attr('y', 280)
+            .attr('x', SCATTER_LEGEND_WIDTH / 2)
+            .style("text-anchor", "middle")
+            .style("font-family", 'Lora')
+            .style("font-size", "20px")
+            .style('fill', 'white')
+            .style('opacity', '1')
+            .style('font-weight', '900')
+            .text("Total Employment per Industry");
 }
 
 function drawScatterIncomeLegend() {
 
+    var legendThickness = 40;
+    //create a horizontal gradient
+    var defs = scatter_legend_g.append("defs")
+
+    var linearGradient = defs.append("linearGradient")
+        .attr("id", "linear-gradient");
+
+    //Horizontal gradient
+    linearGradient
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "0%");
+
+    //Set the color for the start (0%)
+    linearGradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", scatter_z_low); 
+
+    //Set the color for the end (100%)
+    linearGradient.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", scatter_z_high);
+
+
+    //Draw the legend rectangle and fill with gradient
+    scatter_legend_g.append("rect")
+        .attr('y', 30)
+        .attr("width", SCATTER_LEGEND_WIDTH)
+        .attr("height", legendThickness)
+        .style("fill", "url(#linear-gradient)");
+
+    //create tick marks
+    var x = d3.scaleLinear()
+        .domain([0, d3.max(scatter_versus_dataset, function (d) {return +d.salaryMed})])
+        .range([0, SCATTER_LEGEND_WIDTH])
+  
+
+    scatter_legend_g.append("g")
+        .attr("class", "axis")
+        .attr("width", SCATTER_LEGEND_WIDTH)
+        .attr("transform", "translate(0," + (legendThickness + 30 )+")")
+        .call(d3.axisBottom(x)
+//            .tickFormat(moneyFormatter)
+            .ticks(5)
+        )
+        .append('text') // X-axis Label
+            .attr('class', 'label')
+            .attr('y', 50)
+            .attr('x', SCATTER_LEGEND_WIDTH / 2)
+            .style("text-anchor", "middle")
+            .style("font-family", 'Lora')
+            .style("font-size", "20px")
+            .style('fill', 'white')
+            .style('opacity', '1')
+            .style('font-weight', '900')
+            .text("Median Salary Income");
+
+
+    
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -342,7 +482,10 @@ function drawScatterVersusAxis(){
         .call(d3.axisLeft(scatter_versus_y))
         .attr("transform", "translate(" + SCATTER_VERSUS_GAP_HALF + ",0)")
         .attr('opacity', 0)
-
+        .attr("pointer-events", "none")
+        .on("mousemove", function (d) {
+            scatter_chart_info_g.select('#versusInfoHint').style('opacity', 0)
+        })
 
     // Align these labels
     yElements.selectAll("text")
@@ -356,6 +499,10 @@ function drawScatterVersusAxis(){
         .call(d3.axisRight(scatter_versus_y))
         .attr("transform", "translate(-" + SCATTER_VERSUS_GAP_HALF + ",0)")
         .attr('opacity', 0)
+        .attr("pointer-events", "none")
+        .on("mousemove", function (d) {
+            scatter_chart_info_g.select('#versusInfoHint').style('opacity', 0)
+        })
 
     // Remove these labels
     yElements.selectAll("text").remove();
@@ -450,32 +597,6 @@ function drawScatterVersusButtons() {
         .style('opacity', 0)
         .text("Injury")
         .attr("pointer-events", "none")
-        /*
-    scatter_versus_g_nonfatal.append('text')
-        .attr('class', 'scatter_versus_control_nf_total_rate')
-        .attr('id', 'nf_total_rate_scatter_versus_lbl')
-        .attr('x', (2* sizeOfBtn) -(SCATTER_VERSUS_WIDTH/2) - offset)
-        .attr('y', '120')
-        .attr("text-anchor", "middle")
-        .style("font-family", 'Lora')
-        .style("font-size", "20px")
-        .style('fill', 'white')
-        .style('font-weight', '900')
-        .style('opacity', 0)
-        .text("Sort by")
-    scatter_versus_g_nonfatal.append('text')
-        .attr('class', 'scatter_versus_control_nf_total_rate')
-        .attr('id', 'nf_total_rate_scatter_versus_lbl')
-        .attr('x',(2* sizeOfBtn) -(SCATTER_VERSUS_WIDTH/2) - offset)
-        .attr('y', '150')
-        .attr("text-anchor", "middle")
-        .style("font-family", 'Lora')
-        .style("font-size", "20px")
-        .style('fill', 'white')
-        .style('opacity', 0)
-        .style('font-weight', '900')
-        .text("Non-Fatal")
-*/
 
     // Add first for fatal
     scatter_versus_g_fatal.append('circle')
@@ -504,34 +625,6 @@ function drawScatterVersusButtons() {
         .style('font-weight', '900')
         .text("Fatality")
         .attr("pointer-events", "none")
-
-        /*
-    scatter_versus_g_fatal.append('text')
-        .attr('class', 'scatter_versus_control_f_total_rate')
-        .attr('id', 'f_total_rate_scatter_versus_lbl')
-        .attr('x', (SCATTER_VERSUS_WIDTH/2) - (2* sizeOfBtn) + offset )
-        .attr('y', '120')
-        .attr("text-anchor", "middle")
-        .style("font-family", 'Lora')
-        .style("font-size", "20px")
-        .style('fill', 'white')
-        .style('opacity', '0')
-        .style('font-weight', '900')
-        .text("Sort by")
-    scatter_versus_g_fatal.append('text')
-        .attr('class', 'scatter_versus_control_f_total_rate')
-        .attr('id', 'f_total_rate_scatter_versus_lbl')
-        .attr('x', (SCATTER_VERSUS_WIDTH/2) - (2* sizeOfBtn) + offset )
-        .attr('y', '150')
-        .attr("text-anchor", "middle")
-        .style("font-family", 'Lora')
-        .style("font-size", "20px")
-        .style('fill', 'white')
-        .style('opacity', '0')
-        .style('font-weight', '900')
-        .text("Fatal")
-        */
-
    
 
 }
@@ -651,6 +744,9 @@ function updateScatterVersus(code) {
             .attr("fill", function(d){ return scatter_z(d.salaryMed)})
             .on("mouseover", function (d) {
                 actionMouseOver(.2, 1, d, 'in')
+                scatter_chart_info_g.select('#versusInfoHint')
+                    .transition()
+                    .style('opacity', 0)
             })
             .on("mouseout", function (d) {
                 actionMouseOver(1, 0, d, 'out')
@@ -698,6 +794,9 @@ function updateScatterVersus(code) {
             .attr("fill", function(d){ return scatter_z(d.salaryMed)})
             .on("mouseover", function (d) {
                 actionMouseOver(.2, 1, d, 'in')
+                scatter_chart_info_g.select('#versusInfoHint')
+                    .transition()
+                    .style('opacity', 1)
             })
             .on("mouseout", function (d) {
                 actionMouseOver(1, 0, d, 'out')
@@ -877,6 +976,19 @@ function updateScatterVersus(code) {
 
 function drawScatterVersusInfo() {
 
+
+    scatter_chart_info_g.append("g").append("text")
+        .attr('id', 'versusInfoHint')
+        .attr("x", (0.5 * VERSUS_INFO_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT))
+        .attr("y", (0.75 * VERSUS_INFO_HEIGHT))
+        .style("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "20px")
+        .style('fill', 'white')
+        .style('opacity', 0)
+        .style('font-weight', '900')
+        .text("Mouse over the bars for more information.");
+
     var leftIndent = 20;
     var rightIndent = (VERSUS_INFO_WIDTH) - 20;
     // rect for the info
@@ -1025,13 +1137,20 @@ function updateVersusInfo(d, from) {
             .delay(500)
             .style("font-size", "30px")
             .style('opacity', 1)
+        scatter_chart_info_g.select('#versusInfoHint')
+            .transition()
+            .delay(500)
+            .style("font-size", "20px")
+            .attr("y", (VERSUS_INFO_HEIGHT) - 20)
 
-        
         scatter_chart_info_g.selectAll('.versus_text_info')
             .transition()
             .delay(500)
             .style('opacity', 0)
     } else {
+
+        
+
         // make title at top
         scatter_chart_info_g.selectAll('.versus_text_info')
             .transition()

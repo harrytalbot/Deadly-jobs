@@ -89,8 +89,9 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
 
     scatter_y.domain([0, 20])//d3.max([0, d3.max(scatter_dataset, function (d) { return d.f_total_rate })]) + 1]).nice();
     scatter_x.domain([0, 600])//d3.max([0, d3.max(scatter_dataset, function (d) { return d.nf_total_rate })]) + 1]).nice();
-    scatter_z.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) {return d.salaryMed})])])
-    scatter_plotSize.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) {return d.totEmp})])])  
+    scatter_z.domain([0, d3.max([0, d3.max(scatter_versus_dataset, function (d) {return +d.salaryMed})])])
+    scatter_plotSize.domain([0, d3.max(scatter_versus_dataset, function (d) {return +d.totEmp})])  
+    console.log(d3.max(scatter_dataset, function (d) {return +d.totEmp}) )
 
     // uses the stacked dataset for occupations.
     scatter_versus_y.domain(scatter_versus_dataset_filtered.map(function (d) { return d.occupation; })).padding(BAR_PADDING);
@@ -195,17 +196,19 @@ function KeyPressHappened(e){
         updateScatterViewPort();
         // update text
 
-        var text;
+        var topText, bottomText;
         if (currentPagePos == 4){
-            text = "intro into stacked bar,mention comp sci occupations being low risk and high reward!"
+            topText = "Many occupations with very low fatality rates are well paid, often far above the national average. Business, Legal, IT and Mathematics jobs (far left) are all incredibly low risk and high reward."
+            bottomText = "A reality for many, Office and Administration Jobs make up an the largest division of the workforce - and it's certainly a safe place to be."
         } else {
-            text = "how generally more dangerous occupations have lower employment, and the salary does not often reflect this "
+            topText = "However, the three most dangerous industries all pay below the US average of $59,039 per year. Those most at risk - in Farming, Fishing and Forestry industries - on averge earn just over half the national average, at $35,143."
+            bottomText = "But their numbers are much fewer - with a combined industry size of 7.88M, they make up just 3.5% of the US labour market."
         }
         var t0 = d3.transition('fadeText').duration(400);
         t0.select('#svgScatterRightText').style('opacity', 0)
         var t1 = t0.transition('visText');
-        t1.select('#svgScatterTopRightText').text(text)
-        t1.select('#svgScatterBottomRightText').text("hi")
+        t1.select('#svgScatterTopRightText').text(topText)
+        t1.select('#svgScatterBottomRightText').text(bottomText)
         t1.select('#svgScatterRightText').style('opacity', 1)
 
 

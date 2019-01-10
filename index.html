@@ -7,6 +7,7 @@
     <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
     <script type="text/javascript" src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -115,21 +116,19 @@
 
     <br><br><br>
     <!-- SCATTER CHART -->
-    <div class="wrapper">
+    <div class="wrapper" >
         <svg id="svgScatter"></svg>
-        <div id="svgScatterRightText" class="wrapper-text-right">
-            <div id="svgScatterTopRightText">
-                intro into stacked bar, how generally more dangerous occupations have lower employment, and the salary
-                does
-                not often reflect this.
-                mention comp sci occupations being low risk and high reward!
-            </div>
-            <br><br>
-            <div id="svgScatterBottomRightText">
-                intro into stacked bar, how generally more dangerous occupations have lower employment, and the salary
-                does
-                not often reflect this.
-                mention comp sci occupations being low risk and high reward!
+        <div id="svgScatterRightText" style="width: 300px" class="wrapper-text-right">
+            <div style="height: 700px">
+                <div id="svgScatterTopRightText">
+                        Many occupations with very low fatality rates are well paid, often far above the national average. Business, Legal,
+                        IT and Mathematics jobs (far left) are all incredibly low risk and high reward.
+                </div>
+                <br>
+                <div id="svgScatterBottomRightText">
+                        A reality for many, Office and Administration Jobs make up an the largest tdivision of the workforce - 
+                        and it's certainly a safe place to be.
+                </div>
             </div>
             <svg id="svgScatterLegend"></svg>
         </div>
