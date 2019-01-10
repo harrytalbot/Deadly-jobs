@@ -13,16 +13,6 @@ var svg_scatter = d3.select('body')
 
 scatter_g = svg_scatter.append("g").attr("transform", "translate(" + SCATTER_LEFT + "," + SCATTER_TOP + ")");
 
-scatter_mouseover_info_g = svg_scatter.append("g").attr("transform", "translate(" + SCATTER_LEFT + ",0)");
-
-scatter_mouseover_info_g.append("rect")
-    .attr('class', 'scatter_versus_back')
-    .attr("width", SCATTER_WIDTH)
-    .attr("height", SCATTER_TOP)
-    .attr('stroke', 'white')
-    .attr('stroke-width', '5')
-    .attr('fill', 'black')
-    .attr('opacity', 1)
 // set scatter y scale
 scatter_y = d3.scaleLinear().range([SCATTER_HEIGHT, 0])
 // set scatter x scale
@@ -32,27 +22,18 @@ scatter_z = d3.scaleLinear().range(["LightCyan", "RoyalBlue"]);
 
 var scatter_plotSize = d3.scaleLinear().range([5,12])
 
-/////////////////////////////////////////////////////////////////////////////////////////
-
-var scatter_versus_dataset; // the main set
-var scatter_versus_dataset_filtered;
-
-var scatter_versus_y_labels;
-var scatter_versus_code = '';
-var scatter_versus_sort_field = 'f_total_rate'
-
 
 /// SCATTER VERSUS SETUP /////////////////////////////////////////////////////////////////
 
-scatter_g_versus = svg_scatter.append("g").attr("transform", "translate(" + (SCATTER_LEFT + 40) + "," + SCATTER_TOP + ")");
+scatter_g_versus = svg_scatter.append("g").attr("transform", "translate(" + (SCATTER_LEFT + SCATTER_VERSUS_LEFT_FROM_AXIS) + "," + SCATTER_VERSUS_TOP + ")");
 
 scatter_g_versus.append("rect")
-    .attr('class', 'scatter_versus_back')
-    .attr("width", SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT+SCATTER_VERSUS_RIGHT)
+    .attr('id', 'scatter_versus_back')
+    .attr("width", SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT)
     .attr("height", SCATTER_VERSUS_HEIGHT + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
     .attr('stroke', 'white')
     .attr('stroke-width', '5')
-    .attr('fill', 'black')
+    .attr('fill', 'transparent')
     .attr('opacity', 0)
 
 scatter_versus_g_nonfatal = scatter_g_versus.append("g").attr("transform", "translate(" + (SCATTER_VERSUS_LEFT + (SCATTER_VERSUS_WIDTH /2)) + "," + (SCATTER_VERSUS_TOP) + ")")
@@ -60,10 +41,6 @@ scatter_versus_g_nonfatal = scatter_g_versus.append("g").attr("transform", "tran
 scatter_versus_g_fatal = scatter_g_versus.append("g").attr("transform", "translate(" + (SCATTER_VERSUS_LEFT + (SCATTER_VERSUS_WIDTH /2)) + "," + (SCATTER_VERSUS_TOP) + ")")
 
 const SCATTER_VERSUS_GAP_HALF = 0;
-
-/////////////////////////////////////////////////////////////////////////////////////////         Mouse over the points to view an occupational comparison per industry.
-
-var tooltip;
 
 // set versus y scale
 scatter_versus_y = d3.scaleBand().range([0, SCATTER_VERSUS_HEIGHT])
@@ -73,7 +50,25 @@ scatter_versus_x_nonfatal = d3.scaleLinear().range([-1 * SCATTER_VERSUS_WIDTH / 
 // set the versus colors                   
 scatter_versus_z = d3.scaleOrdinal().range(STACK_COLOURS);
 
+var tooltip;
+
+var scatter_versus_dataset; // the main set
+var scatter_versus_dataset_filtered;
+
+var scatter_versus_y_labels;
+var scatter_versus_code = '';
+var scatter_versus_sort_field = 'f_total_rate'
+
+var scatter_info_code = '';
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////         Mouse over the points to view an occupational comparison per industry.
+
+scatter_chart_info_g = scatter_g_versus.append("g")
+
 /////////////////////////////////////////////////////////////////////////////////////////
+
 
 function drawScatterAxis() {
     // X-axis
@@ -118,95 +113,100 @@ function drawScatterAxis() {
 
 function drawScatterPlot() {
 
-
     const TOOLTIP_WIDTH = 500;
     const TOOLTIP_HEIGHT = 100;
-    // Prep the tooltip bits, initial display is hidden
-    tooltip = svg_scatter.append("g").attr('opacity', 0)
-
-    tooltip.append("rect")
-        .attr("x", -0.5 * TOOLTIP_WIDTH)
-        .attr("width", TOOLTIP_WIDTH)
-        .attr("height", TOOLTIP_HEIGHT)
-        .attr('stroke', 'white')
-        .attr('stroke-width', '5')
-        .attr('fill', 'black')
-
-    tooltip.append("text")
-        .attr("id", "scatter_tooltext_ind")
-        .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
-        .attr("y", 5)
-        .attr("dy", "1.2em")
-        .style("text-anchor", "left")
-        .attr('class', 'simple_text_info')
-        .attr("font-family", "Lora")
-        .attr("font-size", "20px")
-        .attr("font-weight", "bold")
-        .attr("fill", "white")
-    tooltip.append("text")
-        .attr("id", "scatter_tooltext_f")
-        .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
-        .attr("y", 35)
-        .attr("dy", "1.2em")
-        .style("text-anchor", "left")
-        .attr('class', 'simple_text_info')
-        .attr("font-family", "Lora")
-        .attr("font-size", "20px")
-        .attr("font-weight", "bold")
-        .attr("fill", "white")
-    tooltip.append("text")
-        .attr("id", "scatter_tooltext_nf")
-        .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
-        .attr("y", 65)
-        .attr("dy", "1.2em")
-        .style("text-anchor", "left")
-        .attr('class', 'simple_text_info')
-        .attr("font-family", "Lora")
-        .attr("font-size", "20px")
-        .attr("font-weight", "bold")
-        .attr("fill", "white")
+    prepTooltip();
 
     var circles = scatter_g.selectAll('circle')
         .data(scatter_dataset)
         .enter()
         .append('circle')
-            .attr('cx', function (d) { return scatter_x(d.nf_total_rate) })
-            .attr('cy', function (d) { return scatter_y(d.f_total_rate) })
-            .attr('r', function (d) { return scatter_plotSize(d.totEmp)})
-            .attr('stroke', 'black')
-            .attr('stroke-width', 1)
-            .attr('fill', function (d, i) { return scatter_z(d.salaryMed) })
-            .on('mouseover', function (d) {
-                showScatterVersus();
-                updateScatterVersus(d.majorOccCodeGroup);
-                d3.select(this)
-                    .transition()
-                    .duration(200)
-                    .attr('r', 20)
-                    .attr('stroke-width', 3)
-                    tooltip.transition('scatterTooltip').attr("opacity", 1);    
+        .attr('cx', function (d) { return scatter_x(d.nf_total_rate) })
+        .attr('cy', function (d) { return scatter_y(d.f_total_rate) })
+        .attr('r', function (d) { return scatter_plotSize(d.totEmp) })
+        .attr('stroke', 'black')
+        .attr('stroke-width', 1)
+        .attr('fill', function (d, i) { return scatter_z(d.salaryMed) })
+        .on('mouseover', function (d) {
+            updateScatterVersus(d.majorOccCodeGroup);
+            d3.select(this)
+                .transition()
+                .duration(200)
+                .attr('r', 20)
+                .attr('stroke-width', 3)
+            tooltip.transition('scatterTooltip').attr("opacity", 1);
 
-            })
-            .on('mouseout', function () {
-                // fade it
-                tooltip.transition('scatterTooltip').duration(100).attr("opacity", 0);
-                // move it so it doesn't get in way of mouseover
-                tooltip.transition('scatterTooltip').delay(100).duration(0).attr("transform", "translate(" + 4000 + "," + 0 + ")");                
-                d3.select(this)
-                    .transition()
-                    .duration(200)
-                    .attr('r', function (d) { return scatter_plotSize(d.totEmp)})
-                    .attr('stroke-width', 1)
-            })
-            
-            .on("mousemove", function (d) {
-                var xPosition = scatter_x(d.nf_total_rate) +  SCATTER_LEFT + 25 +  (TOOLTIP_WIDTH * 0.5); 
-                var yPosition = scatter_y(d.f_total_rate) - 25;
-                tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-                tooltip.select('#scatter_tooltext_ind').text("Industry: "  + d.majorOccNameGroup)
-                tooltip.select('#scatter_tooltext_f').text("Fatal: " + fatalFormatter(d.f_total_rate))
-                tooltip.select('#scatter_tooltext_nf').text("Non Fatal: " + nonFatalFormatter(d.nf_total_rate))
-            })
+        })
+        .on('mouseout', function () {
+            // fade it
+            tooltip.transition('scatterTooltip').duration(100).attr("opacity", 0);
+            // move it so it doesn't get in way of mouseover
+            tooltip.transition('scatterTooltip').delay(100).duration(0).attr("transform", "translate(" + 4000 + "," + 0 + ")");
+            d3.select(this)
+                .transition()
+                .duration(200)
+                .attr('r', function (d) { return scatter_plotSize(d.totEmp) })
+                .attr('stroke-width', 1)
+        })
+
+        .on("mousemove", function (d) {
+            var xPosition = scatter_x(d.nf_total_rate) + SCATTER_LEFT + 25 + (TOOLTIP_WIDTH * 0.5);
+            var yPosition = scatter_y(d.f_total_rate) - 25;
+            tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+            tooltip.select('#scatter_tooltext_ind').text("Industry: " + d.majorOccNameGroup)
+            tooltip.select('#scatter_tooltext_f').text("Fatal: " + fatalFormatter(d.f_total_rate))
+            tooltip.select('#scatter_tooltext_nf').text("Non Fatal: " + nonFatalFormatter(d.nf_total_rate))
+        })
+
+    function prepTooltip() {
+        // Prep the tooltip bits, initial display is hidden
+        tooltip = svg_scatter.append("g").attr('opacity', 0)
+
+        tooltip.append("rect")
+            .attr("x", -0.5 * TOOLTIP_WIDTH)
+            .attr("width", TOOLTIP_WIDTH)
+            .attr("height", TOOLTIP_HEIGHT)
+            .attr('stroke', 'white')
+            .attr('stroke-width', '5')
+            .attr('fill', 'black')
+
+        tooltip.append("text")
+            .attr("id", "scatter_tooltext_ind")
+            .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
+            .attr("y", 5)
+            .attr("dy", "1.2em")
+            .style("text-anchor", "left")
+            .attr('class', 'simple_text_info')
+            .attr("font-family", "Lora")
+            .attr("font-size", "20px")
+            .attr("font-weight", "bold")
+            .attr("fill", "white")
+        tooltip.append("text")
+            .attr("id", "scatter_tooltext_f")
+            .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
+            .attr("y", 35)
+            .attr("dy", "1.2em")
+            .style("text-anchor", "left")
+            .attr('class', 'simple_text_info')
+            .attr("font-family", "Lora")
+            .attr("font-size", "20px")
+            .attr("font-weight", "bold")
+            .attr("fill", "white")
+        tooltip.append("text")
+            .attr("id", "scatter_tooltext_nf")
+            .attr("x", (-0.5 * TOOLTIP_WIDTH) + 10)
+            .attr("y", 65)
+            .attr("dy", "1.2em")
+            .style("text-anchor", "left")
+            .attr('class', 'simple_text_info')
+            .attr("font-family", "Lora")
+            .attr("font-size", "20px")
+            .attr("font-weight", "bold")
+            .attr("fill", "white")
+    
+    
+    }
+
 }
 
 function drawScatterEmploymentLegend() {
@@ -219,20 +219,6 @@ function drawScatterIncomeLegend() {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-function showScatterVersus(){
-    if (scatter_versus_code != '') return;
-    // show the box
-    tooltip.transition('scatterTooltip').attr("opacity", 1);    
-    // show the buttons
-    scatter_versus_g_fatal.selectAll('.scatter_versus_control_f_total_rate')
-        .transition()
-        .attr('opacity', (scatter_versus_sort_field === 'f_total_rate') ? 1 : BUTTON_FADED)
-        .style('opacity', (scatter_versus_sort_field === 'f_total_rate') ? 1 : BUTTON_FADED)
-    scatter_versus_g_nonfatal.selectAll('.scatter_versus_control_nf_total_rate')
-        .transition()
-        .attr('opacity', (scatter_versus_sort_field === 'nf_total_rate') ? 1 : BUTTON_FADED)
-        .style('opacity', (scatter_versus_sort_field === 'nf_total_rate') ? 1 : BUTTON_FADED)
-}
 
 function drawScatterVersus(){
 
@@ -258,20 +244,7 @@ function drawScatterVersus(){
                 numBars++;
                 return scatter_versus_x_fatal(d.f_total_rate);
             })
-            .attr("height", scatter_versus_y.bandwidth())
-            .on("mouseover", function (d) {
-                // make all bars opaque
-                fadeOutVersus('.scatter_versus_fatal_rect', .2, d);
-                fadeOutVersus('.scatter_versus_nonfatal_rect', .2, d);
-                fadeInVersus(".scatter_versus_bar_label", 1, d);
-                d3.selectAll('#scatter_versus_average_text').transition().style("opacity", 0.2);
-            })
-            .on("mouseout", function (d) {
-                fadeOutVersus('.scatter_versus_fatal_rect', 1, d);
-                fadeOutVersus('.scatter_versus_nonfatal_rect', 1, d);
-                fadeInVersus(".scatter_versus_bar_label", 0, d);
-                d3.selectAll('#scatter_versus_average_text').transition().style("opacity", 1);
-            })           
+            .attr("height", scatter_versus_y.bandwidth())   
 
     scatter_versus_g_nonfatal.append("g")
         .selectAll("g")
@@ -290,19 +263,7 @@ function drawScatterVersus(){
                 return scatter_versus_x_nonfatal(d.nf_total_rate);
             })
             .attr("height", scatter_versus_y.bandwidth())
-            .on("mouseover", function (d) {
-                fadeOutVersus('#scatter_versus_fatal_rect', .2, d);
-                fadeOutVersus('#scatter_versus_nonfatal_rect', .2, d);
-                fadeInVersus("#scatter_versus_bar_label", 1, d);
-                d3.selectAll('#scatter_versus_average_text').transition().style("opacity", 0.2);
 
-            })
-            .on("mouseout", function (d) {
-                fadeOutVersus('#scatter_versus_fatal_rect', 1, d);
-                fadeOutVersus('#scatter_versus_nonfatal_rect', 1, d);
-                fadeInVersus("#scatter_versus_bar_label", 0, d);
-                d3.selectAll('#scatter_versus_average_text').transition().style("opacity", 1);
-            });
 
     // avg lines
     scatter_versus_g_fatal.append("line")
@@ -316,7 +277,8 @@ function drawScatterVersus(){
         .attr('class', 'scatter_versus_nonfatal_average')
     scatter_versus_g_nonfatal.append("text")
         .attr('id', 'scatter_versus_average_text')
-        .attr('class', 'scatter_versus_nonfatal_average')      
+        .attr('class', 'scatter_versus_nonfatal_average')
+        
 }
 
 function drawScatterVersusAxis(){
@@ -563,7 +525,21 @@ function updateScatterVersus(code) {
     updateBars();
     updateAxis();
     updateAvgLines();
-    
+    showSortButtons();
+
+    function showSortButtons(){
+        if (scatter_info_code != '') return;
+        // show the buttons
+        scatter_versus_g_fatal.selectAll('.scatter_versus_control_f_total_rate')
+            .transition()
+            .attr('opacity', (scatter_versus_sort_field === 'f_total_rate') ? 1 : BUTTON_FADED)
+            .style('opacity', (scatter_versus_sort_field === 'f_total_rate') ? 1 : BUTTON_FADED)
+        scatter_versus_g_nonfatal.selectAll('.scatter_versus_control_nf_total_rate')
+            .transition()
+            .attr('opacity', (scatter_versus_sort_field === 'nf_total_rate') ? 1 : BUTTON_FADED)
+            .style('opacity', (scatter_versus_sort_field === 'nf_total_rate') ? 1 : BUTTON_FADED)
+    }
+
     function updateBars(){
 
         scatter_versus_code = code;
@@ -582,15 +558,18 @@ function updateScatterVersus(code) {
         scatter_versus_x_nonfatal.domain([d3.min(scatter_versus_dataset_filtered, function (d) { return +-1 * d.nf_total_rate; }), 0]).nice();
         
         if (oldSize == 0) { // first time so don't animate height transition
-            scatter_g_versus.select('.scatter_versus_back')
+            moveVersusInfo(chartHeight, 0)
+            scatter_g_versus.select('#scatter_versus_back')
                 .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
                 .transition()
                 .attr('opacity', 1)
         } else if (oldSize < scatter_versus_dataset_filtered.length) { // if the chart is bigger, make the box bigger first
-            scatter_g_versus.select('.scatter_versus_back')
+            scatter_g_versus.select('#scatter_versus_back')
                 .transition()
                 .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
                 .attr('opacity', 1)
+            moveVersusInfo(chartHeight, 0);
+
         }
         //first fatal - go in, change the data, redraw and transition
         var bars = scatter_versus_g_fatal.selectAll(".scatter_versus_fatal_rect")
@@ -613,6 +592,8 @@ function updateScatterVersus(code) {
             })
             .attr("height", scatter_versus_y.bandwidth())
             .attr("fill", function(d){ return scatter_z(d.salaryMed)})
+      
+            
         // add new bars
         bars.enter()
             .append("rect")
@@ -621,6 +602,12 @@ function updateScatterVersus(code) {
             .attr("x", function (d) { return scatter_versus_x_fatal(0) + SCATTER_VERSUS_GAP_HALF })//+ 3 })
             .attr("height", scatter_versus_y.bandwidth())
             .attr("fill", function(d){ return scatter_z(d.salaryMed)})
+            .on("mouseover", function (d) {
+                actionMouseOver(.2, 1, d, 'in')
+            })
+            .on("mouseout", function (d) {
+                actionMouseOver(1, 0, d, 'out')
+            })
             .transition('scatter_versus_bar_trans')
             .duration(400)
             .delay(1000)
@@ -629,6 +616,7 @@ function updateScatterVersus(code) {
                 numBars++;
                 return scatter_versus_x_fatal(d.f_total_rate);
             })
+            
       
     
         //then nonfatal - go in, change the data, redraw and transition
@@ -653,6 +641,7 @@ function updateScatterVersus(code) {
             })
             .attr("height", scatter_versus_y.bandwidth())
             .attr("fill", function(d){ return scatter_z(d.salaryMed)})
+
         // add new bars
         bars.enter()
             .append("rect")
@@ -660,6 +649,12 @@ function updateScatterVersus(code) {
             .attr("y", function (d) { return scatter_versus_y(d.occupation) })
             .attr("height", scatter_versus_y.bandwidth())
             .attr("fill", function(d){ return scatter_z(d.salaryMed)})
+            .on("mouseover", function (d) {
+                actionMouseOver(.2, 1, d, 'in')
+            })
+            .on("mouseout", function (d) {
+                actionMouseOver(1, 0, d, 'out')
+            })
             .transition('scatter_versus_bar_trans')
             .duration(400)
             .delay(1000)
@@ -669,13 +664,18 @@ function updateScatterVersus(code) {
             })
             // need to transition x so they don't draw the wrong way round
             .attr("x", function (d) { return scatter_versus_x_nonfatal(-d.nf_total_rate) - SCATTER_VERSUS_GAP_HALF })//- 2.25 })
-    
+            
+
+        // add mouseovers    
+
         // if the chart is smaller, make the box smaller last
         if (oldSize > scatter_versus_dataset_filtered.length) {
-            scatter_g_versus.select('.scatter_versus_back')
+            scatter_g_versus.select('#scatter_versus_back')
                 .transition()
                 .delay(800)
-                .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
+                .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP);
+            moveVersusInfo(chartHeight, 800);
+
         }
     
     }
@@ -810,6 +810,137 @@ function updateScatterVersus(code) {
             .attr("text-anchor", "end")
             .attr('opacity', 1)
     }
+
+    function actionMouseOver(fadeOut, fadeIn, d, event) {
+        if (event === 'in'){
+            updateVersusInfo(d);
+        } else {
+            //hideVersusInfo();
+        }
+        fadeOutVersus('.scatter_versus_fatal_rect', fadeOut, d);
+        fadeOutVersus('.scatter_versus_nonfatal_rect', fadeOut, d);
+        fadeInVersus(".scatter_versus_bar_label", fadeIn, d);
+        d3.selectAll('.scatter_versus_average_text').transition().style("opacity", fadeOut);
+
+    }
+
+    
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+function drawScatterVersusInfo() {
+
+    // rect for the info
+    info = scatter_chart_info_g.append("rect")
+        .attr('id', 'scatter_versus_info_rect')
+        .attr("transform", "translate(0," + (SCATTER_VERSUS_HEIGHT) + ")")
+        .attr("width", SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT)
+        .attr("height", SCATTER_TOP)
+        .attr('stroke', 'white')
+        .attr('stroke-width', '5')
+        .attr('fill', 'transparent')
+        .attr('opacity', 0)
+
+        info.append("text")
+        .attr("id", "scatter_versus_info_occ")
+        .attr("x", (-0.5 * SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT) + 10)
+        .attr("y", 5)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "25px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+        info.append("text")
+        .attr("id", "scatter_versus_info_f")
+        .attr("x", (-0.5 * SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT) + 10)
+        .attr("y", 45)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+        info.append("text")
+        .attr("id", "scatter_versus_info_nf")
+        .attr("x", (-0.5 * SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT) + 10)
+        .attr("y", 75)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+
+        info.append("text")
+        .attr("id", "scatter_versus_info_tEmp")
+        .attr("x", (-0.5 * SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT) + 10)
+        .attr("y", 75)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+    
+        scatter_chart_info_g.append("text")
+        .attr("id", "scatter_versus_info_mSal")
+        .attr("x", (-0.5 * SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT) + 10)
+        .attr("y", 0)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "left")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+
+}
+
+function hideVersusInfo(){
+    var infobox = scatter_g_versus.select('#scatter_versus_info_rect');
+
+    infobox.transition('versusBox')
+            .delay(5000)
+            .attr("opacity", 0);
+    
+}
+
+function moveVersusInfo(chartHeight, delay){
+    scatter_g_versus.select('#scatter_versus_info_rect')
+        .transition()
+        .delay(delay)
+        .attr("transform", "translate(0," + (-chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP) + ")")  
+}
+
+function updateVersusInfo(d) {
+
+    var infobox = scatter_g_versus.select('#scatter_versus_info_rect');
+
+    if (scatter_info_code === '') {
+        infobox.transition('versusBox')
+            .attr("opacity", 1);
+    }
+
+    var lineSpacing = 10;
+    var yOffset = 0;
+    var xOffset = (-0.5 * TOOLTIP_WIDTH) + 20
+    var fontSize = 25;
+
+    function getLineY(index){ return yOffset + ((index + 1) * (fontSize + lineSpacing)) }
+
+
+    scatter_g_versus.select('#scatter_versus_info_mSal').text(d.salaryMed)
+
+    console.log(d.occupation)
+    // show the box
+    scatter_info_code = d.occCode;
+
     
 }
 

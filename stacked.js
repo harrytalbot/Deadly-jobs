@@ -173,7 +173,6 @@ function drawStackedChart() {
             .attr("font-size", "20px")
             .attr("font-weight", "bold")
             .attr("fill", "white")
-            .text('jsdn')
     }
 
 
@@ -390,7 +389,7 @@ function drawStackedAxis() {
         .call(d3.axisBottom(stacked_x))
         .attr("transform", "translate(0," + STACKED_HEIGHT + ")")
         .append('text') // X-axis Label
-            .attr('y', 40)
+            .attr('y', 35)
             .attr('x', STACKED_WIDTH / 2)
             .attr('dy', '.71em')
             .style("text-anchor", "middle")
@@ -414,7 +413,7 @@ function drawStackedButtons() {
 
     var buttonGroup = d3.select('body')
         .select('#svgStackedSortButton')
-        .attr('width', STACKED_WIDTH + STACKED_LEFT + STACKED_RIGHT)
+        .attr('width', screen.width)
         .attr('height', 275)
         .attr("class", "background") // SVG BACKGROUND COLOUR
         .attr("align","center");

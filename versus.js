@@ -196,8 +196,11 @@ function drawVersusChart() {
 
 function drawVersusButtons() {
 
-    var spaceBetweenCentres = (VERSUS_LEFT + VERSUS_RIGHT) / 3 * 2;
-    var sizeOfBtn = spaceBetweenCentres / 3
+    var spaceBetweenCentres = (VERSUS_LEFT + VERSUS_RIGHT) * .8;
+    var sizeOfBtn = (spaceBetweenCentres / 3)
+    var CY = 140;
+    var firstLine = CY + sizeOfBtn + 50;
+    var secondLine = firstLine + 45;
 
     function clickVersusButton(justSelected) {
         //if the btn just clicked is different to the currently selected, fade currently selected
@@ -273,6 +276,7 @@ function drawVersusButtons() {
     var buttonGroup = d3.select('body')
         .select('#svgVersusSortButton')
         .attr('width', VERSUS_WIDTH + VERSUS_LEFT + VERSUS_RIGHT)
+        .attr('height', secondLine )
         .attr("transform", "translate(" + (VERSUS_WIDTH / 5 * 4 * 0 ) + ",0)")
         //.attr("class", "background") // SVG BACKGROUND COLOUR
 
@@ -280,7 +284,7 @@ function drawVersusButtons() {
     buttonGroup.append('circle')
      .attr('id', 'nf_total_rate_versus_btn')
      .attr('cx', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-     .attr('cy', 100)
+     .attr('cy', CY)
      .attr('r', sizeOfBtn * 1.1)
      .attr('opacity', BUTTON_FADED)
      .attr('stroke', NONFATAL_COLOUR)
@@ -292,10 +296,10 @@ function drawVersusButtons() {
  buttonGroup.append('text')
      .attr('id', 'nf_total_rate_versus_lbl')
      .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-     .attr('y', 220)
+     .attr('y', firstLine)
      .attr("text-anchor", "middle")
      .style("font-family", 'Lora')
-     .style("font-size", "25px")
+     .style("font-size", "35px")
      .style('fill', 'white')
      .style('opacity', BUTTON_FADED)
      .style('font-weight', '900')
@@ -303,10 +307,10 @@ function drawVersusButtons() {
  buttonGroup.append('text')
      .attr('id', 'nf_total_rate_versus_lbl')
      .attr('x', spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-     .attr('y', 250)
+     .attr('y', secondLine)
      .attr("text-anchor", "middle")
      .style("font-family", 'Lora')
-     .style("font-size", "25px")
+     .style("font-size", "35px")
      .style('fill', 'white')
      .style('opacity', BUTTON_FADED)
      .style('font-weight', '900')
@@ -317,7 +321,7 @@ function drawVersusButtons() {
     buttonGroup.append('circle')
         .attr('id', 'f_total_rate_versus_btn')
         .attr('cx', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-        .attr('cy', 100)
+        .attr('cy', CY)
         .attr('r', sizeOfBtn * 1.1)
         .attr('opacity', '1')
         .attr('stroke', FATAL_COLOUR)
@@ -329,10 +333,10 @@ function drawVersusButtons() {
     buttonGroup.append('text')
         .attr('id', 'f_total_rate_versus_lbl')
         .attr('x', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-        .attr('y', 220)
+        .attr('y', firstLine)
         .attr("text-anchor", "middle")
         .style("font-family", 'Lora')
-        .style("font-size", "25px")
+        .style("font-size", "35px")
         .style('fill', 'white')
         .style('opacity', '1')
         .style('font-weight', '900')
@@ -340,10 +344,10 @@ function drawVersusButtons() {
     buttonGroup.append('text')
         .attr('id', 'f_total_rate_versus_lbl')
         .attr('x', 2 * spaceBetweenCentres - (0.5 * sizeOfBtn) + button_x_offset)
-        .attr('y', 250)
+        .attr('y', secondLine)
         .attr("text-anchor", "middle")
         .style("font-family", 'Lora')
-        .style("font-size", "25px")
+        .style("font-size", "35px")
         .style('fill', 'white')
         .style('opacity', '1')
         .style('font-weight', '900')

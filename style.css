@@ -1,4 +1,4 @@
-.article-title, .article-text-left, .article-text-right, .article-text-center, .article-text-tip, .article-text-tip-first, .wrapper-text-left, .wrapper-text-right, .stacked_text_info {
+.article-title, .article-text-left, .article-text-right, .article-text-center, .article-text-tip, .article-text-tip-first, .wrapper-text-left, .wrapper-text-right, .stacked_text_info, .scatter-versus-info {
   font-size: 35px;
   color: white;
   font-family: 'Lora', serif;
@@ -40,8 +40,8 @@
 .article-text-center {
   text-align: center;
   display: inline-block;
-  padding-left: 2.5%;
-  padding-right: 2.5%;
+  padding-left: 3%;
+  padding-right: 3%;
   margin-bottom: 0px;
   width: 95%;
 }
@@ -85,7 +85,7 @@
   text-align: right;
   float: right;
   /* ignore warning, this is needed*/
-  width: 65%;
+  width: 200px;
 }
 
 .wrapper-svg-left, .wrapper-svg-right {
@@ -96,7 +96,7 @@
 
 .wrapper {
   width: 100%;
-  padding-top: 200px;
+  padding-top: 100px;
   border: 1px solid black;
   overflow: hidden;
   /* will contain if #first is longer than #second */
@@ -111,10 +111,15 @@
 
 .background {
   background-color: black;
-  /*overflow: hidden; /**/
+  overflow: hidden; /**/
   margin: auto;
 }
 
+
+
+div {
+ /*border: 5px solid white; /**/
+}
 /* COLORS /////////////////////////////////////////////////////////////////*/
 
 .red {

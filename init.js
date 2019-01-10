@@ -149,6 +149,8 @@ function begin(){
     drawScatterVersusAxis();
     drawScatterVersusButtons();
 
+    drawScatterVersusInfo();
+    
     //var top = document.getElementById("articleTop"); top.scrollIntoView();
     // keypress
     document.onkeypress = KeyPressHappened;
@@ -175,15 +177,13 @@ function KeyPressHappened(e){
             currentPagePos = (currentPagePos + 1 >= sections.length) ? sections.length - 1 :currentPagePos + 1; 
             break;
         case 40: // 40 = DOWN
-        console.log(currentPagePos + 1);
-        console.log(sections.length);
             currentPagePos = (currentPagePos + 1 >= sections.length) ? sections.length - 1 : currentPagePos + 1; 
             break;
         
     }
 
     $('html, body').animate({
-        scrollTop: $(sections[4]).offset().top
+        scrollTop: $(sections[currentPagePos]).offset().top
     }, 1000);
 
     console.log(code)
