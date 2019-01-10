@@ -158,7 +158,7 @@ mark.oabr {
 
 /* AXIS BITS /////////////////////////////////////////////////////////////////*/
 
-.axis text, .yaxis text, .axisStackedY text, .axisScatterVersusY text {
+.scatterXAxis text, .scatterYAxis text, .axis text, .yaxis text, .axisStackedY text, .axisScatterVersusY text {
   /* used on axis text */
   fill: white;
   font-weight: 900;
@@ -166,13 +166,13 @@ mark.oabr {
   font-size: medium
 }
 
-.yaxis line, .axis line, .axisStackedY line {
+.scatterXAxis line, .scatterYAxis line, .yaxis line, .axis line, .axisStackedY line {
   /* used on axis ticks */
   stroke: white;
   stroke-width: 5;
 }
 
-.yaxis path, .axis path, .axisStackedY path, .axisScatterVersusY path {
+.scatterXAxis path, .scatterYAxis path, .yaxis path, .axis path, .axisStackedY path, .axisScatterVersusY path {
   /* used on axis */
   stroke: white;
   stroke-width: 5;

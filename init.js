@@ -26,6 +26,9 @@ var currentPagePos = 0;
 
 var fatalFormatter = d3.format(".3n");
 var nonFatalFormatter = d3.format(",.2f");
+var moneyFormatter = d3.format("($,.4r");
+var empFormatter = d3.format(",");
+
 
 d3.select('body').attr("class", "background"); // PAGE BACKGROUND COLOUR
 
@@ -84,8 +87,8 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
     stacked_x.domain([0, d3.max(stacked_dataset, function (d) { return d.f_total_rate; })]).nice();
     stacked_z.domain(FATAL_CAUSE_RATES);
 
-    scatter_y.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) { return d.f_total_rate })]) + 1]).nice();
-    scatter_x.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) { return d.nf_total_rate })]) + 1]).nice();
+    scatter_y.domain([0, 20])//d3.max([0, d3.max(scatter_dataset, function (d) { return d.f_total_rate })]) + 1]).nice();
+    scatter_x.domain([0, 600])//d3.max([0, d3.max(scatter_dataset, function (d) { return d.nf_total_rate })]) + 1]).nice();
     scatter_z.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) {return d.salaryMed})])])
     scatter_plotSize.domain([0, d3.max([0, d3.max(scatter_dataset, function (d) {return d.totEmp})])])  
 
@@ -150,7 +153,7 @@ function begin(){
     drawScatterVersusButtons();
 
     drawScatterVersusInfo();
-    
+
     //var top = document.getElementById("articleTop"); top.scrollIntoView();
     // keypress
     document.onkeypress = KeyPressHappened;
@@ -160,7 +163,7 @@ function begin(){
 function KeyPressHappened(e){
 
     // sections to scroll to
-    var sections = ["#articleTop", "#svgVersusSortButton", "#infoBarText", "#svgStackedSortButton", "#svgScatter"]
+    var sections = ["#articleTop", "#svgVersusSortButton", "#infoBarText", "#svgStackedSortButton", "#svgScatter", "#svgScatter"    ]
 
     var code = ((e.charCode) && (e.keyCode==0)) ? e.charCode : e.keyCode; 
     
@@ -179,14 +182,39 @@ function KeyPressHappened(e){
         case 40: // 40 = DOWN
             currentPagePos = (currentPagePos + 1 >= sections.length) ? sections.length - 1 : currentPagePos + 1; 
             break;
-        
+        default:
+            // 1 to 6
+            if (code > 47 && code < 55) currentPagePos = (code - 49);
+            break;        
     }
+
+    if (currentPagePos == 4 || currentPagePos == 5){
+        //update scatter viewport
+        scatter_y.domain([0, (currentPagePos == 4) ? 20 : d3.max([0, d3.max(scatter_dataset, function (d) { return d.f_total_rate } )]) + 1]).nice();
+        scatter_x.domain([0, (currentPagePos == 4) ? 600: d3.max([0, d3.max(scatter_dataset, function (d) { return d.nf_total_rate })]) + 1]).nice();
+        updateScatterViewPort();
+        // update text
+
+        var text;
+        if (currentPagePos == 4){
+            text = "intro into stacked bar,mention comp sci occupations being low risk and high reward!"
+        } else {
+            text = "how generally more dangerous occupations have lower employment, and the salary does not often reflect this "
+        }
+        var t0 = d3.transition('fadeText').duration(400);
+        t0.select('#svgScatterRightText').style('opacity', 0)
+        var t1 = t0.transition('visText');
+        t1.select('#svgScatterTopRightText').text(text)
+        t1.select('#svgScatterBottomRightText').text("hi")
+        t1.select('#svgScatterRightText').style('opacity', 1)
+
+
+    }
+
 
     $('html, body').animate({
         scrollTop: $(sections[currentPagePos]).offset().top
     }, 1000);
-
-    console.log(code)
 
 
 }

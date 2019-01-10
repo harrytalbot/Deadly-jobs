@@ -11,7 +11,7 @@ var svg_scatter = d3.select('body')
     .attr('width', SCATTER_WIDTH + SCATTER_LEFT + SCATTER_RIGHT)
     .attr('height', SCATTER_HEIGHT + SCATTER_TOP + SCATTER_BOTTOM)
 
-scatter_g = svg_scatter.append("g").attr("transform", "translate(" + SCATTER_LEFT + "," + SCATTER_TOP + ")");
+scatter_g = svg_scatter.append("g").attr("transform", "translate(" + (SCATTER_LEFT-10) + "," + SCATTER_TOP + ")");
 
 // set scatter y scale
 scatter_y = d3.scaleLinear().range([SCATTER_HEIGHT, 0])
@@ -22,10 +22,12 @@ scatter_z = d3.scaleLinear().range(["LightCyan", "RoyalBlue"]);
 
 var scatter_plotSize = d3.scaleLinear().range([5,12])
 
+var domXAxis, domYAxis, plotPoints;
+
 
 /// SCATTER VERSUS SETUP /////////////////////////////////////////////////////////////////
 
-scatter_g_versus = svg_scatter.append("g").attr("transform", "translate(" + (SCATTER_LEFT + SCATTER_VERSUS_LEFT_FROM_AXIS) + "," + SCATTER_VERSUS_TOP + ")");
+scatter_g_versus = svg_scatter.append("g").attr("transform", "translate(" + (VERSUS_INFO_WIDTH + VERSUS_INFO_LEFT + SCATTER_VERSUS_LEFT_FROM_AXIS) + "," + (SCATTER_VERSUS_TOP)+")");
 
 scatter_g_versus.append("rect")
     .attr('id', 'scatter_versus_back')
@@ -36,9 +38,9 @@ scatter_g_versus.append("rect")
     .attr('fill', 'transparent')
     .attr('opacity', 0)
 
-scatter_versus_g_nonfatal = scatter_g_versus.append("g").attr("transform", "translate(" + (SCATTER_VERSUS_LEFT + (SCATTER_VERSUS_WIDTH /2)) + "," + (SCATTER_VERSUS_TOP) + ")")
+scatter_versus_g_nonfatal = scatter_g_versus.append("g").attr("transform", "translate(" + (SCATTER_VERSUS_LEFT + (SCATTER_VERSUS_WIDTH /2)) + "," + SCATTER_VERSUS_TOP + ")")
 
-scatter_versus_g_fatal = scatter_g_versus.append("g").attr("transform", "translate(" + (SCATTER_VERSUS_LEFT + (SCATTER_VERSUS_WIDTH /2)) + "," + (SCATTER_VERSUS_TOP) + ")")
+scatter_versus_g_fatal = scatter_g_versus.append("g").attr("transform", "translate(" + (SCATTER_VERSUS_LEFT + (SCATTER_VERSUS_WIDTH /2)) + "," + SCATTER_VERSUS_TOP + ")")
 
 const SCATTER_VERSUS_GAP_HALF = 0;
 
@@ -61,19 +63,17 @@ var scatter_versus_sort_field = 'f_total_rate'
 
 var scatter_info_code = '';
 
-
-
 /////////////////////////////////////////////////////////////////////////////////////////         Mouse over the points to view an occupational comparison per industry.
 
-scatter_chart_info_g = scatter_g_versus.append("g")
+scatter_chart_info_g = svg_scatter.append("g").attr("transform", "translate(" + (VERSUS_INFO_LEFT) + "," + SCATTER_VERSUS_TOP + ")");
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 
 function drawScatterAxis() {
     // X-axis
-    scatter_g.append('g')
-        .attr("class", "axis")
+    domXAxis = scatter_g.append('g')
+        .attr("class", "scatterXAxis")
         .call(d3.axisBottom(scatter_x))
         .attr('transform', 'translate(0,' + SCATTER_HEIGHT + ')')
 
@@ -91,8 +91,8 @@ function drawScatterAxis() {
             .text("Non-Fatal Injuries per 100k");
 
     // Y-axis
-    scatter_g.append('g')
-        .attr("class", "axis")
+    domYAxis = scatter_g.append('g')
+        .attr("class", "scatterYAxis")
         .call(d3.axisLeft(scatter_y))
 
         .append('text') // y-axis Label
@@ -117,7 +117,7 @@ function drawScatterPlot() {
     const TOOLTIP_HEIGHT = 100;
     prepTooltip();
 
-    var circles = scatter_g.selectAll('circle')
+    plotPoints = scatter_g.selectAll('circle')
         .data(scatter_dataset)
         .enter()
         .append('circle')
@@ -129,12 +129,13 @@ function drawScatterPlot() {
         .attr('fill', function (d, i) { return scatter_z(d.salaryMed) })
         .on('mouseover', function (d) {
             updateScatterVersus(d.majorOccCodeGroup);
+            updateVersusInfo(d, 'plot')
             d3.select(this)
                 .transition()
                 .duration(200)
                 .attr('r', 20)
                 .attr('stroke-width', 3)
-            tooltip.transition('scatterTooltip').attr("opacity", 1);
+           // tooltip.transition('scatterTooltip').attr("opacity", 1);
 
         })
         .on('mouseout', function () {
@@ -207,6 +208,22 @@ function drawScatterPlot() {
     
     }
 
+}
+
+function updateScatterViewPort(){
+    d3.select(".scatterXAxis").transition()
+        .duration(500)
+        .call(d3.axisBottom(scatter_x))
+    d3.select(".scatterYAxis").transition()
+        .duration(500)
+        .call(d3.axisLeft(scatter_y))
+    scatter_g.selectAll('circle')
+        .data(scatter_dataset)
+        .transition('updatePlots')
+        .duration(500)
+        .attr('cx', function (d) { return scatter_x(d.nf_total_rate) })
+        .attr('cy', function (d) { return scatter_y(d.f_total_rate) })
+        .attr('r', function (d) { return scatter_plotSize(d.totEmp) })
 }
 
 function drawScatterEmploymentLegend() {
@@ -424,6 +441,20 @@ function drawScatterVersusButtons() {
         .attr('class', 'scatter_versus_control_nf_total_rate')
         .attr('id', 'nf_total_rate_scatter_versus_lbl')
         .attr('x', (2* sizeOfBtn) -(SCATTER_VERSUS_WIDTH/2) - offset)
+        .attr('y', '60')
+        .attr("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "20px")
+        .style('fill', 'white')
+        .style('font-weight', '900')
+        .style('opacity', 0)
+        .text("Injury")
+        .attr("pointer-events", "none")
+        /*
+    scatter_versus_g_nonfatal.append('text')
+        .attr('class', 'scatter_versus_control_nf_total_rate')
+        .attr('id', 'nf_total_rate_scatter_versus_lbl')
+        .attr('x', (2* sizeOfBtn) -(SCATTER_VERSUS_WIDTH/2) - offset)
         .attr('y', '120')
         .attr("text-anchor", "middle")
         .style("font-family", 'Lora')
@@ -444,7 +475,7 @@ function drawScatterVersusButtons() {
         .style('opacity', 0)
         .style('font-weight', '900')
         .text("Non-Fatal")
-
+*/
 
     // Add first for fatal
     scatter_versus_g_fatal.append('circle')
@@ -460,6 +491,21 @@ function drawScatterVersusButtons() {
         .on("click", function () { clickScatterVersusButton('f_total_rate') })
         .on('mouseover', function () { mouseOverScatterVersusButton('f_total_rate') })
         .on('mouseout', function () { mouseOutScatterVersusButton('f_total_rate') })
+    scatter_versus_g_fatal.append('text')
+        .attr('class', 'scatter_versus_control_f_total_rate')
+        .attr('id', 'f_total_rate_scatter_versus_lbl')
+        .attr('x', (SCATTER_VERSUS_WIDTH / 2) - (2 * sizeOfBtn) + offset)
+        .attr('y', '60')
+        .attr("text-anchor", "middle")
+        .style("font-family", 'Lora')
+        .style("font-size", "20px")
+        .style('fill', 'white')
+        .style('opacity', '0')
+        .style('font-weight', '900')
+        .text("Fatality")
+        .attr("pointer-events", "none")
+
+        /*
     scatter_versus_g_fatal.append('text')
         .attr('class', 'scatter_versus_control_f_total_rate')
         .attr('id', 'f_total_rate_scatter_versus_lbl')
@@ -484,6 +530,7 @@ function drawScatterVersusButtons() {
         .style('opacity', '0')
         .style('font-weight', '900')
         .text("Fatal")
+        */
 
    
 
@@ -550,7 +597,10 @@ function updateScatterVersus(code) {
             return d3.descending(a[scatter_versus_sort_field], b[scatter_versus_sort_field])
         })
         // get a different chart height if there aren't many items
-        chartHeight = (scatter_versus_dataset_filtered.length < 5) ? SCATTER_VERSUS_HEIGHT / 3 * 2 : SCATTER_VERSUS_HEIGHT;
+        console.log(VERSUS_INFO_HEIGHT);
+        console.log((SCATTER_VERSUS_HEIGHT / 3 * 2) + 20)
+
+        chartHeight = (scatter_versus_dataset_filtered.length < 5) ? VERSUS_INFO_HEIGHT - SCATTER_VERSUS_BOTTOM - SCATTER_VERSUS_TOP: SCATTER_VERSUS_HEIGHT;
         scatter_versus_y = d3.scaleBand().range([0, chartHeight])
         // uses the stacked dataset for occupations.
         scatter_versus_y.domain(scatter_versus_dataset_filtered.map(function (d) { return d.occupation; })).padding(BAR_PADDING);
@@ -558,18 +608,15 @@ function updateScatterVersus(code) {
         scatter_versus_x_nonfatal.domain([d3.min(scatter_versus_dataset_filtered, function (d) { return +-1 * d.nf_total_rate; }), 0]).nice();
         
         if (oldSize == 0) { // first time so don't animate height transition
-            moveVersusInfo(chartHeight, 0)
             scatter_g_versus.select('#scatter_versus_back')
                 .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
                 .transition()
-                .attr('opacity', 1)
+                .attr('opacity', 0.5)
         } else if (oldSize < scatter_versus_dataset_filtered.length) { // if the chart is bigger, make the box bigger first
             scatter_g_versus.select('#scatter_versus_back')
                 .transition()
                 .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
-                .attr('opacity', 1)
-            moveVersusInfo(chartHeight, 0);
-
+                .attr('opacity', 0.5)
         }
         //first fatal - go in, change the data, redraw and transition
         var bars = scatter_versus_g_fatal.selectAll(".scatter_versus_fatal_rect")
@@ -674,7 +721,6 @@ function updateScatterVersus(code) {
                 .transition()
                 .delay(800)
                 .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP);
-            moveVersusInfo(chartHeight, 800);
 
         }
     
@@ -813,9 +859,9 @@ function updateScatterVersus(code) {
 
     function actionMouseOver(fadeOut, fadeIn, d, event) {
         if (event === 'in'){
-            updateVersusInfo(d);
+            updateVersusInfo(d, 'versus');
         } else {
-            //hideVersusInfo();
+            updateVersusInfo(d, 'plot');
         }
         fadeOutVersus('.scatter_versus_fatal_rect', fadeOut, d);
         fadeOutVersus('.scatter_versus_nonfatal_rect', fadeOut, d);
@@ -831,70 +877,106 @@ function updateScatterVersus(code) {
 
 function drawScatterVersusInfo() {
 
+    var leftIndent = 20;
+    var rightIndent = (VERSUS_INFO_WIDTH) - 20;
     // rect for the info
-    info = scatter_chart_info_g.append("rect")
+    scatter_chart_info_g.append("rect")
         .attr('id', 'scatter_versus_info_rect')
-        .attr("transform", "translate(0," + (SCATTER_VERSUS_HEIGHT) + ")")
-        .attr("width", SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT)
-        .attr("height", SCATTER_TOP)
+        //.attr("transform", "translate(0," + (SCATTER_VERSUS_HEIGHT) + ")")
+        .attr("width", VERSUS_INFO_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT)
+        .attr("height", VERSUS_INFO_HEIGHT)
         .attr('stroke', 'white')
         .attr('stroke-width', '5')
         .attr('fill', 'transparent')
         .attr('opacity', 0)
 
-        info.append("text")
-        .attr("id", "scatter_versus_info_occ")
-        .attr("x", (-0.5 * SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT) + 10)
-        .attr("y", 5)
+    scatter_chart_info_g.append("text")
+        .attr("id", "scatter_versus_info_ind")
+        .attr("x", (0.5 * VERSUS_INFO_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT))
+        .attr("y", (0.5 * VERSUS_INFO_HEIGHT)- 40)// + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT))
+        .attr('class', 'versus_text_titles')
         .attr("dy", "1.2em")
-        .style("text-anchor", "left")
-        .attr('class', 'simple_text_info')
+        .style("text-anchor", "middle")
+        .attr("font-family", "Lora")
+        .attr("font-size", "30px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+    scatter_chart_info_g.append("text")
+        .attr("id", "scatter_versus_info_ind2")
+        .attr("x", (0.5 * VERSUS_INFO_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT))
+        .attr("y", (0.5 * VERSUS_INFO_HEIGHT))// + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT))
+        .attr('class', 'versus_text_titles')
+        .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
+        .attr("font-family", "Lora")
+        .attr("font-size", "30px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+    scatter_chart_info_g.append("text")
+        .attr("id", "scatter_versus_info_occ")
+        .attr('class', 'versus_text_info')
+        .attr("x", (0.5 * VERSUS_INFO_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT))
+        .attr("y", 20)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
         .attr("font-family", "Lora")
         .attr("font-size", "25px")
         .attr("font-weight", "bold")
         .attr("fill", "white")
-        info.append("text")
-        .attr("id", "scatter_versus_info_f")
-        .attr("x", (-0.5 * SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT) + 10)
+    scatter_chart_info_g.append("text")
+        .attr("id", "scatter_versus_info_occ2")
+        .attr('class', 'versus_text_info')
+        .attr("x", (0.5 * VERSUS_INFO_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT))
         .attr("y", 45)
         .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
+        .attr("font-family", "Lora")
+        .attr("font-size", "25px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+
+    scatter_chart_info_g.append("text")
+        .attr("id", "scatter_versus_info_f")
+        .attr("x", leftIndent)
+        .attr("y", 145)
+        .attr("dy", "1.2em")
         .style("text-anchor", "left")
-        .attr('class', 'simple_text_info')
+        .attr('class', 'versus_text_info')
         .attr("font-family", "Lora")
         .attr("font-size", "20px")
         .attr("font-weight", "bold")
         .attr("fill", "white")
-        info.append("text")
+    scatter_chart_info_g.append("text")
         .attr("id", "scatter_versus_info_nf")
-        .attr("x", (-0.5 * SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT) + 10)
-        .attr("y", 75)
+        .attr("x", leftIndent)
+        .attr("y", 180)
         .attr("dy", "1.2em")
         .style("text-anchor", "left")
-        .attr('class', 'simple_text_info')
+        .attr('class', 'versus_text_info')
         .attr("font-family", "Lora")
         .attr("font-size", "20px")
         .attr("font-weight", "bold")
         .attr("fill", "white")
 
-        info.append("text")
+    scatter_chart_info_g.append("text")
         .attr("id", "scatter_versus_info_tEmp")
-        .attr("x", (-0.5 * SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT) + 10)
-        .attr("y", 75)
+        .attr("x", rightIndent)
+        .attr("y", 145)
         .attr("dy", "1.2em")
-        .style("text-anchor", "left")
-        .attr('class', 'simple_text_info')
+        .style("text-anchor", "end")
+        .attr('class', 'versus_text_info')
         .attr("font-family", "Lora")
         .attr("font-size", "20px")
         .attr("font-weight", "bold")
         .attr("fill", "white")
-    
-        scatter_chart_info_g.append("text")
+
+    scatter_chart_info_g.append("text")
         .attr("id", "scatter_versus_info_mSal")
-        .attr("x", (-0.5 * SCATTER_VERSUS_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT) + 10)
-        .attr("y", 0)
+        .attr("x", rightIndent)
+        .attr("y", 180)
         .attr("dy", "1.2em")
-        .style("text-anchor", "left")
-        .attr('class', 'simple_text_info')
+        .style("text-anchor", "end")
+        .attr('class', 'versus_text_info')
         .attr("font-family", "Lora")
         .attr("font-size", "20px")
         .attr("font-weight", "bold")
@@ -911,37 +993,94 @@ function hideVersusInfo(){
     
 }
 
-function moveVersusInfo(chartHeight, delay){
-    scatter_g_versus.select('#scatter_versus_info_rect')
-        .transition()
-        .delay(delay)
-        .attr("transform", "translate(0," + (-chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP) + ")")  
-}
+function updateVersusInfo(d, from) {
 
-function updateVersusInfo(d) {
-
-    var infobox = scatter_g_versus.select('#scatter_versus_info_rect');
-
+    var infobox = scatter_chart_info_g.select('#scatter_versus_info_rect');
     if (scatter_info_code === '') {
         infobox.transition('versusBox')
-            .attr("opacity", 1);
+            .attr("opacity", 0.5);
     }
 
-    var lineSpacing = 10;
-    var yOffset = 0;
-    var xOffset = (-0.5 * TOOLTIP_WIDTH) + 20
-    var fontSize = 25;
 
-    function getLineY(index){ return yOffset + ((index + 1) * (fontSize + lineSpacing)) }
+    if (from === 'plot') {
+        // make title big
+        first = d.majorOccNameGroup.trim()
+        second =''
+        if (d.majorOccNameGroup.trim().length > 35) {
 
+            [first, second] = halveString(d.majorOccNameGroup)
+            scatter_chart_info_g.select('#scatter_versus_info_occ').text(first)
+            scatter_chart_info_g.select('#scatter_versus_info_occ2').text(second)
+        } 
+        scatter_chart_info_g.select('#scatter_versus_info_ind')
+            .text(first)
+            .transition()
+            .delay(500)
+            .style("font-size", "30px")
+            .attr("y", (0.5 * VERSUS_INFO_HEIGHT) - 40)
+        scatter_chart_info_g.select('#scatter_versus_info_ind2')
+            .text(second)
+            .attr("y", (0.5 * VERSUS_INFO_HEIGHT) + 0)
+            .transition()
+            .delay(500)
+            .style("font-size", "30px")
+            .style('opacity', 1)
 
-    scatter_g_versus.select('#scatter_versus_info_mSal').text(d.salaryMed)
+        
+        scatter_chart_info_g.selectAll('.versus_text_info')
+            .transition()
+            .delay(500)
+            .style('opacity', 0)
+    } else {
+        // make title at top
+        scatter_chart_info_g.selectAll('.versus_text_info')
+            .transition()
+            .style('opacity', 1)
 
-    console.log(d.occupation)
+        if (d.occupation.trim().length > 40) {
+
+            [first, second] = halveString(d.occupation)
+            scatter_chart_info_g.select('#scatter_versus_info_occ').text(first)
+            scatter_chart_info_g.select('#scatter_versus_info_occ2').text(second)
+        } else {
+            scatter_chart_info_g.select('#scatter_versus_info_occ').text(d.occupation)
+            scatter_chart_info_g.select('#scatter_versus_info_occ2').text('')
+        }
+
+        scatter_chart_info_g.select('#scatter_versus_info_ind')
+            .text(d.majorOccNameGroup)
+            .transition()
+            .attr("y", 90)
+            .style("font-size", "20px")
+        scatter_chart_info_g.select('#scatter_versus_info_ind2')
+            .text('')
+            .transition()
+            .style("opacity", 0)
+            .attr("y", 90)
+            .style("font-size", "2px")
+        scatter_chart_info_g.select('#scatter_versus_info_nf').text('Injuries per 100k: ' + nonFatalFormatter(d.nf_total_rate))
+        scatter_chart_info_g.select('#scatter_versus_info_f').text('Fatalities per 100k: ' + fatalFormatter(d.f_total_rate))
+        scatter_chart_info_g.select('#scatter_versus_info_tEmp').text('Total Employment: ' + empFormatter(d.totEmp))
+        scatter_chart_info_g.select('#scatter_versus_info_mSal').text('Average Salary: ' + moneyFormatter(d.salaryMed))
+
+    }
     // show the box
     scatter_info_code = d.occCode;
 
     
 }
 
+function halveString(string){
+    string = string.trim()
+    var middle = Math.floor(string.length / 2);
+    var before = string.lastIndexOf(' ', middle);
+    var after = string.indexOf(' ', middle + 1);
+
+    if (middle - before < after - middle) {
+        middle = before;
+    } else {
+        middle = after;
+    }
+    return [string.substr(0, middle), string.substr(middle + 1)]
+}
 

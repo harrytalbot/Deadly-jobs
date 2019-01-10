@@ -237,7 +237,7 @@ function drawStackedChart() {
                 tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
                 tooltip.select('#stacked_tooltext_occ').text(d.data.occupation.trim())
                 tooltip.select('#stacked_tooltext_ind').text("Industry: " + d.data.majorOccNameGroup)
-                tooltip.select('#stacked_tooltext_tEmp').text("Total Emp: " + d.data.totEmp)
+                tooltip.select('#stacked_tooltext_tEmp').text("Total Emp: " + empFormatter(d.data.totEmp))
 
                 for (let index = 0; index < FATAL_CAUSE_RATES.length; index++) {
                     var rate = fatalFormatter(d.data[FATAL_CAUSE_RATES[index]]);
