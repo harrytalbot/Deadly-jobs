@@ -61,7 +61,7 @@ function drawSimpleBarChart() {
     simpleBar_g.append("text")
         .attr('id', 'simpleBarHint')
         .attr("x", SIMPLEBAR_WIDTH / 2)
-        .attr("y", -25)
+        .attr("y", -35)
         .style("text-anchor", "middle")
         .attr('class', 'simple_text_info')
         .attr("font-family", "Lora")

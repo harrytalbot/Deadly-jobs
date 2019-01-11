@@ -22,6 +22,11 @@ var scatter_versus_y;
 var scatter_versus_x;
 var scatter_versus_z;
 
+var age_y_rate;
+var age_y_case;
+var age_x;
+var age_z;
+
 var currentPagePos = 0;
 
 var fatalFormatter = d3.format(".3n");
@@ -91,7 +96,6 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
     scatter_x.domain([0, 600])//d3.max([0, d3.max(scatter_dataset, function (d) { return d.nf_total_rate })]) + 1]).nice();
     scatter_z.domain([0, d3.max([0, d3.max(scatter_versus_dataset, function (d) {return +d.salaryMed})])])
     scatter_plotSize.domain([0, d3.max(scatter_versus_dataset, function (d) {return +d.totEmp})])  
-    console.log(d3.max(scatter_dataset, function (d) {return +d.totEmp}) )
 
     // uses the stacked dataset for occupations.
     scatter_versus_y.domain(scatter_versus_dataset_filtered.map(function (d) { return d.occupation; })).padding(BAR_PADDING);
@@ -101,6 +105,22 @@ d3.csv("data/dataWithCodes.csv", function (data, i) {
 
 });
 
+// load the age data
+d3.csv("data/ageData.csv", function (data, i) {
+    data.case_2016 = +data.case_2016;
+    data.rate_2016 = +data.rate_2016;
+    return data;
+
+}, function (error, data) {
+    if (error) throw error;
+
+    age_dataset = data;
+
+    age_y_rate.domain([0, d3.max(age_dataset, function (d) { return +d.rate_2016; })]).nice();
+    age_y_case.domain([0, d3.max(age_dataset, function (d) { return +d.case_2016; })]).nice();
+    age_x.domain(age_dataset.map(function (d) { return d.age; })).padding(BAR_PADDING);
+    
+});
 // load the second csv (this is just some case counts)
 d3.csv("data/dataForSimpleBar.csv", function (data, i) {
 
@@ -155,6 +175,10 @@ function begin(){
 
     drawScatterVersusInfo();
 
+    drawAgeChart();
+    drawAgeAxis();
+    drawAgeInfo();
+
     //var top = document.getElementById("articleTop"); top.scrollIntoView();
     // keypress
     document.onkeypress = KeyPressHappened;
@@ -164,7 +188,7 @@ function begin(){
 function KeyPressHappened(e){
 
     // sections to scroll to
-    var sections = ["#articleTop", "#svgVersusSortButton", "#infoBarText", "#svgStackedSortButton", "#svgScatter", "#svgScatter"    ]
+    var sections = ["#articleTop", "#svgVersusSortButton", "#infoBarText", "#svgStackedSortButton", "#svgScatter", "#svgScatter","#svgAgeLeftText" ]
 
     var code = ((e.charCode) && (e.keyCode==0)) ? e.charCode : e.keyCode; 
     
@@ -184,8 +208,8 @@ function KeyPressHappened(e){
             currentPagePos = (currentPagePos + 1 >= sections.length) ? sections.length - 1 : currentPagePos + 1; 
             break;
         default:
-            // 1 to 6
-            if (code > 47 && code < 55) currentPagePos = (code - 49);
+            // 1 to 7   
+            if (code > 47 && code < 56) currentPagePos = (code - 49);
             break;        
     }
 

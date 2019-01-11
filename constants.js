@@ -23,7 +23,7 @@ CAUSES_MAP.set("allOther_cases", 'All Other Causes')
 // adapted from http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=7
 
 const FATAL_COLOUR = 'Gold';
-const NONFATAL_COLOUR = 'MediumOrchid'
+const NONFATAL_COLOUR = '#03B7EC'
 const TRANS_BLUE = "#377eb8";
 const VIOLENCE_RED = "#e41a1c";
 const FIRE_ORANGE = "#ff7f00";
@@ -98,10 +98,16 @@ const STACKED_INFO_TEXTS_CONTACT = [
     '72.6% of Forestry, Conservation and Logging ',
     'fatalities were caused by contact with objects ',
     'or equipment.',
+    '',
+    'Nationwide, 761 deaths reported listed an ',
+    'accident of this sort.'
     ]
 const STACKED_INFO_TEXTS_OTHER = [
-    'On occasion accidents cannot be classified into',
-    'existing categories.'
+    'Despite the extensive classification',
+    'scheme, many indicents cannot be classified.',
+    '',
+    '1108 cases could not be classified in 2016,',
+    'making up 5.67% of workplace fatalties.'
 ]
 
 
@@ -164,5 +170,11 @@ const SCATTER_LEGEND_BOTTOM = 40;
 const SCATTER_LEGEND_WIDTH = DEVICE_WIDTH - SCATTER_WIDTH-SCATTER_LEFT-SCATTER_RIGHT - 130;
 const SCATTER_LEGEND_HEIGHT= 250;
 
+const AGE_BAR_LEFT = 100;
+const AGE_BAR_RIGHT = 70;
+const AGE_BAR_BOTTOM = 200;
+const AGE_BAR_TOP = 10;
+const AGE_BAR_WIDTH = 800 - AGE_BAR_LEFT - AGE_BAR_RIGHT;
+const AGE_BAR_HEIGHT = 600 - AGE_BAR_TOP - AGE_BAR_BOTTOM;
 
-
+const highlight = [1, 4, 5, 6];

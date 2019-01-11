@@ -2,13 +2,11 @@
 
 var scatter_dataset;
 
-var scatter = { width: SCATTER_WIDTH - SCATTER_LEFT - SCATTER_RIGHT, height: SCATTER_HEIGHT - STACKED_TOP - STACKED_BOTTOM};
-
 /// SCATTER SETUP ///////////////////////////////////////////////////////////////////////
 
-var scatter_z_low = '#31a9b8'
-var scatter_z_high = 'MidnightBlue'
+var scatter_z_low = '#7ADEF0'
 var scatter_z_mid = '#196E8F'
+var scatter_z_high = 'MidnightBlue'
 
 var svg_scatter = d3.select('body')
     .select('#svgScatter')
@@ -704,12 +702,12 @@ function updateScatterVersus(code) {
             scatter_g_versus.select('#scatter_versus_back')
                 .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
                 .transition()
-                .attr('opacity', 0.5)
+                .attr('opacity', 1)
         } else if (oldSize < scatter_versus_dataset_filtered.length) { // if the chart is bigger, make the box bigger first
             scatter_g_versus.select('#scatter_versus_back')
                 .transition()
                 .attr("height", chartHeight + SCATTER_VERSUS_BOTTOM + SCATTER_VERSUS_TOP)
-                .attr('opacity', 0.5)
+                .attr('opacity', 1)
         }
         //first fatal - go in, change the data, redraw and transition
         var bars = scatter_versus_g_fatal.selectAll(".scatter_versus_fatal_rect")
@@ -907,7 +905,7 @@ function updateScatterVersus(code) {
             .delay(810)
             .style("stroke", "white")
             .attr('stroke-width', '3')
-            .attr('opacity', 0.5)
+            .attr('opacity', 1)
 
 
         scatter_versus_g_fatal.append("text")
@@ -937,7 +935,7 @@ function updateScatterVersus(code) {
             .delay(810)
             .style("stroke", "white")
             .attr('stroke-width', '3')
-            .attr('opacity', 0.5)
+            .attr('opacity', 1)
 
 
         scatter_versus_g_nonfatal.append("text")
@@ -968,7 +966,7 @@ function updateScatterVersus(code) {
             .delay(500)
             .style("opacity", 1)
             .style("font-size", "20px")
-            .attr("y", (VERSUS_INFO_HEIGHT) - 20)
+            .attr("y", (VERSUS_INFO_HEIGHT) - 30)
         }
         fadeOutVersus('.scatter_versus_fatal_rect', fadeOut, d);
         fadeOutVersus('.scatter_versus_nonfatal_rect', fadeOut, d);
@@ -988,7 +986,7 @@ function drawScatterVersusInfo() {
     scatter_chart_info_g.append("g").append("text")
         .attr('id', 'versusInfoHint')
         .attr("x", (0.5 * VERSUS_INFO_WIDTH + SCATTER_VERSUS_LEFT + SCATTER_VERSUS_RIGHT))
-        .attr("y", (0.75 * VERSUS_INFO_HEIGHT))
+        .attr("y", (VERSUS_INFO_HEIGHT) - 30)
         .style("text-anchor", "middle")
         .style("font-family", 'Lora')
         .style("font-size", "20px")
@@ -1058,7 +1056,7 @@ function drawScatterVersusInfo() {
     scatter_chart_info_g.append("text")
         .attr("id", "scatter_versus_info_f")
         .attr("x", leftIndent)
-        .attr("y", 145)
+        .attr("y", 135)
         .attr("dy", "1.2em")
         .style("text-anchor", "left")
         .attr('class', 'versus_text_info')
@@ -1069,7 +1067,7 @@ function drawScatterVersusInfo() {
     scatter_chart_info_g.append("text")
         .attr("id", "scatter_versus_info_nf")
         .attr("x", leftIndent)
-        .attr("y", 180)
+        .attr("y", 170)
         .attr("dy", "1.2em")
         .style("text-anchor", "left")
         .attr('class', 'versus_text_info')
@@ -1081,7 +1079,7 @@ function drawScatterVersusInfo() {
     scatter_chart_info_g.append("text")
         .attr("id", "scatter_versus_info_tEmp")
         .attr("x", rightIndent)
-        .attr("y", 145)
+        .attr("y", 135)
         .attr("dy", "1.2em")
         .style("text-anchor", "end")
         .attr('class', 'versus_text_info')
@@ -1093,7 +1091,7 @@ function drawScatterVersusInfo() {
     scatter_chart_info_g.append("text")
         .attr("id", "scatter_versus_info_mSal")
         .attr("x", rightIndent)
-        .attr("y", 180)
+        .attr("y", 170)
         .attr("dy", "1.2em")
         .style("text-anchor", "end")
         .attr('class', 'versus_text_info')
@@ -1118,7 +1116,7 @@ function updateVersusInfo(d, from) {
     var infobox = scatter_chart_info_g.select('#scatter_versus_info_rect');
     if (scatter_info_code === '') {
         infobox.transition('versusBox')
-            .attr("opacity", 0.5);
+            .attr("opacity", 1);
     }
 
 
@@ -1149,7 +1147,7 @@ function updateVersusInfo(d, from) {
             .transition()
             .delay(500)
             .style("font-size", "20px")
-            .attr("y", (VERSUS_INFO_HEIGHT) - 20)
+            .attr("y", (VERSUS_INFO_HEIGHT) - 30)
 
         scatter_chart_info_g.selectAll('.versus_text_info')
             .transition()

@@ -6,7 +6,6 @@
   line-height: 40px;
   padding-top: 30px;
   margin-bottom: 30px;
-  padding-right: 1%;
 }
 
 .article-title {
@@ -34,17 +33,19 @@
   text-align: right;
   float: right;
   padding-left: 2.5%;
+  
+  padding-right: 1%;
   width: 95%;
 }
 
 .article-text-center {
   text-align: center;
-  display: inline-block;
+  /* display: inline-block; */
   padding-left: 3%;
   padding-right: 3%;
   margin-bottom: 0px;
-  width: 95%;
-}
+  width: auto;
+  }
 
 .article-text-tip {
   font-size: 20px;
@@ -74,7 +75,6 @@
   text-align: left;
   float: left;
   /* ignore warning, this is needed*/
-  width: 65%;
 }
 
 .wrapper-text-right {
@@ -95,7 +95,7 @@
 
 .wrapper {
   /* / width: 100%; */
-  padding-top: 100px;
+  padding-top: 50px;
   border: 1px solid black;
   overflow: hidden;
   font-size: 0;
@@ -126,12 +126,18 @@ mark {
   background-color: transparent;
 }
 
+mark.white {
+  color: white
+}
+mark.black {
+  color: black
+}
 mark.bls {
   color: #cc3300
 }
 
 mark.nonfatal {
-  color: MediumOrchid;
+  color: #03B7EC;
 }
 
 mark.fatal {
@@ -213,3 +219,4 @@ mark.other {
   shape-rendering: crispEdges;
   pointer-events: "none";
 }
+

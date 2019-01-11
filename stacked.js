@@ -175,6 +175,41 @@ function drawStackedChart() {
             .attr("fill", "white")
     }
 
+    tooltip.append("text")
+        .attr("id", "stacked_tooltext_f_rate")
+        .attr("x", (0.4 * TOOLTIP_WIDTH) -50)
+        .attr("y", TOOLTIP_HEIGHT *.5 - 60)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "100px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+    tooltip.append("text")
+        .attr("id", "stacked_tooltext_f_rate")
+        .attr("x", (0.4 * TOOLTIP_WIDTH) - 50)
+        .attr("y", TOOLTIP_HEIGHT * .75 -15)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "30px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+        .text("Fatalities")
+    tooltip.append("text")
+        .attr("id", "stacked_tooltext_f_rate")
+        .attr("x", (0.4 * TOOLTIP_WIDTH) - 50)
+        .attr("y", TOOLTIP_HEIGHT * .75 +20)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
+        .attr('class', 'simple_text_info')
+        .attr("font-family", "Lora")
+        .attr("font-size", "30px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+        .text("per 100k")
 
 
          // now the chart
@@ -200,7 +235,6 @@ function drawStackedChart() {
             })
             .attr("height", stacked_y.bandwidth())
             .on("mouseover", function (d) {
-                console.log(d.data.f_total_rate)
                 tooltip.transition('stackedTooltipMouseOver').attr("opacity", 1);    
                 stackedIndusty =  d.data.majorOccCodeGroup; 
                 shouldColor = [];
@@ -238,7 +272,7 @@ function drawStackedChart() {
                 tooltip.select('#stacked_tooltext_occ').text(d.data.occupation.trim())
                 tooltip.select('#stacked_tooltext_ind').text("Industry: " + d.data.majorOccNameGroup)
                 tooltip.select('#stacked_tooltext_tEmp').text("Total Emp: " + empFormatter(d.data.totEmp))
-
+                tooltip.select('#stacked_tooltext_f_rate').text(fatalFormatter(d.data.f_total_rate))
                 for (let index = 0; index < FATAL_CAUSE_RATES.length; index++) {
                     var rate = fatalFormatter(d.data[FATAL_CAUSE_RATES[index]]);
                     tooltip.select('#stacked_tooltext_' + FATAL_CAUSE_RATES[index])
@@ -383,6 +417,8 @@ function drawStackedInfoTexts() {
 
 // add the axis
 function drawStackedAxis() {
+
+    
 
     stacked_g.append("g")
         .attr("class", "axis")
