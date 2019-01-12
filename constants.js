@@ -104,7 +104,7 @@ const STACKED_INFO_TEXTS_CONTACT = [
     ]
 const STACKED_INFO_TEXTS_OTHER = [
     'Despite the extensive classification',
-    'scheme, many indicents cannot be classified.',
+    'scheme, many incidents cannot be classified.',
     '',
     '1108 cases could not be classified in 2016,',
     'making up 5.67% of workplace fatalties.'
